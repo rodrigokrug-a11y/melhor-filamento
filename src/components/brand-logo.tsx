@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -13,7 +16,9 @@ export function BrandLogo({
   size?: number;
   className?: string;
 }) {
-  if (logoUrl) {
+  const [failed, setFailed] = useState(false);
+
+  if (logoUrl && !failed) {
     return (
       <Image
         src={logoUrl}
@@ -21,6 +26,7 @@ export function BrandLogo({
         width={size}
         height={size}
         unoptimized
+        onError={() => setFailed(true)}
         className={cn("shrink-0 rounded object-contain", className)}
       />
     );
