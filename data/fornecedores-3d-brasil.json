@@ -1,0 +1,2967 @@
+{
+  "suppliers": [
+    {
+      "name": "3D Brothers Filamentos",
+      "website": "https://3dbrothers.com.br",
+      "type": "FABRICANTE",
+      "is_active": true,
+      "legal_name": null,
+      "cnpj": "58.394.485/0001-25",
+      "logo_url": "https://acdn-us.mitiendanube.com/stores/004/362/067/themes/common/logo-1245631875-1755822934-728ea34e4e1c66ec40420f822ffd50ec1755822934-480-0.webp",
+      "description": "Fabricante e revendedor de filamentos PLA, ABS, PETG e TPU em Curitiba/PR. Filamentos PLA produzidos 100% nacionalmente na sede. Também revende Bambu Lab, Anycubic, Elegoo e Snapmaker.",
+      "sells_filament": true,
+      "sells_resin": false,
+      "has_own_brand": true,
+      "brands": [
+        "3D Brothers",
+        "Bambu Lab",
+        "Anycubic",
+        "Elegoo",
+        "Snapmaker"
+      ],
+      "materials": [
+        "PLA",
+        "PETG",
+        "ABS",
+        "TPU"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "Curitiba",
+        "uf": "PR",
+        "cep": "81330-310"
+      },
+      "physical_stores": [
+        {
+          "city": "Curitiba",
+          "uf": "PR",
+          "cep": "81330-310",
+          "address": "R. Pablo Picasso, 68 - Fazendinha",
+          "pickup": true
+        }
+      ],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": null,
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": null,
+        "marketplaces": [
+          {
+            "platform": "Shopee",
+            "store_url": "https://shopee.com.br/3dbrothersfilamentos"
+          }
+        ]
+      },
+      "contact": {
+        "email": "atendimento@3dbrothers.com.br",
+        "phone": "+554187740070",
+        "whatsapp": "+554187740070",
+        "instagram": "https://instagram.com/3dbrothersfilamentos",
+        "contact_page": "https://3dbrothers.com.br/contato/"
+      },
+      "source_urls": [
+        "https://3dbrothers.com.br/",
+        "https://3dbrothers.com.br/contato/"
+      ],
+      "confidence": "high",
+      "notes": "Plataforma Nuvemshop. CNPJ 58.394.485/0001-25 no rodapé. Produção de PLA próprio em Curitiba/PR. Pickup na sede."
+    },
+    {
+      "name": "3D Cure",
+      "website": "https://3dcure.com.br",
+      "type": "FABRICANTE",
+      "is_active": true,
+      "legal_name": null,
+      "cnpj": "39.671.905/0001-29",
+      "logo_url": "https://3dcure.com.br/wp-content/uploads/2022/02/LOGO_LADO_A_LADO_PRETA.png",
+      "description": "Empresa mineira (Betim/MG) fundada por químicos e engenheiros. Desenvolve e produz resinas para impressão 3D para uso geral, action figures, odontologia, engenharia e joalheria. Destaque para resinas calcináveis (Wax) e water washable (Acqua).",
+      "sells_filament": false,
+      "sells_resin": true,
+      "has_own_brand": true,
+      "brands": [
+        "3D Cure"
+      ],
+      "materials": [
+        "Resina Basic",
+        "Resina Pixel",
+        "Resina Cristal",
+        "Resina Acqua Art (Water Washable)",
+        "Resina Acqua Ortho",
+        "Resina ABS-Like",
+        "Resina Thermal 200",
+        "Resina Model",
+        "Resina Align",
+        "Resina Castable",
+        "Resina Wax",
+        "Resina Wax Pro",
+        "Resina Vulcan"
+      ],
+      "diameters_mm": null,
+      "hq": {
+        "city": "Betim",
+        "uf": "MG",
+        "cep": "32689-338"
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://3dcure.com.br/sitemap_index.xml",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": [
+          {
+            "platform": "Mercado Livre",
+            "store_url": "https://www.mercadolivre.com.br/loja/3d-cure"
+          },
+          {
+            "platform": "Shopee",
+            "store_url": "https://shopee.com.br/3dcure_resinas"
+          }
+        ]
+      },
+      "contact": {
+        "email": "contato@3dcure.com.br",
+        "phone": "+553136651383",
+        "whatsapp": "+553136651383",
+        "instagram": "https://www.instagram.com/3dcure/",
+        "contact_page": "https://3dcure.com.br/contato/"
+      },
+      "source_urls": [
+        "https://3dcure.com.br/quem-somos/",
+        "https://3dcure.com.br/categoria/resinas/joalheria/",
+        "https://3dcure.com.br/robots.txt"
+      ],
+      "confidence": "high",
+      "notes": "CNPJ e endereço no rodapé: Rua Tratoy, 40 - Jardim Piemonte, Betim/MG, CEP 32689-338. WhatsApp +55 31 3665-1383. Loja ML e Shopee confirmadas. Sitemap declarado no robots.txt (Yoast)."
+    },
+    {
+      "name": "3D Fila",
+      "website": "https://3dfila.com.br",
+      "type": "FABRICANTE",
+      "is_active": true,
+      "legal_name": "3D Fila Ltda",
+      "cnpj": "19.324.150/0001-89",
+      "logo_url": "https://3dfila.com.br/wp-content/uploads/2026/05/logo-oficial-3d-fila-500.jpg",
+      "description": "Fabricante brasileira de filamentos e resinas 3D desde 2013, com sede em Belo Horizonte/MG. Primeira fabricante nacional certificada Ultimaker. Exporta para os EUA.",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": true,
+      "brands": [
+        "3D Fila"
+      ],
+      "materials": [
+        "PLA",
+        "ABS",
+        "PETG",
+        "TPU",
+        "HIPS",
+        "ASA",
+        "Tritan",
+        "Nylon",
+        "PLA Fibra de Carbono",
+        "PLA Fibra de Vidro",
+        "Resina Standard",
+        "Resina Lavável",
+        "Resina Brutal",
+        "Resina Dental"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "Belo Horizonte",
+        "uf": "MG",
+        "cep": null
+      },
+      "physical_stores": [
+        {
+          "city": "Belo Horizonte",
+          "uf": "MG",
+          "cep": null,
+          "address": "Rua Padre Leopoldo Mertens, 1600, Bairro São Francisco (Pampulha)",
+          "pickup": true
+        }
+      ],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://3dfila.com.br/sitemap_index.xml",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": null
+      },
+      "contact": {
+        "email": "sac@3dfila.com.br",
+        "phone": "+553134176464",
+        "whatsapp": "+553134176464",
+        "instagram": "https://www.instagram.com/3dfila_brasil/",
+        "contact_page": "https://3dfila.com.br/contato/"
+      },
+      "source_urls": [
+        "https://3dfila.com.br/quem-somos/",
+        "https://3dfila.com.br/robots.txt"
+      ],
+      "confidence": "high",
+      "notes": "CNPJ filial: 19.324.150/0002-60. Planta de resina 864.000 kg/ano inaugurada 2021. Exporta para EUA via 3dfila.com. CNPJ 19.324.150/0001-89 e sede em Belo Horizonte (Bairro São Francisco/Pampulha) confirmados no rodapé do site oficial; fábrica em Betim/MG. Filial CNPJ 19.324.150/0002-60. Fabrica filamentos E resinas (linha completa)."
+    },
+    {
+      "name": "3D Lab",
+      "website": "https://3dlab.com.br",
+      "type": "FABRICANTE",
+      "is_active": true,
+      "legal_name": "3D LAB INDUSTRIA LTDA",
+      "cnpj": "20.212.019/0001-09",
+      "logo_url": null,
+      "description": "Maior referência em tecnologia de impressão 3D no Brasil. Fabrica filamentos em Betim/MG (ISO 9001) e revende resinas. Revendedor oficial Creality e Bambu Lab.",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": true,
+      "brands": [
+        "3D Lab",
+        "Creality",
+        "Bambu Lab",
+        "Phrozen",
+        "Flashforge"
+      ],
+      "materials": [
+        "PLA",
+        "ABS",
+        "PETG",
+        "TPU",
+        "ASA",
+        "Nylon",
+        "PLA-CF",
+        "Resina UV",
+        "CFS Creality"
+      ],
+      "diameters_mm": [
+        1.75,
+        2.85
+      ],
+      "hq": {
+        "city": "Betim",
+        "uf": "MG",
+        "cep": null
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://3dlab.com.br/sitemap_index.xml",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": []
+      },
+      "contact": {
+        "email": null,
+        "phone": "+553135944973",
+        "whatsapp": null,
+        "instagram": null,
+        "contact_page": "https://3dlab.com.br/contato/"
+      },
+      "source_urls": [
+        "https://3dlab.com.br/",
+        "https://3dlab.com.br/3d-lab-bambu-lab/",
+        "https://cnpj.biz/20212019000109",
+        "https://3dlab.com.br/categoria-produto/filamento-para-impressora-3d/"
+      ],
+      "confidence": "high",
+      "notes": "WordPress + WooCommerce (Yoast). Sede Betim/MG; filial Belo Horizonte/MG. Fabricante de filamento próprio + grande revenda. Marcado FABRICANTE por ter marca própria."
+    },
+    {
+      "name": "3DM da Amazônia",
+      "website": "https://www.3dmdaamazonia.com.br",
+      "type": "FABRICANTE",
+      "is_active": true,
+      "legal_name": null,
+      "cnpj": "22.369.566/0001-28",
+      "logo_url": null,
+      "description": "Empresa em Manaus/AM de impressão 3D industrial, engenharia reversa e inspeção 3D. Vende filamentos próprios (ABS Plus, PLA Plus, Flex TPU, PETG) e peças de reposição.",
+      "sells_filament": true,
+      "sells_resin": false,
+      "has_own_brand": true,
+      "brands": [
+        "3DM"
+      ],
+      "materials": [
+        "PLA",
+        "ABS",
+        "TPU",
+        "PETG"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "Manaus",
+        "uf": "AM",
+        "cep": null
+      },
+      "physical_stores": [
+        {
+          "city": "Manaus",
+          "uf": "AM",
+          "cep": null,
+          "address": "Avenida Solimões, 2124 - Mauazinho",
+          "pickup": true
+        }
+      ],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": null,
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": null,
+        "marketplaces": []
+      },
+      "contact": {
+        "email": "3dmdaamazonia@gmail.com",
+        "phone": "+559284559896",
+        "whatsapp": "+559284559896",
+        "instagram": "https://www.instagram.com/3dmdaamazonia/",
+        "contact_page": "https://www.3dmdaamazonia.com.br/contato"
+      },
+      "source_urls": [
+        "https://www.3dmdaamazonia.com.br/"
+      ],
+      "confidence": "high",
+      "notes": "Site Wix. CNPJ no rodapé. Filamentos marca própria 3DM. Showroom em Manaus. Revenda de impressoras industriais Raise3D e Tiertime."
+    },
+    {
+      "name": "BRASFILA Filamentos",
+      "website": "https://www.brasfila.com.br",
+      "type": "FABRICANTE",
+      "is_active": true,
+      "legal_name": "E. Goncalves Almeida Plasticos",
+      "cnpj": "41.049.661/0001-99",
+      "logo_url": null,
+      "description": "Fabricante nacional de filamentos 3D fundada em março de 2021, localizada no Paraná (DDD 43). Produz PLA, ABS, PETG, Silk e TPU com foco em qualidade e sustentabilidade.",
+      "sells_filament": true,
+      "sells_resin": false,
+      "has_own_brand": true,
+      "brands": [
+        "BRASFILA"
+      ],
+      "materials": [
+        "PLA",
+        "ABS",
+        "PETG",
+        "PLA Silk",
+        "TPU"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": null,
+        "uf": "PR",
+        "cep": null
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://www.brasfila.com.br/sitemap.xml",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": [
+          {
+            "platform": "Amazon",
+            "store_url": null
+          }
+        ]
+      },
+      "contact": {
+        "email": "brasfila@hotmail.com",
+        "phone": "+5543988619341",
+        "whatsapp": "+5543996612514",
+        "instagram": "https://www.instagram.com/brasfila",
+        "contact_page": "https://www.brasfila.com.br/contato"
+      },
+      "source_urls": [
+        "https://www.brasfila.com.br/empresa",
+        "https://www.brasfila.com.br/robots.txt"
+      ],
+      "confidence": "medium",
+      "notes": "DDD 43 (norte do Paraná). Cidade exata não encontrada. CNPJ e razão social confirmados em fontes secundárias. Ativa no Amazon.br."
+    },
+    {
+      "name": "Cliever",
+      "website": "https://www.cliever.com",
+      "type": "FABRICANTE",
+      "is_active": true,
+      "legal_name": null,
+      "cnpj": null,
+      "logo_url": "https://images.tcdn.com.br/img/img_prod/1276403/1772816644_logoiconfav.png",
+      "description": "Fabricante pioneira de filamentos 3D desde 2012 e impressoras 3D desde 2011, localizada em Betim/MG. Desenvolveu impressora SL1 com laser e resinas próprias.",
+      "sells_filament": true,
+      "sells_resin": false,
+      "has_own_brand": true,
+      "brands": [
+        "Cliever"
+      ],
+      "materials": [
+        "PLA",
+        "ABS",
+        "PETG",
+        "PLA Silk",
+        "SpeedX"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "Betim",
+        "uf": "MG",
+        "cep": null
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://cliever3d.commercesuite.com.br/sitemap.xml",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": [
+          {
+            "platform": "Shopee",
+            "store_url": "https://shopee.com.br/cliever3d"
+          }
+        ]
+      },
+      "contact": {
+        "email": "diretoria@cliever.com.br",
+        "phone": "+5531981151314",
+        "whatsapp": null,
+        "instagram": null,
+        "contact_page": null
+      },
+      "source_urls": [
+        "https://www.cliever.com/",
+        "https://www.cliever.com/robots.txt"
+      ],
+      "confidence": "medium",
+      "notes": "Endereço parcial: Rua Toyota, Betim/MG. CNPJ não localizado. Shopee: shopee.com.br/cliever3d."
+    },
+    {
+      "name": "EVO3D",
+      "website": "https://www.evo3d.com.br",
+      "type": "FABRICANTE",
+      "is_active": true,
+      "legal_name": null,
+      "cnpj": null,
+      "logo_url": null,
+      "description": "Fabricante nacional de resina para impressão 3D. Comercializa a linha Resina Inside. Informações públicas limitadas.",
+      "sells_filament": false,
+      "sells_resin": true,
+      "has_own_brand": true,
+      "brands": [
+        "EVO3D"
+      ],
+      "materials": [
+        "Resina Inside"
+      ],
+      "diameters_mm": null,
+      "hq": null,
+      "physical_stores": [],
+      "ships_nationwide": null,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": null,
+        "cloudflare_protected": true,
+        "robots_allows_product_pages": null,
+        "marketplaces": []
+      },
+      "contact": {
+        "email": null,
+        "phone": null,
+        "whatsapp": null,
+        "instagram": null,
+        "contact_page": null
+      },
+      "source_urls": [
+        "https://www.evo3d.com.br/",
+        "https://www.evo3d.com.br/resina-inside-"
+      ],
+      "confidence": "low",
+      "notes": "Site evo3d.com.br retornou corpo vazio em todas as tentativas de web_fetch (possível Cloudflare/bloqueio). Confirmado como fabricante nacional via busca. CNPJ, cidade e demais dados não acessíveis. Verificar manualmente."
+    },
+    {
+      "name": "Filamentos 3D Brasil (F3D)",
+      "website": "https://www.filamentos3dbrasil.com.br",
+      "type": "FABRICANTE",
+      "is_active": true,
+      "legal_name": "F3DBR Comercio de Artigos para Impressao 3D Ltda",
+      "cnpj": "15.614.344/0001-68",
+      "logo_url": null,
+      "description": "Uma das marcas pioneiras em fabricação de filamentos 3D no Brasil, fundada em 2012 em Novo Hamburgo/RS. Produção local com matéria-prima importada, filamentos embalados a vácuo.",
+      "sells_filament": true,
+      "sells_resin": false,
+      "has_own_brand": true,
+      "brands": [
+        "F3D"
+      ],
+      "materials": [
+        "PLA",
+        "ABS",
+        "PETG",
+        "TPU",
+        "PP Braskem",
+        "Nylon",
+        "PS Food Safe",
+        "Fusion Cast"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "Novo Hamburgo",
+        "uf": "RS",
+        "cep": "93334-150"
+      },
+      "physical_stores": [
+        {
+          "city": "Novo Hamburgo",
+          "uf": "RS",
+          "cep": "93334-090",
+          "address": "Rua Raimundo Chaves, 52, Bairro Ideal",
+          "pickup": true
+        }
+      ],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://acdn-us.mitiendanube.com/stores/033/056/themes/common/sitemap.xml.gz",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": null
+      },
+      "contact": {
+        "email": null,
+        "phone": null,
+        "whatsapp": "+5551985812269",
+        "instagram": "https://instagram.com/filamentos3dbrasil",
+        "contact_page": null
+      },
+      "source_urls": [
+        "https://www.filamentos3dbrasil.com.br/quem-somos/",
+        "https://www.econodata.com.br/consulta-empresa/15614344000168-f3dbr-comercio-de-artigos-para-impressao-3d-ltda"
+      ],
+      "confidence": "high",
+      "notes": "CNPJ e endereço confirmados no rodapé do site. Horário de retirada até 16:30 (sexta até 16h)."
+    },
+    {
+      "name": "GTMax3D",
+      "website": "https://www.gtmax3d.com.br",
+      "type": "FABRICANTE",
+      "is_active": true,
+      "legal_name": "GTMax3D Equipamentos Eletronicos e Materiais Plasticos Ltda",
+      "cnpj": "29.012.453/0001-10",
+      "logo_url": "https://cdn.awsli.com.br/22/22114/logo/logo-gtmax3d-site-r7avolddlb.png",
+      "description": "Pioneira nacional em fabricação de impressoras 3D e filamentos desde 2004, localizada em Americana/SP. Revendedora autorizada Bambu Lab no Brasil.",
+      "sells_filament": true,
+      "sells_resin": false,
+      "has_own_brand": true,
+      "brands": [
+        "GTMax3D",
+        "ECO Plast"
+      ],
+      "materials": [
+        "PLA",
+        "ABS",
+        "PETG",
+        "ASA",
+        "HIPS",
+        "Tritan",
+        "PLA Fibra de Carbono"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "Americana",
+        "uf": "SP",
+        "cep": null
+      },
+      "physical_stores": [
+        {
+          "city": "Americana",
+          "uf": "SP",
+          "cep": null,
+          "address": null,
+          "pickup": true
+        }
+      ],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://www.gtmax3d.com.br/sitemap.xml",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": null
+      },
+      "contact": {
+        "email": "vendas@gtmax.com.br",
+        "phone": "+551936217429",
+        "whatsapp": "+5519993387912",
+        "instagram": "https://instagram.com/gtmax3d/",
+        "contact_page": null
+      },
+      "source_urls": [
+        "https://www.gtmax3d.com.br/pagina/quem-somos.html",
+        "https://www.gtmax3d.com.br/"
+      ],
+      "confidence": "high",
+      "notes": "Fundada em 2004. CNPJ confirmado no rodapé. Retirada disponível em Americana/SP."
+    },
+    {
+      "name": "Makertech Labs",
+      "website": "https://www.makertechlabs.com.br",
+      "type": "FABRICANTE",
+      "is_active": true,
+      "legal_name": "BF Tecnologia 3D LTDA - ME",
+      "cnpj": "06.122.109/0001-88",
+      "logo_url": "https://makertechlabs.fbitsstatic.net/sf/img/logo-makertech.png",
+      "description": "Pioneira na produção de resinas 3D na América Latina, fundada em 2013 em Tatuí/SP. Em 2020 recebeu investimento da Maquira Dental Group. Especializada em resinas odontológicas sob a marca priZma. Certificação ISO 13485.",
+      "sells_filament": false,
+      "sells_resin": true,
+      "has_own_brand": true,
+      "brands": [
+        "priZma",
+        "makertech"
+      ],
+      "materials": [
+        "Resina priZma Standard",
+        "Resina priZma Model",
+        "Resina priZma Wide",
+        "Resina priZma Ortho",
+        "Resina priZma Bio Guide Autoclavável",
+        "Resina priZma Bio Splint",
+        "Resina priZma Bio Prov",
+        "Resina priZma Bio Crown",
+        "Resina priZma Bio Crown Diamond",
+        "Resina priZma Bio Denture",
+        "Resina priZma Bio Ortho IBT",
+        "Resina priZma Bio Adapt Flex",
+        "Resina priZma Castable",
+        "Resina priZma Castable II",
+        "Resina priZma Gengiva"
+      ],
+      "diameters_mm": null,
+      "hq": {
+        "city": "Tatuí",
+        "uf": "SP",
+        "cep": null
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://awake.fbits.store/sitemap.xml",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": []
+      },
+      "contact": {
+        "email": "contato@makertechlabs.com.br",
+        "phone": "+5515991329683",
+        "whatsapp": "+5515991329683",
+        "instagram": "https://www.instagram.com/makertechlabs/",
+        "contact_page": null
+      },
+      "source_urls": [
+        "https://www.makertechlabs.com.br/",
+        "https://www.makertechlabs.com.br/quemsomos",
+        "https://www.makertechlabs.com.br/todos-os-produtos"
+      ],
+      "confidence": "high",
+      "notes": "CNPJ e endereço no rodapé: Rua Luiz de Camargo Barros, 20 - São Cristóvão - Tatuí/SP. ISO 13485. Sitemap via robots.txt aponta para awake.fbits.store. Foco odontológico (resina), não vende filamento."
+    },
+    {
+      "name": "National 3D",
+      "website": "https://www.lojanational3d.com.br",
+      "type": "FABRICANTE",
+      "is_active": true,
+      "legal_name": "Industria e Comercio One-Rom Ltda",
+      "cnpj": "16.865.642/0001-93",
+      "logo_url": "https://cdn.awsli.com.br/2830/2830247/logo/logo-dip2c7eghj.png",
+      "description": "Fabricante brasileira de filamentos 3D localizada em Várzea Paulista/SP. Produz PLA, ABS MG-94, PETG, TPU e materiais de engenharia com processo totalmente automatizado.",
+      "sells_filament": true,
+      "sells_resin": false,
+      "has_own_brand": true,
+      "brands": [
+        "National 3D"
+      ],
+      "materials": [
+        "PLA",
+        "ABS MG-94",
+        "PETG",
+        "TPU",
+        "Nylon PA-6",
+        "PETG CF"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "Várzea Paulista",
+        "uf": "SP",
+        "cep": null
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://www.lojanational3d.com.br/sitemap.xml",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": null
+      },
+      "contact": {
+        "email": "contato@national3d.com.br",
+        "phone": "+551146064900",
+        "whatsapp": "+5511983560313",
+        "instagram": "https://instagram.com/national_3d",
+        "contact_page": null
+      },
+      "source_urls": [
+        "https://www.lojanational3d.com.br/pagina/sobre-nos.html",
+        "https://blog.lojanational3d.com.br/2025/09/02/fabrica-de-filamentos-3d-conheca-a-national-3d/"
+      ],
+      "confidence": "high",
+      "notes": "Loja de fábrica oficial. CNPJ confirmado no rodapé do site."
+    },
+    {
+      "name": "PrintaLot",
+      "website": "https://www.printalot.com.br",
+      "type": "FABRICANTE",
+      "is_active": true,
+      "legal_name": "PrintaLot Comercio Ltda ME",
+      "cnpj": "29.207.588/0001-30",
+      "logo_url": "https://cdn.awsli.com.br/567/567324/logo/54a3033f2b.png",
+      "description": "Fabricante de filamentos 3D desde 2013, em São Paulo/SP. Certificada pela NatureWorks (PLA Ingeo). Linha completa em 1,75mm e 2,85mm incluindo materiais de engenharia.",
+      "sells_filament": true,
+      "sells_resin": false,
+      "has_own_brand": true,
+      "brands": [
+        "PrintaLot",
+        "Plast.Ar"
+      ],
+      "materials": [
+        "PLA",
+        "ABS",
+        "PETG",
+        "Nylon",
+        "PC",
+        "TPU",
+        "HIPS",
+        "PVOH",
+        "PP",
+        "ABS/PC"
+      ],
+      "diameters_mm": [
+        1.75,
+        2.85
+      ],
+      "hq": {
+        "city": "São Paulo",
+        "uf": "SP",
+        "cep": null
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://www.printalot.com.br/sitemap.xml",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": null
+      },
+      "contact": {
+        "email": "contato@printalot.com.br",
+        "phone": "+5511916941895",
+        "whatsapp": "+5511916941895",
+        "instagram": "https://instagram.com/printalot_br/",
+        "contact_page": null
+      },
+      "source_urls": [
+        "https://www.printalot.com.br/",
+        "https://www.printalot.com.br/filamentos"
+      ],
+      "confidence": "high",
+      "notes": "CNPJ confirmado no rodapé. Certificada NatureWorks. Linha econômica Plast.Ar é marca própria."
+    },
+    {
+      "name": "Sethi3D",
+      "website": "https://www.sethi3d.com.br",
+      "type": "FABRICANTE",
+      "is_active": true,
+      "legal_name": "Sethi Ind Com Prod Eletrônicos",
+      "cnpj": "04.659.127/0001-78",
+      "logo_url": "https://cdn.awsli.com.br/2/2757/logo/946d346c9a.png",
+      "description": "Fabricante de impressoras 3D e filamentos com mais de 24 anos de experiência, localizada em Campinas/SP. Atende indústria aeronáutica, automotiva, medicina e educação.",
+      "sells_filament": true,
+      "sells_resin": false,
+      "has_own_brand": true,
+      "brands": [
+        "Sethi3D",
+        "SethiFix"
+      ],
+      "materials": [
+        "PLA",
+        "ABS",
+        "PETG",
+        "Flex"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "Campinas",
+        "uf": "SP",
+        "cep": null
+      },
+      "physical_stores": [
+        {
+          "city": "Campinas",
+          "uf": "SP",
+          "cep": null,
+          "address": "Rua Estácio de Sá, 530",
+          "pickup": true
+        }
+      ],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://www.sethi3d.com.br/sitemap.xml",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": null
+      },
+      "contact": {
+        "email": "sethi@sethi.com.br",
+        "phone": "+551932569567",
+        "whatsapp": "+5519983880339",
+        "instagram": "https://instagram.com/sethi3d",
+        "contact_page": null
+      },
+      "source_urls": [
+        "https://www.sethi3d.com.br/",
+        "https://www.sethi3d.com.br/pagina/historia.html"
+      ],
+      "confidence": "medium",
+      "notes": "Fabrica impressoras 3D com marca própria. Filamentos vendidos sob marca Sethi3D (parte do catálogo ABS MG-94 é da National 3D). Também fabrica injetora automática SIM."
+    },
+    {
+      "name": "Smooth 3D",
+      "website": "https://www.smooth3d.com.br",
+      "type": "FABRICANTE",
+      "is_active": true,
+      "legal_name": null,
+      "cnpj": "37.599.916/0001-10",
+      "logo_url": "https://smooth3d.com.br/files/2022/10/26/logo-4.png",
+      "description": "Empresa mineira fundada em 2020, desenvolve e produz resinas especiais para impressão DLP/SLA/LCD. Portfólio com 9 tipos de resina (6 Premium e 3 Standard) para miniaturas, action figures, robótica, protótipos, joalheria, odontologia e modelismo.",
+      "sells_filament": false,
+      "sells_resin": true,
+      "has_own_brand": true,
+      "brands": [
+        "Smooth 3D",
+        "Smooth Color"
+      ],
+      "materials": [
+        "Resina 3D Brasil (Standard)",
+        "Resina 3D Action (Standard)",
+        "Resina 3D Padrão (Standard)",
+        "Resina 3D D20 (Premium)",
+        "Resina 3D 4k (Premium)",
+        "Resina 3D Modelismo (Premium)",
+        "Resina 3D Impact Robótica (Premium)",
+        "Resina 3D ART ABS-Like (Premium)",
+        "Resina 3D Semi-Flexível (Premium)",
+        "Resina 3D Aquarius (Water Washable)"
+      ],
+      "diameters_mm": null,
+      "hq": {
+        "city": "Belo Horizonte",
+        "uf": "MG",
+        "cep": "30110-915"
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": null,
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": [
+          {
+            "platform": "Mercado Livre",
+            "store_url": "https://lista.mercadolivre.com.br/smooth-3d"
+          },
+          {
+            "platform": "Shopee",
+            "store_url": "https://shopee.com.br/RESINA-IMPRESS%C3%83O-3D-SMOOTH3D-SEMI-FLEXIVEL-i.301205747.9023164718"
+          }
+        ]
+      },
+      "contact": {
+        "email": "contato@smooth3d.com.br",
+        "phone": "+5531982092331",
+        "whatsapp": "+5532998069952",
+        "instagram": "https://www.instagram.com/smooth3dprinter/",
+        "contact_page": null
+      },
+      "source_urls": [
+        "https://www.smooth3d.com.br/",
+        "https://www.smooth3d.com.br/resinas",
+        "https://www.smooth3d.com.br/empresa"
+      ],
+      "confidence": "high",
+      "notes": "CNPJ e endereço confirmados no rodapé do site. Av. do Contorno, 2905, Sala 406, Santa Efigênia, BH/MG, CEP 30110-915. robots.txt permite crawling. Produtos também via terceiros no ML."
+    },
+    {
+      "name": "Voolt3D",
+      "website": "https://voolt3d.com.br",
+      "type": "FABRICANTE",
+      "is_active": true,
+      "legal_name": null,
+      "cnpj": null,
+      "logo_url": null,
+      "description": "Maior fabricante brasileiro de filamentos 3D, fundada em 2014 em São Bernardo do Campo/SP. Produção 100% nacional com a maior variedade de cores do mercado.",
+      "sells_filament": true,
+      "sells_resin": false,
+      "has_own_brand": true,
+      "brands": [
+        "Voolt3D"
+      ],
+      "materials": [
+        "PLA",
+        "PETG",
+        "ABS",
+        "TPU",
+        "PLA Silk",
+        "Velvet",
+        "Dual Color",
+        "Translúcido",
+        "Metálico",
+        "Nylon"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "São Bernardo do Campo",
+        "uf": "SP",
+        "cep": "09690-100"
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://acdn-us.mitiendanube.com/stores/005/959/122/themes/common/sitemap.xml.gz",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": null
+      },
+      "contact": {
+        "email": null,
+        "phone": null,
+        "whatsapp": null,
+        "instagram": null,
+        "contact_page": null
+      },
+      "source_urls": [
+        "https://voolt3d.com.br/",
+        "https://voolt3d.com.br/robots.txt"
+      ],
+      "confidence": "medium",
+      "notes": "Endereço: Rua MMDC, 1065, São Bernardo do Campo SP 09690-100. CNPJ não localizado nos sites consultados."
+    },
+    {
+      "name": "Wilcos do Brasil",
+      "website": "https://www.wilcos.com.br",
+      "type": "FABRICANTE",
+      "is_active": true,
+      "legal_name": "Wilcos do Brasil Indústria e Comércio Limitada",
+      "cnpj": "01.074.837/0001-48",
+      "logo_url": "https://www.wilcos.com.br/img/LOGO2.png",
+      "description": "Empresa familiar com mais de 85 anos na odontologia (fundada em 1938). Fabrica resinas 3D próprias (Resilab 3D e Nanolab 3D) para impressoras LCD/DLP odontológicas, além de representar marcas internacionais. Sediada em Petrópolis/RJ.",
+      "sells_filament": false,
+      "sells_resin": true,
+      "has_own_brand": true,
+      "brands": [
+        "Resilab",
+        "Nanolab"
+      ],
+      "materials": [
+        "Resina Resilab 3D Premium Modelo",
+        "Resina Resilab 3D Premium Modelo Skin",
+        "Resina Resilab 3D Cast",
+        "Resina Resilab 3D Clear",
+        "Resina Resilab 3D Temporário",
+        "Resina Resilab 3D Gengiva",
+        "Resina Nanolab 3D Nanohíbrida"
+      ],
+      "diameters_mm": null,
+      "hq": {
+        "city": "Petrópolis",
+        "uf": "RJ",
+        "cep": "25615-412"
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": null,
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": null,
+        "marketplaces": []
+      },
+      "contact": {
+        "email": "sac@wilcos.com.br",
+        "phone": "+552430641000",
+        "whatsapp": "+552430641001",
+        "instagram": "https://www.instagram.com/wilcos_/",
+        "contact_page": "https://www.wilcos.com.br/contato"
+      },
+      "source_urls": [
+        "https://www.wilcos.com.br/empresa",
+        "https://www.wilcos.com.br/catalogo/detalhes/490",
+        "https://www.econodata.com.br/consulta-empresa/01074837000148-WILCOS-DO-BRASIL-INDUSTRIA-E-COMERCIO-LIMITADA"
+      ],
+      "confidence": "high",
+      "notes": "Primariamente fabricante odontológico, mas fabrica resinas 3D próprias (Resilab 3D e Nanolab 3D) para LCD/DLP. Rua Quissamã, 910, Petrópolis/RJ. Vende via rede de revendas dentais, não e-commerce direto de resina 3D."
+    },
+    {
+      "name": "Yller Digital",
+      "website": "https://www.yllerdigital.com.br",
+      "type": "FABRICANTE",
+      "is_active": true,
+      "legal_name": "Yller Biomateriais S.A.",
+      "cnpj": "16.970.346/0001-52",
+      "logo_url": null,
+      "description": "Primeiro fabricante nacional de resinas para impressão 3D odontológica no Brasil. Desenvolve a linha COSMOS de resinas para tecnologias SLA, LCD e DLP, com mais de 12 anos de pesquisa científica. Fundada em 2012 em Pelotas/RS.",
+      "sells_filament": false,
+      "sells_resin": true,
+      "has_own_brand": true,
+      "brands": [
+        "COSMOS",
+        "COSMOS Plus"
+      ],
+      "materials": [
+        "Resina COSMOS Standard",
+        "Resina COSMOS Dental Model",
+        "Resina COSMOS DLP",
+        "Resina COSMOS SG (Guias Cirúrgicos)",
+        "Resina COSMOS Splint",
+        "Resina COSMOS Denture",
+        "Resina COSMOS Flex",
+        "Resina COSMOS Colors"
+      ],
+      "diameters_mm": null,
+      "hq": {
+        "city": "Pelotas",
+        "uf": "RS",
+        "cep": "96080-730"
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": null,
+        "cloudflare_protected": true,
+        "robots_allows_product_pages": null,
+        "marketplaces": [
+          {
+            "platform": "Shopee",
+            "store_url": "https://shopee.com.br/amp/Resina-Impressora-3D-Cosmos-Clear-Transparente-Yller-i.424574644.12747168874"
+          }
+        ]
+      },
+      "contact": {
+        "email": null,
+        "phone": null,
+        "whatsapp": null,
+        "instagram": null,
+        "contact_page": null
+      },
+      "source_urls": [
+        "https://www.yllerdigital.com.br/",
+        "https://yller.com.br/empresa-brasileira-de-resinas-para-tecnologia-3d-compete-com-grandes-marcas-do-mercado/",
+        "https://www.buscarcnpj.com/yller-biomateriais-sa/16970346000152"
+      ],
+      "confidence": "high",
+      "notes": "Site yllerdigital.com.br retornou corpo vazio em web_fetch (possível bloqueio/Cloudflare). Dados confirmados via yller.com.br e fontes de CNPJ públicas. CNPJ 16.970.346/0001-52 é a matriz em Pelotas/RS."
+    },
+    {
+      "name": "3D Curitiba",
+      "website": "https://www.3dcuritiba.com.br",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": null,
+      "cnpj": "32.675.163/0001-60",
+      "logo_url": "https://cdn.awsli.com.br/1264/1264652/logo/marcadagua6--1--q6mz3k0luy.png",
+      "description": "Loja online em Curitiba especializada em impressoras 3D, filamentos e resinas. Marca própria de resina (Standard, Endurance, Flex, Model). Revende Bambu Lab, FlashForge, Creality, 3N3, DynaLabs.",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": true,
+      "brands": [
+        "Bambu Lab",
+        "FlashForge",
+        "Creality",
+        "3N3",
+        "DynaLabs",
+        "GTMax",
+        "eSun",
+        "MultiFila",
+        "3D Curitiba"
+      ],
+      "materials": [
+        "PLA",
+        "PETG",
+        "ABS",
+        "TPU",
+        "ASA",
+        "HIPS",
+        "Nylon",
+        "PVA",
+        "Tritan",
+        "PP-T",
+        "Fibra de Carbono",
+        "Resina"
+      ],
+      "diameters_mm": [
+        1.75,
+        2.85
+      ],
+      "hq": {
+        "city": "Curitiba",
+        "uf": "PR",
+        "cep": null
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": null,
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": [
+          {
+            "platform": "Shopee",
+            "store_url": "https://shopee.com.br/3dcuritiba"
+          }
+        ]
+      },
+      "contact": {
+        "email": "contato@3dcuritiba.com.br",
+        "phone": "+5541997051243",
+        "whatsapp": "+5541997051243",
+        "instagram": "https://instagram.com/3dcuritiba",
+        "contact_page": null
+      },
+      "source_urls": [
+        "https://www.3dcuritiba.com.br/",
+        "https://shopee.com.br/3dcuritiba"
+      ],
+      "confidence": "high",
+      "notes": "Plataforma Loja Integrada. Marca própria de resinas (Standard, Endurance, Flex, Model). Filamentos 2.85mm disponíveis."
+    },
+    {
+      "name": "3D Prime",
+      "website": "https://3dprime.com.br",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": "3D PRIME SOLUCOES EM IMPRESSAO 3D INDUSTRIA E COMERCIO LTDA",
+      "cnpj": "27.751.050/0001-67",
+      "logo_url": null,
+      "description": "Líder em soluções para impressão 3D. Marca própria de filamento e resina '3D Prime'. Revenda Bambu Lab, Creality, Flashforge, Phrozen. Loja física em São Caetano do Sul/SP e cursos.",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": true,
+      "brands": [
+        "3D Prime",
+        "Bambu Lab",
+        "Creality",
+        "Flashforge",
+        "Phrozen",
+        "Snapmaker"
+      ],
+      "materials": [
+        "PLA",
+        "ABS",
+        "PETG",
+        "ASA",
+        "Nylon",
+        "TPU",
+        "HIPS",
+        "Tritan",
+        "PET-CF",
+        "Resina Standard",
+        "Resina Alta Resolução",
+        "Resina Lavável em Água",
+        "Resina Cristal",
+        "Resina Elástica"
+      ],
+      "diameters_mm": [
+        1.75,
+        2.85
+      ],
+      "hq": {
+        "city": "São Caetano do Sul",
+        "uf": "SP",
+        "cep": "09520-320"
+      },
+      "physical_stores": [
+        {
+          "city": "São Caetano do Sul",
+          "uf": "SP",
+          "cep": "09520-320",
+          "address": "Rua Heloísa Pamplona, 623, Bairro Fundação",
+          "pickup": true
+        }
+      ],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://3dprime.com.br/sitemap_index.xml",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": []
+      },
+      "contact": {
+        "email": null,
+        "phone": "+551142119180",
+        "whatsapp": "+551126685695",
+        "instagram": "https://www.instagram.com/3dprime3d/",
+        "contact_page": null
+      },
+      "source_urls": [
+        "https://3dprime.com.br/",
+        "https://3dprime.com.br/sobre-nos/"
+      ],
+      "confidence": "high",
+      "notes": "WordPress + WooCommerce (Yoast, WP Rocket). Marca própria '3D Prime'. Frete grátis sul/sudeste acima de R$400."
+    },
+    {
+      "name": "3D Vale",
+      "website": "https://3dvale.com.br",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": null,
+      "cnpj": null,
+      "logo_url": null,
+      "description": "Primeira empresa de filamentos para impressão 3D do Vale do Paraíba (SP), em Taubaté/SP. Vende filamentos ABS, PLA, PETG e resinas desde 2018.",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": false,
+      "brands": null,
+      "materials": [
+        "PLA",
+        "PETG",
+        "ABS",
+        "Resina"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "Taubaté",
+        "uf": "SP",
+        "cep": "12040-160"
+      },
+      "physical_stores": [
+        {
+          "city": "Taubaté",
+          "uf": "SP",
+          "cep": "12040-160",
+          "address": "Av. Cti, 405 - Parque Sr. do Bonfim",
+          "pickup": true
+        }
+      ],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": null,
+        "cloudflare_protected": null,
+        "robots_allows_product_pages": null,
+        "marketplaces": [
+          {
+            "platform": "Shopee",
+            "store_url": "https://shopee.com.br/3dvale"
+          },
+          {
+            "platform": "Mercado Livre",
+            "store_url": "https://lista.mercadolivre.com.br/filamento-3d-vale"
+          }
+        ]
+      },
+      "contact": {
+        "email": "3dvale@3dvale.com.br",
+        "phone": "+5512983096363",
+        "whatsapp": null,
+        "instagram": "https://www.instagram.com/3dvale/",
+        "contact_page": null
+      },
+      "source_urls": [
+        "https://3dvale.com.br/",
+        "https://www.instagram.com/3dvale/"
+      ],
+      "confidence": "medium",
+      "notes": "Site WordPress. Atendimento Seg-Sex 7h-17h. Taubaté/SP (Vale do Paraíba)."
+    },
+    {
+      "name": "3DH Manaus",
+      "website": "https://www.3dhmanaus.com.br",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": null,
+      "cnpj": "41.294.566/0001-50",
+      "logo_url": "https://cdn.awsli.com.br/2844/2844623/logo/logomarca-oficial-qmfkcmiw1r.jpeg",
+      "description": "Casa da Impressora 3D em Manaus/AM. Loja no Norte com amplo estoque de filamentos e resinas. Revende 3D Fila, Multifila, GTMax, National 3D, Bambu Lab.",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": false,
+      "brands": [
+        "3D Fila",
+        "Multifila",
+        "GTMax",
+        "National 3D",
+        "Bambu Lab",
+        "Creality",
+        "Cliever"
+      ],
+      "materials": [
+        "PLA",
+        "PETG",
+        "ABS",
+        "ASA",
+        "TPU",
+        "HIPS",
+        "Nylon",
+        "PVA",
+        "Tritan",
+        "Resina"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "Manaus",
+        "uf": "AM",
+        "cep": null
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": null,
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": []
+      },
+      "contact": {
+        "email": "vendas@3dhmanaus.com.br",
+        "phone": "+5592981333000",
+        "whatsapp": "+5592981333000",
+        "instagram": "https://instagram.com/3dhmanaus",
+        "contact_page": null
+      },
+      "source_urls": [
+        "https://www.3dhmanaus.com.br/filamentos",
+        "https://www.3dhmanaus.com.br/resina"
+      ],
+      "confidence": "high",
+      "notes": "Plataforma Loja Integrada. CNPJ no rodapé. Loja de filamentos/resinas em Manaus/AM (região Norte). DDD 92."
+    },
+    {
+      "name": "3DPine",
+      "website": "https://www.3dpine.com.br",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": null,
+      "cnpj": null,
+      "logo_url": null,
+      "description": "Empresa de impressão 3D em Salvador/BA. Trabalha com filamentos ABS, PLA, PETG, PVA, Carbono, Nylon e resina fotopolimérica. Foco também em órteses e próteses.",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": false,
+      "brands": null,
+      "materials": [
+        "PLA",
+        "ABS",
+        "PETG",
+        "PVA",
+        "Nylon",
+        "Fibra de Carbono",
+        "Resina"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "Salvador",
+        "uf": "BA",
+        "cep": null
+      },
+      "physical_stores": [
+        {
+          "city": "Salvador",
+          "uf": "BA",
+          "cep": null,
+          "address": "Rua Belo Horizonte - Barra",
+          "pickup": true
+        }
+      ],
+      "ships_nationwide": null,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": null,
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": null,
+        "marketplaces": []
+      },
+      "contact": {
+        "email": "sac@3dpine.com.br",
+        "phone": "+5571984533566",
+        "whatsapp": "+5571984533566",
+        "instagram": null,
+        "contact_page": "https://www.3dpine.com.br/contato/"
+      },
+      "source_urls": [
+        "https://www.3dpine.com.br/loja-3d/",
+        "https://www.3dpine.com.br/"
+      ],
+      "confidence": "medium",
+      "notes": "Site WordPress. Referência em impressão 3D em Salvador/BA. Loja online + serviços. Loja física em Barra, Salvador."
+    },
+    {
+      "name": "3DX Filamentos",
+      "website": "https://www.loja3dxfilamentos.com.br",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": "3DX FILAMENTOS LTDA",
+      "cnpj": "22.435.496/0001-69",
+      "logo_url": null,
+      "description": "Loja especializada em filamentos para impressão 3D com marca própria '3DX Filamentos' (linha Master Line). Especialista em polímeros técnicos/engenharia. Co-organizadora da Expo3DBR. São Caetano do Sul/SP.",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": true,
+      "brands": [
+        "3DX Filamentos",
+        "F3D",
+        "Masterprint"
+      ],
+      "materials": [
+        "PLA",
+        "ABS",
+        "PETG",
+        "Nylon",
+        "PC",
+        "POM",
+        "HIPS",
+        "Filamentos de Engenharia",
+        "Resina UV"
+      ],
+      "diameters_mm": [
+        1.75,
+        2.85
+      ],
+      "hq": {
+        "city": "São Caetano do Sul",
+        "uf": "SP",
+        "cep": "09530-310"
+      },
+      "physical_stores": [
+        {
+          "city": "São Caetano do Sul",
+          "uf": "SP",
+          "cep": "09530-310",
+          "address": "Rua Machado de Assis, 200, Sala 109a - Santo Antônio",
+          "pickup": true
+        }
+      ],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://www.loja3dxfilamentos.com.br/sitemap.xml",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": [
+          {
+            "platform": "Mercado Livre",
+            "store_url": "https://3dx.mercadoshops.com.br"
+          }
+        ]
+      },
+      "contact": {
+        "email": "comercial@3dxfilamentos.com.br",
+        "phone": "+5511998342613",
+        "whatsapp": null,
+        "instagram": null,
+        "contact_page": null
+      },
+      "source_urls": [
+        "https://www.loja3dxfilamentos.com.br/",
+        "https://www.econodata.com.br/consulta-empresa/22435496000169-3DX-FILAMENTOS-LTDA",
+        "https://3dxfilamentos.com.br/"
+      ],
+      "confidence": "high",
+      "notes": "Plataforma Loja Integrada. Dois domínios: loja3dxfilamentos.com.br e 3dxfilamentos.com.br. Fundada em 2014. Marca própria Master Line."
+    },
+    {
+      "name": "ARTBOX3D",
+      "website": "https://maker.artbox3d.com.br",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": "AB3D COMERCIO E SERVICOS DE IMPRESSOES LTDA",
+      "cnpj": "33.958.105/0001-07",
+      "logo_url": null,
+      "description": "Revenda oficial de impressoras 3D, filamentos, resinas e peças. Loja física no Brooklin (São Paulo/SP). Revenda oficial Bambu Lab, Polymaker, 3nMax.",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": false,
+      "brands": [
+        "Bambu Lab",
+        "Polymaker",
+        "3nMax",
+        "eSUN",
+        "Creality",
+        "Sunlu",
+        "Prusa"
+      ],
+      "materials": [
+        "PLA",
+        "PETG",
+        "ABS",
+        "TPU",
+        "ASA",
+        "Nylon",
+        "PA-CF",
+        "Resina UV"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "São Paulo",
+        "uf": "SP",
+        "cep": null
+      },
+      "physical_stores": [
+        {
+          "city": "São Paulo",
+          "uf": "SP",
+          "cep": null,
+          "address": "Avenida Santo Amaro, 4644 - Shop 3 - Térreo - Brooklin Office Center",
+          "pickup": true
+        }
+      ],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://acdn-us.mitiendanube.com/stores/006/043/714/themes/common/sitemap.xml.gz",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": []
+      },
+      "contact": {
+        "email": "contato@artbox3d.com.br",
+        "phone": "+5511988212411",
+        "whatsapp": "+5511988212411",
+        "instagram": null,
+        "contact_page": "https://maker.artbox3d.com.br/contato/"
+      },
+      "source_urls": [
+        "https://maker.artbox3d.com.br/",
+        "https://maker.artbox3d.com.br/filamentos/",
+        "https://consultacnpj.com/cnpj/ab3d-comercio-e-servicos-de-impressoes-ltda-artbox3d-33958105000107"
+      ],
+      "confidence": "high",
+      "notes": "Plataforma Nuvemshop. Também operam loja.artbox3d.com.br. Atendimento seg-sex 08:00-17:00."
+    },
+    {
+      "name": "Beehive 3D",
+      "website": "https://www.beehive.com.br",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": null,
+      "cnpj": null,
+      "logo_url": "https://acdn-us.mitiendanube.com/stores/006/207/380/themes/common/logo-980684609-1751396991-60cbf92eb8fde1fb05700ff6c7ac4cfa1751396991-480-0.webp",
+      "description": "Centro 3D especializado em impressoras e filamentos. Revendedora oficial de Bambu Lab, SnapMaker, eSun, National 3D, Eryone e DynaLabs. Loja física com retirada em São Paulo.",
+      "sells_filament": true,
+      "sells_resin": false,
+      "has_own_brand": true,
+      "brands": [
+        "Bambu Lab",
+        "eSun",
+        "National 3D",
+        "Eryone",
+        "DynaLabs",
+        "PrintaLot",
+        "BeeHive by Eryone"
+      ],
+      "materials": [
+        "PLA",
+        "PETG",
+        "ABS",
+        "TPU",
+        "PVA"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "São Paulo",
+        "uf": "SP",
+        "cep": "05319-000"
+      },
+      "physical_stores": [
+        {
+          "city": "São Paulo",
+          "uf": "SP",
+          "cep": "05319-000",
+          "address": "Av Queiroz Filho, 1700 Torre A - Sala 7 - Vila Hamburguesa",
+          "pickup": true
+        }
+      ],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://acdn-us.mitiendanube.com/stores/006/207/380/themes/common/sitemap.xml.gz",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": []
+      },
+      "contact": {
+        "email": null,
+        "phone": "+5511994421414",
+        "whatsapp": "+5511994421414",
+        "instagram": "https://www.instagram.com/bee.hive3d",
+        "contact_page": "https://www.beehive.com.br"
+      },
+      "source_urls": [
+        "https://www.beehive.com.br/",
+        "https://www.beehive.com.br/robots.txt"
+      ],
+      "confidence": "high",
+      "notes": "Plataforma Nuvemshop. Marca própria de filamentos (BeeHive by Eryone). Pickup Seg-Sex 11h-16h. Sem resinas no catálogo atual."
+    },
+    {
+      "name": "BLESS3D Store",
+      "website": "https://www.bless3dstore.com.br",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": "Prospecto 3D Prototipagem LTDA",
+      "cnpj": "35.580.095/0001-44",
+      "logo_url": null,
+      "description": "Loja de filamentos e impressoras 3D em Maringá/PR. Revende 2M3D, 3N3, DynaLabs, Masterprint. Possui programa de revendedores.",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": false,
+      "brands": [
+        "2M3D",
+        "3N3",
+        "DynaLabs",
+        "Masterprint"
+      ],
+      "materials": [
+        "PLA",
+        "PETG",
+        "ABS",
+        "ASA",
+        "Resina",
+        "Flex"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "Maringá",
+        "uf": "PR",
+        "cep": null
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": null,
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": null,
+        "marketplaces": []
+      },
+      "contact": {
+        "email": "contato@bless3d.com.br",
+        "phone": "+5544991868610",
+        "whatsapp": "+5544991868610",
+        "instagram": "https://instagram.com/bless3d.solucoes",
+        "contact_page": null
+      },
+      "source_urls": [
+        "https://www.bless3dstore.com.br/"
+      ],
+      "confidence": "high",
+      "notes": "Plataforma Awsli/Loja Integrada. CNPJ no rodapé (35.580.095/0001-44). DDD 44 (Maringá/PR)."
+    },
+    {
+      "name": "Central Print 3D",
+      "website": "https://www.centralprint3d.com.br",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": null,
+      "cnpj": "56.977.684/0001-30",
+      "logo_url": "https://acdn-us.mitiendanube.com/stores/006/573/987/themes/common/logo-1522878513-1754853461-5fa80e63494f69bee8c7e83865f656481754853461-480-0.webp",
+      "description": "Referência em venda de impressoras 3D Bambu Lab no Brasil, com filamentos Voolt3D, Bambu Lab e eSun. Loja física em São Paulo com entrega própria e motoboy.",
+      "sells_filament": true,
+      "sells_resin": false,
+      "has_own_brand": false,
+      "brands": [
+        "Bambu Lab",
+        "Voolt3D",
+        "eSun"
+      ],
+      "materials": [
+        "PLA",
+        "PETG",
+        "ABS",
+        "TPU",
+        "PVA",
+        "Nylon",
+        "PCTG"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "São Paulo",
+        "uf": "SP",
+        "cep": "04110-000"
+      },
+      "physical_stores": [
+        {
+          "city": "São Paulo",
+          "uf": "SP",
+          "cep": "04110-000",
+          "address": "Rua Carlos Petit, 161 - Sala 121 - Vila Mariana",
+          "pickup": true
+        }
+      ],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": null,
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": null,
+        "marketplaces": []
+      },
+      "contact": {
+        "email": null,
+        "phone": "+5511920332972",
+        "whatsapp": "+5511920332972",
+        "instagram": "https://instagram.com/central.print3d",
+        "contact_page": "https://www.centralprint3d.com.br/contato/"
+      },
+      "source_urls": [
+        "https://www.centralprint3d.com.br/contato/",
+        "https://www.centralprint3d.com.br/"
+      ],
+      "confidence": "high",
+      "notes": "Plataforma Nuvemshop. Entrega própria e motoboy para SP. Sem resinas no catálogo atual."
+    },
+    {
+      "name": "Creality Store Brasil",
+      "website": "https://www.crealitystore.com.br",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": "E-CROWN GROUP COMERCIO DE INFORMATICA E ELETRONICOS LTDA",
+      "cnpj": null,
+      "logo_url": null,
+      "description": "Loja oficial Creality no Brasil. Vende impressoras 3D FDM e de resina Creality, filamentos CFS e suprimentos originais. Dois CDs (SC e ES).",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": false,
+      "brands": [
+        "Creality"
+      ],
+      "materials": [
+        "PLA",
+        "PLA Hyper",
+        "PETG",
+        "ABS",
+        "Resina UV Creality"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "São Paulo",
+        "uf": "SP",
+        "cep": "01452-002"
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": null,
+        "cloudflare_protected": true,
+        "robots_allows_product_pages": null,
+        "marketplaces": [
+          {
+            "platform": "HD Store",
+            "store_url": "https://www.hdstore.com.br/creality-store"
+          }
+        ]
+      },
+      "contact": {
+        "email": null,
+        "phone": null,
+        "whatsapp": null,
+        "instagram": null,
+        "contact_page": null
+      },
+      "source_urls": [
+        "https://www.crealitystore.com.br/",
+        "https://www.crealitystore.com.br/sobre-reality-store-brasil"
+      ],
+      "confidence": "medium",
+      "notes": "Site retornou vazio no web_fetch — possível Cloudflare/JS. Sede: Av. Brig. Faria Lima, 1461 - 4º Andar - SP. Também tem vitrine dentro da HD Store. CNPJ não confirmado."
+    },
+    {
+      "name": "Cubo3D",
+      "website": "https://www.loja.cubo3d.com.br",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": "CUBO3D TECNOLOGIA LTDA",
+      "cnpj": "29.714.262/0001-08",
+      "logo_url": "https://cdn.awsli.com.br/1152/1152490/logo/641a6e4635.png",
+      "description": "Loja especializada em insumos e equipamentos para impressão 3D. Sede em Contagem/MG. Amplo portfólio de filamentos técnicos e especiais.",
+      "sells_filament": true,
+      "sells_resin": false,
+      "has_own_brand": false,
+      "brands": [
+        "3N3",
+        "3nMax",
+        "BASF",
+        "Braskem",
+        "DynaLabs",
+        "Flashforge",
+        "Igus",
+        "PrintaLot"
+      ],
+      "materials": [
+        "PLA",
+        "ABS",
+        "PETG",
+        "ASA",
+        "TPU",
+        "Nylon",
+        "PC",
+        "HIPS",
+        "PVA",
+        "BVOH",
+        "POM",
+        "PP",
+        "PS",
+        "PVB",
+        "Tritan",
+        "PLA Silk"
+      ],
+      "diameters_mm": [
+        1.75,
+        2.85
+      ],
+      "hq": {
+        "city": "Contagem",
+        "uf": "MG",
+        "cep": null
+      },
+      "physical_stores": [
+        {
+          "city": "Contagem",
+          "uf": "MG",
+          "cep": null,
+          "address": null,
+          "pickup": true
+        }
+      ],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://www.loja.cubo3d.com.br/sitemap.xml",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": []
+      },
+      "contact": {
+        "email": "contato@cubo3d.com.br",
+        "phone": "+5531998701982",
+        "whatsapp": "+5531998701982",
+        "instagram": "https://www.instagram.com/cubo3dtec/",
+        "contact_page": "https://www.loja.cubo3d.com.br/pagina/como-chegar.html"
+      },
+      "source_urls": [
+        "https://www.loja.cubo3d.com.br/",
+        "https://www.loja.cubo3d.com.br/pagina/como-chegar.html"
+      ],
+      "confidence": "high",
+      "notes": "Plataforma Loja Integrada. Atendimento agendado. Não vende resinas — foco em filamentos técnicos e especiais."
+    },
+    {
+      "name": "DynaLabs",
+      "website": "https://dynalabs.com.br",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": "Dynalabs Filamentos 3D Ltda",
+      "cnpj": "22.367.385/0001-62",
+      "logo_url": "https://acdn-us.mitiendanube.com/stores/001/698/485/themes/common/logo-1043820635-1636746016-92507cd599f6658f94981910b3415a761636746016-480-0.webp",
+      "description": "Distribuidora exclusiva no Brasil dos filamentos fabricados pela NTH S/A (Argentina, fundada 1951). Fundada em 2015 em Osvaldo Cruz/SP. Oferece PLA Ingeo, ABS, PETG, Nylon, Acetal, TPU e PVA.",
+      "sells_filament": true,
+      "sells_resin": false,
+      "has_own_brand": true,
+      "brands": [
+        "DynaLabs",
+        "3N3",
+        "3NMax"
+      ],
+      "materials": [
+        "PLA",
+        "ABS",
+        "PETG",
+        "HIPS",
+        "Nylon 6",
+        "Nylon 12",
+        "Acetal",
+        "PP-T",
+        "TPU",
+        "PVA"
+      ],
+      "diameters_mm": [
+        1.75,
+        2.85
+      ],
+      "hq": {
+        "city": "Osvaldo Cruz",
+        "uf": "SP",
+        "cep": "17700-051"
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://acdn-us.mitiendanube.com/stores/001/698/485/themes/common/sitemap.xml.gz",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": null
+      },
+      "contact": {
+        "email": null,
+        "phone": "+5518981303885",
+        "whatsapp": "+5518981303885",
+        "instagram": "https://instagram.com/dynalabs.br",
+        "contact_page": "https://dynalabs.com.br/contato/"
+      },
+      "source_urls": [
+        "https://dynalabs.com.br/quem-somos/",
+        "https://dynalabs.com.br/contato/",
+        "https://www.econodata.com.br/consulta-empresa/22367385000162-dynalabs-filamentos-3d-ltda"
+      ],
+      "confidence": "high",
+      "notes": "Distribuidora exclusiva da NTH S/A (fabricante argentino com 70+ anos). Não fabrica filamentos no Brasil; type=REVENDA. Marca DynaLabs é do distribuidor."
+    },
+    {
+      "name": "eSUN Brasil",
+      "website": "https://esunbrasil.com.br",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": "LEOLG COMERCIO E SERVICOS EIRELI",
+      "cnpj": "19.221.220/0001-73",
+      "logo_url": null,
+      "description": "Distribuidor autorizado eSUN no Brasil, baseado em Campinas/SP. Comercializa filamentos e resinas da marca eSUN, além de impressoras Elegoo.",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": false,
+      "brands": [
+        "eSUN",
+        "Elegoo"
+      ],
+      "materials": [
+        "PLA",
+        "PLA+",
+        "ABS",
+        "PETG",
+        "TPU",
+        "ASA",
+        "Nylon",
+        "PA-CF",
+        "PLA-CF",
+        "Resina Standard",
+        "Resina Lavável em Água",
+        "Resina PMMA",
+        "Resina Elástica"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "Campinas",
+        "uf": "SP",
+        "cep": null
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://esunbrasil.com.br/sitemap_index.xml",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": [
+          {
+            "platform": "Shopee",
+            "store_url": "https://shopee.com.br/Filamento-Esun-PLA-Branco-1.75mm-1kg-i.296461931.4446576695"
+          }
+        ]
+      },
+      "contact": {
+        "email": null,
+        "phone": null,
+        "whatsapp": "+5519988418630",
+        "instagram": "https://www.instagram.com/esunbrasiloficial/",
+        "contact_page": "https://esunbrasil.com.br/contato/"
+      },
+      "source_urls": [
+        "https://esunbrasil.com.br/",
+        "https://esunbrasil.com.br/robots.txt"
+      ],
+      "confidence": "high",
+      "notes": "WordPress + WooCommerce (Yoast). Único distribuidor autorizado eSUN com site próprio. Atendimento seg-sex 08:30-11:30 / 13:30-16:30."
+    },
+    {
+      "name": "Fácil 3D",
+      "website": "https://www.facil3d.com.br",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": null,
+      "cnpj": null,
+      "logo_url": null,
+      "description": "Loja online brasileira especializada em filamentos e resinas para impressão 3D. Atua também como fornecedor e empresa de prototipagem.",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": false,
+      "brands": null,
+      "materials": [
+        "PLA",
+        "Resina"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": null,
+        "uf": null,
+        "cep": null
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": null,
+        "cloudflare_protected": null,
+        "robots_allows_product_pages": null,
+        "marketplaces": []
+      },
+      "contact": {
+        "email": null,
+        "phone": null,
+        "whatsapp": null,
+        "instagram": null,
+        "contact_page": "https://www.facil3d.com.br"
+      },
+      "source_urls": [
+        "https://www.facil3d.com.br/filamento-3d-resina",
+        "https://www.facil3d.com.br/resina-3d"
+      ],
+      "confidence": "medium",
+      "notes": "Site com conteúdo sobre filamento e resina, parece loja/blog. Localização e plataforma não identificadas."
+    },
+    {
+      "name": "Loja 3D",
+      "website": "https://www.loja3d.com.br",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": "LOJA 3D COMERCIO DE MAQUINAS E ACESSORIOS LTDA",
+      "cnpj": "49.534.213/0001-92",
+      "logo_url": null,
+      "description": "Maior e-commerce de impressão 3D do Brasil, com lojas físicas em 3 estados. Vende impressoras 3D, filamentos, resinas, scanners, canetas 3D e peças.",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": false,
+      "brands": [
+        "Bambu Lab",
+        "Creality",
+        "Anycubic",
+        "Elegoo",
+        "3N3"
+      ],
+      "materials": [
+        "PLA",
+        "ABS",
+        "PETG",
+        "TPU",
+        "ASA",
+        "Nylon",
+        "Resina Standard",
+        "Resina UV"
+      ],
+      "diameters_mm": [
+        1.75,
+        2.85
+      ],
+      "hq": {
+        "city": "Brasília",
+        "uf": "DF",
+        "cep": "71200-070"
+      },
+      "physical_stores": [
+        {
+          "city": "Brasília",
+          "uf": "DF",
+          "cep": "71200-070",
+          "address": "Feira dos Importados de Brasília, Entrada 3, Bloco E, Loja 160",
+          "pickup": true
+        },
+        {
+          "city": "Governador Valadares",
+          "uf": "MG",
+          "cep": "35010-090",
+          "address": "Rua Dom Pedro II, 361, Centro",
+          "pickup": true
+        }
+      ],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": null,
+        "cloudflare_protected": true,
+        "robots_allows_product_pages": null,
+        "marketplaces": []
+      },
+      "contact": {
+        "email": null,
+        "phone": null,
+        "whatsapp": null,
+        "instagram": null,
+        "contact_page": "https://www.loja3d.com.br/contato"
+      },
+      "source_urls": [
+        "https://www.loja3d.com.br/",
+        "https://www.econodata.com.br/consulta-empresa/49534213000192-LOJA-3D-COMERCIO-DE-MAQUINAS-E-ACESSORIOS-LTDA",
+        "https://loja3d.com.br/onde-estamos/"
+      ],
+      "confidence": "high",
+      "notes": "Site retornou vazio no web_fetch — possível Cloudflare/JS obrigatório. CNPJ e endereço por fontes secundárias. Loja física adicional em Governador Valadares/MG."
+    },
+    {
+      "name": "MakerHero",
+      "website": "https://www.makerhero.com",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": "MAKERHERO LTDA",
+      "cnpj": "12.672.380/0001-90",
+      "logo_url": null,
+      "description": "Maior portal maker do Brasil. Revenda oficial Bambu Lab, Arduino e Raspberry Pi. Vende impressoras 3D, filamentos, resinas e peças. Sede em Palhoça/SC.",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": false,
+      "brands": [
+        "Bambu Lab",
+        "Elegoo",
+        "Creality",
+        "Anycubic"
+      ],
+      "materials": [
+        "PLA",
+        "ABS",
+        "PETG",
+        "TPU",
+        "Resina UV"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "Palhoça",
+        "uf": "SC",
+        "cep": "88133-810"
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://www.makerhero.com/sitemap_index.xml",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": []
+      },
+      "contact": {
+        "email": "contato@makerhero.com",
+        "phone": "+554833073495",
+        "whatsapp": null,
+        "instagram": null,
+        "contact_page": "https://www.makerhero.com/sobre-nos/"
+      },
+      "source_urls": [
+        "https://www.makerhero.com/",
+        "https://www.makerhero.com/categoria/impressao-3d/",
+        "https://www.econodata.com.br/consulta-empresa/12672380000190-makerhero-ltda"
+      ],
+      "confidence": "high",
+      "notes": "WordPress + WooCommerce. Rua Dalia, 72 - Jardim Eldorado, Palhoça/SC. Revendedor oficial Bambu Lab confirmado pelo site da Bambu Lab."
+    },
+    {
+      "name": "NIC 3D",
+      "website": "https://www.nic3d.com.br",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": "BMAA IMPORTACOES DE EQUIPAMENTOS LTDA",
+      "cnpj": "37.756.628/0001-21",
+      "logo_url": null,
+      "description": "Loja especialista em impressoras 3D Anycubic, Bambu Lab e Creality. Vende filamentos e resinas com envio rápido. Sede em Curitiba/PR.",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": false,
+      "brands": [
+        "Anycubic",
+        "Bambu Lab",
+        "Creality"
+      ],
+      "materials": [
+        "PLA",
+        "PETG",
+        "ABS",
+        "TPU",
+        "Resina Standard",
+        "Resina Lavável em Água",
+        "Resina Flexível",
+        "Resina Alta Definição"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "Curitiba",
+        "uf": "PR",
+        "cep": "81550-480"
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://www.nic3d.com.br/sitemap.xml",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": [
+          {
+            "platform": "Mercado Livre",
+            "store_url": "https://www.mercadolivre.com.br/loja/nic-3d"
+          },
+          {
+            "platform": "Shopee",
+            "store_url": "https://shopee.com.br/nic3d"
+          }
+        ]
+      },
+      "contact": {
+        "email": null,
+        "phone": null,
+        "whatsapp": null,
+        "instagram": null,
+        "contact_page": "https://www.nic3d.com.br/pages/faq-perguntas-frequentes"
+      },
+      "source_urls": [
+        "https://www.nic3d.com.br/",
+        "https://www.nic3d.com.br/collections/filamentos",
+        "https://www.econodata.com.br/consulta-empresa/37756628000121-bmaa-importacoes-de-equipamentos-ltda"
+      ],
+      "confidence": "high",
+      "notes": "Plataforma Shopify. Rua Sargento Luiz Gonzaga Martins Ribas, 480 - Uberaba, Curitiba/PR."
+    },
+    {
+      "name": "PrintUp 3D",
+      "website": "https://printup3d.com",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": null,
+      "cnpj": null,
+      "logo_url": null,
+      "description": "Loja e centro de impressão 3D em Porto Alegre/RS. Vende impressoras, filamentos e resinas. Localizado no iLab Porto Alegre.",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": false,
+      "brands": [
+        "Creality"
+      ],
+      "materials": [
+        "PLA",
+        "PETG",
+        "ABS",
+        "Resina"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "Porto Alegre",
+        "uf": "RS",
+        "cep": null
+      },
+      "physical_stores": [
+        {
+          "city": "Porto Alegre",
+          "uf": "RS",
+          "cep": null,
+          "address": "Av. Praia de Belas 1510 - iLab Porto Alegre",
+          "pickup": true
+        }
+      ],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": null,
+        "cloudflare_protected": null,
+        "robots_allows_product_pages": null,
+        "marketplaces": []
+      },
+      "contact": {
+        "email": "orcamento@printup3d.com",
+        "phone": null,
+        "whatsapp": null,
+        "instagram": null,
+        "contact_page": "https://printup3d.com/orcamento/"
+      },
+      "source_urls": [
+        "https://printup3d.com/loja/",
+        "https://printup3d.com/loja/petg-preto/"
+      ],
+      "confidence": "medium",
+      "notes": "Site WordPress. Loja e serviço de impressão 3D. Pickup no iLab Porto Alegre/RS."
+    },
+    {
+      "name": "SLIM 3D",
+      "website": "https://www.slim3d.com.br",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": "3D SLIM TECNOLOGIA COMERCIO DE EQUIPAMENTOS LTDA",
+      "cnpj": "33.858.026/0001-24",
+      "logo_url": null,
+      "description": "Loja de impressoras 3D mais bem avaliada do Brasil. Revenda oficial Creality, Anycubic e Elegoo. Marca própria de filamento. Lojas físicas em Curitiba/PR e Joinville/SC.",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": true,
+      "brands": [
+        "Slim 3D",
+        "Creality",
+        "Anycubic",
+        "Elegoo"
+      ],
+      "materials": [
+        "PLA",
+        "ABS",
+        "PETG",
+        "TPU",
+        "ASA",
+        "Resina UV",
+        "Resina de Engenharia"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "Curitiba",
+        "uf": "PR",
+        "cep": "82510-060"
+      },
+      "physical_stores": [
+        {
+          "city": "Curitiba",
+          "uf": "PR",
+          "cep": "82510-060",
+          "address": "Rua México, 320 - Bacacheri",
+          "pickup": true
+        },
+        {
+          "city": "Joinville",
+          "uf": "SC",
+          "cep": "89227-004",
+          "address": "Rua Iríriu, 1784 - Iríriu",
+          "pickup": true
+        }
+      ],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://www.slim3d.com.br/sitemap.xml",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": []
+      },
+      "contact": {
+        "email": null,
+        "phone": "+554130248812",
+        "whatsapp": "+5541991498344",
+        "instagram": "https://www.instagram.com/slim.3d/",
+        "contact_page": "https://www.slim3d.com.br/contato"
+      },
+      "source_urls": [
+        "https://www.slim3d.com.br/",
+        "https://www.econodata.com.br/consulta-empresa/33858026000124-3d-slim-tecnologia-comercio-de-equipamentos-ltda",
+        "https://www.slim3d.com.br/filamentos-3d"
+      ],
+      "confidence": "high",
+      "notes": "Plataforma Tray. Linha de filamento próprio 'Slim 3D Premium'. Filial em Joinville (CNPJ 33.858.026/0002-05)."
+    },
+    {
+      "name": "Smart Kits",
+      "website": "https://www.smartkits.com.br",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": null,
+      "cnpj": null,
+      "logo_url": null,
+      "description": "Loja de componentes eletrônicos e impressão 3D em Fortaleza/CE. Vende impressoras 3D FDM e resina, filamentos e resinas, com foco em makers e eletrônica.",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": false,
+      "brands": [
+        "Creality",
+        "3DLab"
+      ],
+      "materials": [
+        "PLA",
+        "PLA Silk",
+        "ABS",
+        "PETG",
+        "Flex/TPU",
+        "Resina UV"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "Fortaleza",
+        "uf": "CE",
+        "cep": null
+      },
+      "physical_stores": [
+        {
+          "city": "Fortaleza",
+          "uf": "CE",
+          "cep": null,
+          "address": "Rua Torres Câmara, 280, Lojas 03 e 04, Aldeota",
+          "pickup": true
+        }
+      ],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://www.smartkits.com.br/sitemap.xml",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": []
+      },
+      "contact": {
+        "email": "contato@smartkits.com.br",
+        "phone": null,
+        "whatsapp": null,
+        "instagram": null,
+        "contact_page": null
+      },
+      "source_urls": [
+        "https://www.smartkits.com.br/impressao-3d",
+        "https://www.smartkits.com.br/filamentos"
+      ],
+      "confidence": "high",
+      "notes": "Plataforma Tray. Atendimento seg-sex 9h-17h, sáb 9h-13h. Core é componentes eletrônicos; 3D printing é categoria relevante."
+    },
+    {
+      "name": "TecnoCubo",
+      "website": "https://www.tecnocubo.com.br",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": null,
+      "cnpj": null,
+      "logo_url": "https://images.tcdn.com.br/img/img_prod/1320803/1715792230_novo_logo_high_com_r_1.png",
+      "description": "Loja online especializada em filamentos (1.75mm e 2.85mm) e resinas. Revendedora autorizada Creality, Bambu Lab e FlashForge. Baseada em Atibaia/SP.",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": false,
+      "brands": [
+        "PrintaLot",
+        "eSun",
+        "3D Fila",
+        "BASF",
+        "National 3D",
+        "DynaLabs",
+        "Sunlu",
+        "Creality",
+        "Bambu Lab",
+        "FlashForge"
+      ],
+      "materials": [
+        "PLA",
+        "PETG",
+        "ABS",
+        "TPU",
+        "Tritan",
+        "ASA",
+        "Nylon",
+        "Resina"
+      ],
+      "diameters_mm": [
+        1.75,
+        2.85
+      ],
+      "hq": {
+        "city": "Atibaia",
+        "uf": "SP",
+        "cep": null
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": null,
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": []
+      },
+      "contact": {
+        "email": "comercial@tecnocubo.com.br",
+        "phone": "+5511910392020",
+        "whatsapp": "+5511910392020",
+        "instagram": "https://www.instagram.com/tecnocubo3d",
+        "contact_page": "https://www.tecnocubo.com.br/contato"
+      },
+      "source_urls": [
+        "https://www.tecnocubo.com.br/filamentos",
+        "https://www.tecnocubo.com.br/resina"
+      ],
+      "confidence": "high",
+      "notes": "Plataforma Tray. Atendimento Seg-Sex 8h-17h. Atibaia/SP. Filamentos 1.75mm e 2.85mm."
+    },
+    {
+      "name": "TopInk3D",
+      "website": "https://www.topink3d.com.br",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": "TOPINK3D LTDA",
+      "cnpj": "03.784.524/0001-09",
+      "logo_url": null,
+      "description": "Especialista em impressoras 3D, filamentos, resinas e peças originais. Revende Elegoo, Anycubic, Creality, Bambu Lab, Creatbot e Soonser. 25 anos no mercado. Piracicaba/SP.",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": false,
+      "brands": [
+        "Elegoo",
+        "Anycubic",
+        "Creality",
+        "Bambu Lab",
+        "Creatbot",
+        "Soonser",
+        "FLSUN",
+        "Sunlu",
+        "Kywoo3D"
+      ],
+      "materials": [
+        "PLA",
+        "ABS",
+        "PETG",
+        "TPU",
+        "ASA",
+        "Nylon",
+        "Resina UV",
+        "Resina de Engenharia"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "Piracicaba",
+        "uf": "SP",
+        "cep": "13413-034"
+      },
+      "physical_stores": [
+        {
+          "city": "Piracicaba",
+          "uf": "SP",
+          "cep": "13413-034",
+          "address": "Rua Democlacio Jose Rossin, 153 - Guamium",
+          "pickup": true
+        }
+      ],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": null,
+        "cloudflare_protected": true,
+        "robots_allows_product_pages": null,
+        "marketplaces": []
+      },
+      "contact": {
+        "email": null,
+        "phone": null,
+        "whatsapp": null,
+        "instagram": null,
+        "contact_page": null
+      },
+      "source_urls": [
+        "https://www.topink3d.com.br/",
+        "https://www.econodata.com.br/consulta-empresa/03784524000109-topink3d-ltda",
+        "https://www.topink3d.com.br/quem-somos"
+      ],
+      "confidence": "high",
+      "notes": "Site retornou vazio no web_fetch. CNPJ/endereço por fontes secundárias. Também opera topink3dservicos.com.br e topink3dindustrial.com.br."
+    },
+    {
+      "name": "Tradework Store",
+      "website": "https://www.tradework.store",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": "TRADEWORK COMERCIO E SERVICOS DE TECNOLOGIA LTDA",
+      "cnpj": "08.028.659/0001-68",
+      "logo_url": null,
+      "description": "Revenda de informática corporativa com atuação em impressoras 3D Creality e Bambu Lab. Opera desde 2006. Atende B2B e B2C em todo o Brasil.",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": false,
+      "brands": [
+        "Creality",
+        "Bambu Lab"
+      ],
+      "materials": [
+        "PLA",
+        "PETG",
+        "Resina Creality"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": null,
+        "uf": "SP",
+        "cep": null
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": null,
+        "cloudflare_protected": true,
+        "robots_allows_product_pages": null,
+        "marketplaces": []
+      },
+      "contact": {
+        "email": null,
+        "phone": null,
+        "whatsapp": null,
+        "instagram": null,
+        "contact_page": "https://www.tradework.store/pagina/quem-somos.html"
+      },
+      "source_urls": [
+        "https://www.tradework.store/",
+        "https://www.tradework.store/impressoras-3d-creality",
+        "https://www.tradework.store/impressoras-bambu-lab-3d"
+      ],
+      "confidence": "medium",
+      "notes": "Site retornou vazio no web_fetch. Core é revenda corporativa de TI; impressão 3D é categoria secundária. Revenda autorizada Creality e Bambu Lab."
+    },
+    {
+      "name": "Universo 3D Soluções",
+      "website": "https://universo3dsolucoes.com.br",
+      "type": "REVENDA",
+      "is_active": true,
+      "legal_name": "UNIVERSO 3D COMERCIO DE EQUIPAMENTOS E SERVICOS LTDA",
+      "cnpj": "38.070.832/0001-57",
+      "logo_url": "https://dcdn-us.mitiendanube.com/stores/001/669/235/themes/common/logo-55161835-1657905874-b719501c2e9e016982f7dfcbf0df02ff1657905874-480-0.png",
+      "description": "Loja especializada em impressão 3D em Brasília/DF. Revende filamentos, resinas, impressoras e acessórios. Escola de impressão 3D presencial e serviços de escaneamento e manutenção.",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": false,
+      "brands": [
+        "Multifila",
+        "Printalot",
+        "GTMax",
+        "Benser",
+        "Tríade",
+        "Cliever",
+        "eSun",
+        "Quanton",
+        "3D Ink",
+        "Creality",
+        "Anycubic",
+        "Bambu Lab",
+        "FlashForge"
+      ],
+      "materials": [
+        "PLA",
+        "PETG",
+        "ABS",
+        "TPU",
+        "ASA",
+        "Nylon",
+        "Tritan",
+        "PP",
+        "PC",
+        "Resina"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "Brasília",
+        "uf": "DF",
+        "cep": "71200-055"
+      },
+      "physical_stores": [
+        {
+          "city": "Brasília",
+          "uf": "DF",
+          "cep": "71200-055",
+          "address": "SIA Sul Quadra 5 C, AE 2, Entrada 120, Salas 106/107/108 - Ed. Executivo",
+          "pickup": true
+        }
+      ],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": null,
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": null,
+        "marketplaces": [
+          {
+            "platform": "Shopee",
+            "store_url": "https://shopee.com.br/universo.3d"
+          }
+        ]
+      },
+      "contact": {
+        "email": null,
+        "phone": "+5561986388342",
+        "whatsapp": "+5561986388342",
+        "instagram": "https://instagram.com/u3d_solutions",
+        "contact_page": "https://universo3dsolucoes.com.br/contato/"
+      },
+      "source_urls": [
+        "https://universo3dsolucoes.com.br/contato/",
+        "https://universo3dsolucoes.com.br/"
+      ],
+      "confidence": "high",
+      "notes": "Plataforma Nuvemshop. CNPJ no rodapé. Loja física em Brasília/DF com venda de insumos. Resinas Quanton e 3D Ink."
+    },
+    {
+      "name": "HD Store",
+      "website": "https://www.hdstore.com.br",
+      "type": "MARKETPLACE",
+      "is_active": true,
+      "legal_name": "HD STORE LTDA",
+      "cnpj": "19.175.044/0001-80",
+      "logo_url": null,
+      "description": "E-commerce de tecnologia e games. Vende ampla linha de filamentos, resinas e impressoras 3D. Sede em Criciúma/SC com escritório em SP. Hospeda a 'Creality Store' internamente.",
+      "sells_filament": true,
+      "sells_resin": true,
+      "has_own_brand": false,
+      "brands": [
+        "Creality",
+        "3D Fila",
+        "Voolt3D"
+      ],
+      "materials": [
+        "PLA",
+        "ABS",
+        "PETG",
+        "TPU",
+        "Resina UV"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "Criciúma",
+        "uf": "SC",
+        "cep": null
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": "https://www.hdstore.com.br/sitemap.xml",
+        "cloudflare_protected": false,
+        "robots_allows_product_pages": true,
+        "marketplaces": [
+          {
+            "platform": "Shopee",
+            "store_url": "https://shopee.com.br/hdstore.com.br"
+          }
+        ]
+      },
+      "contact": {
+        "email": null,
+        "phone": null,
+        "whatsapp": null,
+        "instagram": null,
+        "contact_page": null
+      },
+      "source_urls": [
+        "https://www.hdstore.com.br/suprimentos-impressoras-3d",
+        "https://www.hdstore.com.br/filamento-3d-brasil",
+        "https://cnpjagora.com/cnpj/hd-store-ltda/19175044000180"
+      ],
+      "confidence": "high",
+      "notes": "Plataforma própria (padrão NopCommerce no robots.txt). Escritório SP + CD em São José/SC. Tipo MARKETPLACE pois agrega múltiplas marcas/lojas incluindo Creality Store."
+    },
+    {
+      "name": "Leroy Merlin Brasil",
+      "website": "https://www.leroymerlin.com.br",
+      "type": "MARKETPLACE",
+      "is_active": true,
+      "legal_name": null,
+      "cnpj": null,
+      "logo_url": null,
+      "description": "Grande varejista de home improvement com seção de filamentos 3D (PLA). Vende marcas National 3D (Voolt3D), LMS e outras. Lojas físicas em todo o Brasil.",
+      "sells_filament": true,
+      "sells_resin": false,
+      "has_own_brand": false,
+      "brands": [
+        "National 3D",
+        "Voolt3D",
+        "LMS"
+      ],
+      "materials": [
+        "PLA"
+      ],
+      "diameters_mm": [
+        1.75
+      ],
+      "hq": {
+        "city": "São Paulo",
+        "uf": "SP",
+        "cep": null
+      },
+      "physical_stores": [],
+      "ships_nationwide": true,
+      "ingestion": {
+        "google_merchant_feed_url": null,
+        "affiliate_network": null,
+        "affiliate_program_url": null,
+        "sitemap_url": null,
+        "cloudflare_protected": null,
+        "robots_allows_product_pages": null,
+        "marketplaces": []
+      },
+      "contact": {
+        "email": null,
+        "phone": null,
+        "whatsapp": null,
+        "instagram": null,
+        "contact_page": "https://www.leroymerlin.com.br/fale-conosco"
+      },
+      "source_urls": [
+        "https://www.leroymerlin.com.br/filamentos-3d",
+        "https://www.leroymerlin.com.br/filamentos-3d/tipo/Insumos_para_impressora_3D"
+      ],
+      "confidence": "high",
+      "notes": "Marketplace/varejo físico nacional. Seção específica de filamentos 3D. Vende apenas PLA (0.5kg e 1kg). Sem resinas identificadas."
+    }
+  ]
+}
