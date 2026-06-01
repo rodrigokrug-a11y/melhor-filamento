@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Megaphone } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
+import { BrandRequestButton } from "@/components/brand-request-button";
 import { CatalogGrid } from "@/components/catalog-grid";
 import { ReviewForm } from "@/components/review-form";
 import { ReviewList } from "@/components/review-list";
@@ -89,9 +90,19 @@ export default async function MarcaPage({ params }: { params: Params }) {
         </div>
       </div>
 
+      <div className="mb-8 rounded-2xl border border-brand/20 bg-brand-soft p-4">
+        <p className="text-sm font-medium">Quer ofertas da {brand.name}?</p>
+        <p className="mb-3 text-xs text-muted-foreground">
+          Peça e a gente busca as melhores ofertas dessa marca pra você — e avisa
+          quando tiver.
+        </p>
+        <BrandRequestButton brandId={brand.id} brandName={brand.name} />
+      </div>
+
       {brand.products.length === 0 ? (
         <div className="rounded-xl border border-dashed p-12 text-center text-muted-foreground">
-          Esta marca ainda não tem produtos com ofertas ativas.
+          Esta marca ainda não tem ofertas no comparador — use o botão acima para
+          pedir.
         </div>
       ) : (
         <CatalogGrid products={brand.products} sort="preco-asc" />

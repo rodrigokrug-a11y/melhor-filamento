@@ -63,6 +63,57 @@ function hostOf(url: string | null | undefined): string | null {
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+/** Atualiza o logo (logoUrl) das lojas e marcas a partir de uma lista. */
+async function importLogos(logos: unknown[]): Promise<ImportState> {
+  const summary = {
+    sellersCreated: 0,
+    sellersUpdated: 0,
+    brandsCreated: 0,
+    feedsCreated: 0,
+    geocoded: 0,
+    warnings: [] as string[],
+  };
+  let sellers = 0;
+  let brands = 0;
+  for (const item of logos) {
+    const l = (item ?? {}) as Record<string, unknown>;
+    const logoUrl =
+      (typeof l.logo_url === "string" && l.logo_url.trim()) ||
+      (typeof l.logoUrl === "string" && l.logoUrl.trim()) ||
+      "";
+    const website = typeof l.website === "string" ? l.website.trim() : "";
+    const name = typeof l.name === "string" ? l.name.trim() : "";
+    if (!logoUrl || (!website && !name)) continue;
+
+    const host = hostOf(website);
+    if (host) {
+      const r = await prisma.seller.updateMany({
+        where: { website: { contains: host, mode: "insensitive" } },
+        data: { logoUrl },
+      });
+      sellers += r.count;
+    } else if (name) {
+      const r = await prisma.seller.updateMany({
+        where: { name: { equals: name, mode: "insensitive" } },
+        data: { logoUrl },
+      });
+      sellers += r.count;
+    }
+    if (name) {
+      const r = await prisma.brand.updateMany({
+        where: { name: { equals: name, mode: "insensitive" } },
+        data: { logoUrl },
+      });
+      brands += r.count;
+    }
+  }
+  summary.sellersUpdated = sellers;
+  summary.warnings.push(`${brands} marca(s) com logo atualizado.`);
+  revalidatePath("/admin/lojas");
+  revalidatePath("/marcas");
+  return { ok: true, summary };
+}
+
 export async function importSuppliers(
   _prev: ImportState,
   formData: FormData,
@@ -79,6 +130,17 @@ export async function importSuppliers(
     return { error: "JSON inválido — verifique a formatação." };
   }
   const payload = Array.isArray(json) ? { suppliers: json } : json;
+
+  // Modo logos: { "logos": [{ website?, name?, logo_url }] } → atualiza logoUrl.
+  if (
+    payload &&
+    typeof payload === "object" &&
+    !Array.isArray(payload) &&
+    Array.isArray((payload as { logos?: unknown }).logos)
+  ) {
+    return importLogos((payload as { logos: unknown[] }).logos);
+  }
+
   const parsed = PayloadSchema.safeParse(payload);
   if (!parsed.success) {
     return { error: 'Formato inesperado. Esperado { "suppliers": [ ... ] }.' };

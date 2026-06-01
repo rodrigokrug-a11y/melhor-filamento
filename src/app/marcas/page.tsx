@@ -23,7 +23,8 @@ export const metadata: Metadata = {
 };
 
 export default async function MarcasPage() {
-  const brands = (await getBrandsOverview()).filter((b) => b.productCount > 0);
+  // Mostra TODAS as marcas, com ou sem oferta (na página da marca dá pra pedir ofertas).
+  const brands = await getBrandsOverview();
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
@@ -36,7 +37,7 @@ export default async function MarcasPage() {
 
       {brands.length === 0 ? (
         <div className="rounded-2xl border border-dashed p-12 text-center text-muted-foreground">
-          Nenhuma marca com produtos disponível.
+          Nenhuma marca cadastrada ainda.
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
@@ -55,7 +56,9 @@ export default async function MarcasPage() {
                   ) : null}
                 </span>
                 <span className="block text-xs text-muted-foreground">
-                  {b.productCount} {b.productCount === 1 ? "produto" : "produtos"}
+                  {b.productCount > 0
+                    ? `${b.productCount} ${b.productCount === 1 ? "produto" : "produtos"}`
+                    : "Pedir ofertas →"}
                 </span>
               </span>
             </Link>

@@ -80,6 +80,7 @@ model Brand {
   promotedUntil DateTime?
   products      Product[]
   reviews       Review[]
+  offerRequests OfferRequest[]
   createdAt     DateTime  @default(now())
 }
 
@@ -303,6 +304,21 @@ model Lead {
 
   @@index([email])
   @@index([createdAt])
+}
+
+// ───────────── Solicitações de oferta por marca (demanda do público) ─────────────
+
+model OfferRequest {
+  id        String   @id @default(cuid())
+  brandId   String
+  brand     Brand    @relation(fields: [brandId], references: [id])
+  email     String?
+  sessionId String?
+  handled   Boolean  @default(false) // admin já entrou em contato / resolveu
+  createdAt DateTime @default(now())
+
+  @@index([brandId])
+  @@index([handled, createdAt])
 }
 
 // ───────────── Reviews / Ranking ─────────────
