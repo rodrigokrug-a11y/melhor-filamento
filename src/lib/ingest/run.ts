@@ -2,7 +2,7 @@ import {
   createProductFromExtracted,
   inferProductFields,
 } from "@/lib/ingest/create-product";
-import { loadProductIndex, matchProduct } from "@/lib/ingest/match";
+import { loadProductIndex, matchProduct, productSignature } from "@/lib/ingest/match";
 import { prisma } from "@/lib/db";
 import { extractOffer } from "@/lib/scrape/extract";
 import { parseAnyFeed } from "@/lib/scrape/feed";
@@ -198,6 +198,13 @@ export async function ingestSource(sourceId: string): Promise<IngestResult> {
           name: product.name,
           gtin: c.gtin,
           brandName: c.brand ?? "",
+          signature: productSignature({
+            name: c.name,
+            brand: c.brand,
+            material: fields.material,
+            netWeightG: fields.netWeightG,
+            diameterMm: fields.diameterMm,
+          }),
         });
         result.created += 1;
       }

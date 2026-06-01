@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# pesquisa de fornecedores (dados do coworker — não versionar)
+/data/
