@@ -1,3 +1,7 @@
+import {
+  createProductFromExtracted,
+  inferProductFields,
+} from "@/lib/ingest/create-product";
 import { loadProductIndex, matchProduct } from "@/lib/ingest/match";
 import { prisma } from "@/lib/db";
 import { extractOffer } from "@/lib/scrape/extract";
@@ -9,6 +13,7 @@ import type { Availability } from "@/lib/scrape/types";
 export type IngestResult = {
   found: number;
   matched: number;
+  created: number;
   upserted: number;
   unmatched: number;
   error?: string;
@@ -55,6 +60,7 @@ async function upsertIngestedOffer(args: {
     });
     offerId = existing.id;
   } else {
+    // Ingestão é disparada pelo admin (fontes controladas) → já entra aprovada.
     const created = await prisma.offer.create({
       data: {
         sourceId: args.sourceId,
@@ -63,7 +69,7 @@ async function upsertIngestedOffer(args: {
         price,
         url: args.url,
         stockStatus,
-        status: "PENDING",
+        status: "APPROVED",
       },
       select: { id: true },
     });
@@ -86,13 +92,20 @@ export async function ingestSource(sourceId: string): Promise<IngestResult> {
   const result: IngestResult = {
     found: 0,
     matched: 0,
+    created: 0,
     upserted: 0,
     unmatched: 0,
   };
 
   const source = await prisma.source.findUnique({
     where: { id: sourceId },
-    select: { id: true, sellerId: true, kind: true, url: true },
+    select: {
+      id: true,
+      sellerId: true,
+      kind: true,
+      url: true,
+      seller: { select: { name: true } },
+    },
   });
   if (!source) return { ...result, error: "Fonte não encontrada." };
 
@@ -153,13 +166,40 @@ export async function ingestSource(sourceId: string): Promise<IngestResult> {
       ];
     }
 
+    const sellerName = source.seller?.name ?? null;
     result.found = candidates.length;
     for (const c of candidates) {
-      if (c.price == null) continue;
-      const productId = matchProduct(c, index);
+      if (c.price == null || !c.name) continue;
+      let productId = matchProduct(c, index);
       if (!productId) {
-        result.unmatched += 1;
-        continue;
+        // Só cria o produto se parecer filamento/resina (evita impressoras/peças).
+        const fields = inferProductFields(c.name);
+        if (fields.material === "OUTRO") {
+          result.unmatched += 1;
+          continue;
+        }
+        const product = await createProductFromExtracted(
+          {
+            name: c.name,
+            price: c.price,
+            currency: null,
+            image: c.image,
+            availability: c.availability,
+            brand: c.brand,
+            gtin: c.gtin,
+            source: "html",
+          },
+          sellerName,
+        );
+        productId = product.id;
+        // Adiciona ao índice em memória p/ casar variações na mesma execução.
+        index.push({
+          id: product.id,
+          name: product.name,
+          gtin: c.gtin,
+          brandName: c.brand ?? "",
+        });
+        result.created += 1;
       }
       result.matched += 1;
       await upsertIngestedOffer({
@@ -178,7 +218,7 @@ export async function ingestSource(sourceId: string): Promise<IngestResult> {
       where: { id: source.id },
       data: {
         lastRunAt: new Date(),
-        lastStatus: `ok: ${result.upserted} oferta(s), ${result.unmatched} sem produto`,
+        lastStatus: `ok: ${result.upserted} oferta(s), ${result.created} novo(s) produto(s), ${result.unmatched} sem produto`,
         lastError: null,
       },
     });
@@ -196,6 +236,7 @@ export async function ingestSource(sourceId: string): Promise<IngestResult> {
 export async function runAllSources(): Promise<{
   sources: number;
   found: number;
+  created: number;
   upserted: number;
   unmatched: number;
 }> {
@@ -203,10 +244,17 @@ export async function runAllSources(): Promise<{
     where: { enabled: true },
     select: { id: true },
   });
-  const totals = { sources: sources.length, found: 0, upserted: 0, unmatched: 0 };
+  const totals = {
+    sources: sources.length,
+    found: 0,
+    created: 0,
+    upserted: 0,
+    unmatched: 0,
+  };
   for (const s of sources) {
     const r = await ingestSource(s.id);
     totals.found += r.found;
+    totals.created += r.created;
     totals.upserted += r.upserted;
     totals.unmatched += r.unmatched;
   }

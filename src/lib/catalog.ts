@@ -324,7 +324,8 @@ export const getStoresForMap = cache(async (): Promise<NearbyStore[]> => {
     where: {
       latitude: { not: null },
       longitude: { not: null },
-      offers: { some: ACTIVE_OFFER_WHERE },
+      // Sem filtro de "tem oferta": o mapa também funciona como diretório de
+      // lojas 3D perto de você. Lojas sem oferta aparecem sem preço.
     },
     select: {
       id: true,

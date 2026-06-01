@@ -170,9 +170,11 @@ export function NearbyView({ stores }: { stores: NearbyStore[] }) {
                       {formatBRL(s.cheapestPrice)}
                     </p>
                   ) : null}
-                  <p className="text-xs text-muted-foreground">
-                    {s.offerCount} {s.offerCount === 1 ? "oferta" : "ofertas"}
-                  </p>
+                  {s.offerCount > 0 ? (
+                    <p className="text-xs text-muted-foreground">
+                      {s.offerCount} {s.offerCount === 1 ? "oferta" : "ofertas"}
+                    </p>
+                  ) : null}
                 </div>
               </div>
               {s.cheapestProduct ? (
