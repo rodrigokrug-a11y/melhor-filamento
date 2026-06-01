@@ -97,6 +97,16 @@ function cleanName(
   return n.replace(/\s{2,}/g, " ").trim();
 }
 
+/** Normaliza o nome da marca, removendo sufixos genéricos ("para impressora 3d"). */
+function normalizeBrand(raw: string): string {
+  const n = raw
+    .replace(/\s*para impressora(s)?\s*3d\s*/i, " ")
+    .replace(/\s*impressora(s)?\s*3d\s*/i, " ")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+  return n || raw.trim();
+}
+
 async function resolveBrandId(name: string): Promise<string> {
   const existing = await prisma.brand.findFirst({
     where: { name: { equals: name, mode: "insensitive" } },
@@ -119,8 +129,9 @@ export async function createProductFromExtracted(
   sellerName: string | null,
 ): Promise<{ id: string; name: string }> {
   const rawName = extracted.name ?? "Produto importado";
-  const brandName =
-    extracted.brand ?? brandFromName(rawName) ?? sellerName ?? "Sem marca";
+  const brandName = normalizeBrand(
+    extracted.brand ?? brandFromName(rawName) ?? sellerName ?? "Sem marca",
+  );
   const name = cleanName(rawName, sellerName, brandName) || rawName;
   const fields = inferProductFields(rawName);
   const brandId = await resolveBrandId(brandName);
