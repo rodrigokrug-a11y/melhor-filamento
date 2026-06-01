@@ -1,0 +1,36 @@
+# Produção (VPS): app Next standalone + Postgres isolados.
+# Uso: docker compose -f docker-compose.prod.yml up -d
+# O app escuta só em 127.0.0.1:${APP_PORT} — o nginx do host faz o proxy.
+# Variáveis sensíveis ficam em .env (NÃO versionado).
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: mf-prod-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina no .env}
+      POSTGRES_DB: melhorfilamento
+    volumes:
+      - mf_prod_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d melhorfilamento"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  app:
+    # Imagem pré-buildada com o banco acessível (ver deploy: docker build --network ...).
+    image: melhorfilamento-app:latest
+    container_name: mf-prod-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: .env
+    ports:
+      - "127.0.0.1:${APP_PORT:-3000}:3000"
+
+volumes:
+  mf_prod_pgdata:

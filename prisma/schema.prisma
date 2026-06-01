@@ -1,0 +1,353 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ───────────── Enums ─────────────
+
+enum ProductKind {
+  FILAMENT
+  RESIN
+}
+
+enum Material {
+  PLA
+  ABS
+  PETG
+  TPU
+  ASA
+  PCTG
+  NYLON
+  RESIN_STANDARD
+  RESIN_TOUGH
+  RESIN_WATER_WASHABLE
+  OUTRO
+}
+
+enum SellerType {
+  FACTORY
+  RESELLER
+  MARKETPLACE
+}
+
+enum CouponType {
+  PERCENT
+  FIXED
+}
+
+enum StockStatus {
+  IN_STOCK
+  OUT_OF_STOCK
+  UNKNOWN
+}
+
+enum OfferStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ShippingScope {
+  NATIONAL
+  REGION
+  UF
+}
+
+enum Region {
+  N
+  NE
+  CO
+  SE
+  S
+}
+
+enum Role {
+  ADMIN
+  SELLER
+}
+
+// ───────────── Catálogo ─────────────
+
+model Brand {
+  id            String    @id @default(cuid())
+  name          String
+  slug          String    @unique
+  logoUrl       String?
+  isPromoted    Boolean   @default(false) // marca patrocinada (destaque pago)
+  promotedUntil DateTime?
+  products      Product[]
+  reviews       Review[]
+  createdAt     DateTime  @default(now())
+}
+
+model Product {
+  id         String      @id @default(cuid())
+  slug       String      @unique
+  name       String
+  kind       ProductKind
+  material   Material
+  diameterMm Float? // 1.75 | 2.85 — null p/ resina; valores validados por Zod
+  netWeightG Int
+  color      String
+  brandId    String
+  brand      Brand       @relation(fields: [brandId], references: [id])
+  specs      Json?
+  imageUrl   String?
+  gtin       String? // EAN/GTIN p/ casamento na ingestão
+  offers     Offer[]
+  reviews    Review[]
+  tips       Tip[]
+  createdAt  DateTime    @default(now())
+
+  @@index([kind])
+  @@index([material])
+  @@index([brandId])
+  @@index([gtin])
+}
+
+// ───────────── Vendedores ─────────────
+
+model Seller {
+  id            String         @id @default(cuid())
+  name          String
+  slug          String         @unique
+  type          SellerType
+  website       String?
+  logoUrl       String?
+  isVerified    Boolean        @default(false)
+  city          String?
+  uf            String? // sigla de 2 letras
+  latitude      Float?
+  longitude     Float?
+  offersPickup  Boolean        @default(false) // permite retirada na loja física
+  ownerUserId   String?        @unique
+  owner         User?          @relation("SellerOwner", fields: [ownerUserId], references: [id])
+  members       User[]         @relation("SellerMembers")
+  offers        Offer[]
+  shippingRules ShippingRule[]
+  sources       Source[]
+  createdAt     DateTime       @default(now())
+}
+
+// ───────────── Ofertas ─────────────
+
+model Offer {
+  id             String       @id @default(cuid())
+  productId      String
+  product        Product      @relation(fields: [productId], references: [id])
+  sellerId       String
+  seller         Seller       @relation(fields: [sellerId], references: [id])
+  price          Decimal      @db.Decimal(10, 2)
+  url            String // link de saída/afiliado
+  couponCode     String?
+  couponDiscount Decimal?     @db.Decimal(10, 2)
+  couponType     CouponType?
+  stockStatus    StockStatus  @default(UNKNOWN)
+  isSponsored    Boolean      @default(false)
+  sponsoredUntil DateTime?
+  status         OfferStatus  @default(PENDING)
+  submittedByName   String? // quem cadastrou a oferta (atribuição "cadastrado por")
+  submittedByEmail  String?
+  submittedByUserId String?
+  sourceId       String?
+  source         Source?         @relation(fields: [sourceId], references: [id])
+  clicks         ClickEvent[]
+  snapshots      PriceSnapshot[]
+  leads          Lead[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([productId, status])
+  @@index([sellerId])
+  @@index([status])
+  @@index([sourceId])
+}
+
+// ───────────── Frete ─────────────
+// Resolução por especificidade: UF > REGION > NATIONAL
+
+model ShippingRule {
+  id                    String        @id @default(cuid())
+  sellerId              String
+  seller                Seller        @relation(fields: [sellerId], references: [id])
+  scope                 ShippingScope
+  region                Region? // usado quando scope = REGION
+  uf                    String? // usado quando scope = UF (sigla 2 letras)
+  baseCost              Decimal       @db.Decimal(10, 2)
+  freeShippingThreshold Decimal?      @db.Decimal(10, 2)
+  estimatedDays         Int
+  createdAt             DateTime      @default(now())
+
+  @@index([sellerId, scope])
+}
+
+// ───────────── Cliques / Leads ─────────────
+
+model ClickEvent {
+  id        String   @id @default(cuid())
+  offerId   String
+  offer     Offer    @relation(fields: [offerId], references: [id])
+  sessionId String
+  cep       String?
+  uf        String?
+  region    Region?
+  referrer  String?
+  userAgent String?
+  converted Boolean  @default(false) // billing/conversão de lead entra aqui depois
+  createdAt DateTime @default(now())
+
+  @@index([offerId, createdAt])
+  @@index([createdAt])
+}
+
+// ───────────── Usuários / Auth (NextAuth — Etapa 5) ─────────────
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  emailVerified DateTime?
+  image         String?
+  passwordHash  String? // login por e-mail/senha (bcrypt); null = só magic link
+  role          Role      @default(SELLER)
+  sellerId      String?
+  seller        Seller?   @relation("SellerMembers", fields: [sellerId], references: [id])
+  ownedSeller   Seller?   @relation("SellerOwner")
+  accounts      Account[]
+  sessions      Session[]
+  createdAt     DateTime  @default(now())
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ───────────── Ingestão de ofertas ─────────────
+
+enum IngestKind {
+  PAGE // uma URL de produto → uma oferta
+  FEED // feed XML/CSV (ex.: Google Merchant, datafeed de afiliado) → várias ofertas
+  SITEMAP // sitemap.xml → descobre páginas de produto e raspa cada uma
+}
+
+model Source {
+  id         String     @id @default(cuid())
+  sellerId   String
+  seller     Seller     @relation(fields: [sellerId], references: [id])
+  kind       IngestKind @default(PAGE)
+  url        String
+  label      String?
+  enabled    Boolean    @default(true)
+  lastRunAt  DateTime?
+  lastStatus String?
+  lastError  String?
+  offers     Offer[]
+  createdAt  DateTime   @default(now())
+
+  @@index([sellerId])
+}
+
+model PriceSnapshot {
+  id        String   @id @default(cuid())
+  offerId   String
+  offer     Offer    @relation(fields: [offerId], references: [id])
+  price     Decimal  @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
+
+  @@index([offerId, createdAt])
+}
+
+// ───────────── Leads (captura antes de acessar a oferta) ─────────────
+
+model Lead {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  offerId   String?
+  offer     Offer?   @relation(fields: [offerId], references: [id])
+  sessionId String?
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([createdAt])
+}
+
+// ───────────── Reviews / Ranking ─────────────
+
+enum ContentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Review {
+  id          String        @id @default(cuid())
+  productId   String?
+  product     Product?      @relation(fields: [productId], references: [id])
+  brandId     String?
+  brand       Brand?        @relation(fields: [brandId], references: [id])
+  rating      Int // 1..5
+  title       String?
+  comment     String
+  authorName  String
+  authorEmail String?
+  status      ContentStatus @default(PENDING)
+  createdAt   DateTime      @default(now())
+
+  @@index([productId, status])
+  @@index([brandId, status])
+  @@index([status])
+}
+
+// ───────────── Dicas / Configurações de impressão ─────────────
+
+model Tip {
+  id          String        @id @default(cuid())
+  material    Material
+  productId   String?
+  product     Product?      @relation(fields: [productId], references: [id])
+  nozzleTempC Int?
+  bedTempC    Int?
+  speedMms    Int?
+  notes       String
+  authorName  String
+  authorEmail String?
+  status      ContentStatus @default(PENDING)
+  createdAt   DateTime      @default(now())
+
+  @@index([material, status])
+  @@index([status])
+}
