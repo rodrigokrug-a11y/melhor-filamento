@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { Megaphone, Tag, Truck } from "lucide-react";
 
+import { BrandLogo } from "@/components/brand-logo";
 import { OfferLink } from "@/components/offer-link";
 import { VerifiedOfferSeal, VerifiedStoreSeal } from "@/components/seals";
 import { useRegion } from "@/components/use-region";
@@ -102,6 +103,11 @@ function OfferRow({ offer, isBest }: { offer: ComputedOffer; isBest: boolean }) 
     >
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
+          <BrandLogo
+            name={offer.sellerName}
+            logoUrl={offer.sellerLogoUrl}
+            size={28}
+          />
           <span className="font-medium">{offer.sellerName}</span>
           {offer.sellerVerified ? <VerifiedStoreSeal /> : null}
         </div>

@@ -85,6 +85,7 @@ function buildOfferView(
     sellerSlug: o.seller.slug,
     sellerType: o.seller.type,
     sellerVerified: o.seller.isVerified,
+    sellerLogoUrl: o.seller.logoUrl,
     url: o.url,
     price,
     couponCode: o.couponCode,

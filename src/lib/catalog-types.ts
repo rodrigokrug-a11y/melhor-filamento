@@ -150,6 +150,7 @@ export type OfferView = {
   sellerSlug: string;
   sellerType: string;
   sellerVerified: boolean;
+  sellerLogoUrl: string | null;
   url: string;
   price: number;
   couponCode: string | null;
