@@ -56,7 +56,13 @@ export async function discoverUrls(
 
     const parsed = parseSitemap(xml);
     if (parsed.kind === "index") {
-      for (const sm of parsed.urls) if (!seen.has(sm)) queue.push(sm);
+      // Prioriza sitemaps de produto (onde estão os anúncios) antes de page/blog.
+      const ordered = [...parsed.urls].sort(
+        (a, b) =>
+          (/produto|product/i.test(a) ? 0 : 1) -
+          (/produto|product/i.test(b) ? 0 : 1),
+      );
+      for (const sm of ordered) if (!seen.has(sm)) queue.push(sm);
     } else {
       for (const u of parsed.urls) {
         if (opts.include && !opts.include.test(u)) continue;

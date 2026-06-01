@@ -128,9 +128,11 @@ export async function ingestSource(sourceId: string): Promise<IngestResult> {
         url: i.url ?? source.url,
       }));
     } else if (source.kind === "SITEMAP") {
+      // Filtro amplo de URL de produto: /produto/ (WooCommerce) e /prod-/ (Tray)
+      // — cobre as plataformas comuns no Brasil sem puxar páginas/categorias.
       const urls = await discoverUrls(source.url, {
         limit: 50,
-        include: /produto|product/i,
+        include: /produto|product|prod-/i,
       });
       candidates = [];
       for (const u of urls) {
