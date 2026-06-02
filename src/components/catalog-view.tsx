@@ -25,6 +25,7 @@ function buildHref(
   const sp = new URLSearchParams();
   if (next.material) sp.set("material", next.material);
   if (next.marca) sp.set("marca", next.marca);
+  if (next.cor) sp.set("cor", next.cor);
   if (next.sort && next.sort !== "preco-asc") sp.set("sort", next.sort);
   const qs = sp.toString();
   return qs ? `${basePath}?${qs}` : basePath;
@@ -39,7 +40,7 @@ export function CatalogView({
   result: CatalogResult;
   filters: CatalogFilters;
 }) {
-  const { products, materials, brands } = result;
+  const { products, materials, brands, colors } = result;
   const activeSort = filters.sort ?? "preco-asc";
 
   return (
@@ -85,6 +86,27 @@ export function CatalogView({
                 ) : null}
                 {b.label}{" "}
                 <span className="font-normal opacity-60">({b.count})</span>
+              </Chip>
+            ))}
+          </FilterRow>
+        ) : null}
+
+        {colors.length > 1 ? (
+          <FilterRow label="Cor">
+            <Chip
+              href={buildHref(basePath, filters, { cor: undefined })}
+              active={!filters.cor}
+            >
+              Todas
+            </Chip>
+            {colors.map((c) => (
+              <Chip
+                key={c.value}
+                href={buildHref(basePath, filters, { cor: c.value })}
+                active={filters.cor === c.value}
+              >
+                {c.label}{" "}
+                <span className="font-normal opacity-60">({c.count})</span>
               </Chip>
             ))}
           </FilterRow>

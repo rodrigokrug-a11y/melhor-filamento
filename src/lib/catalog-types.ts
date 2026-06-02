@@ -10,6 +10,7 @@ export type CatalogSort = "preco-asc" | "preco-desc" | "nome";
 export type CatalogFilters = {
   material?: string;
   marca?: string;
+  cor?: string;
   sort?: CatalogSort;
 };
 
@@ -133,6 +134,7 @@ export type CatalogResult = {
   products: ProductListItem[];
   materials: FacetOption[];
   brands: FacetOption[];
+  colors: FacetOption[];
 };
 
 export type BrandPage = {
@@ -187,9 +189,11 @@ export type CompareProduct = {
   name: string;
   material: string;
   brandName: string;
+  color: string;
   imageUrl: string | null;
   netWeightG: number;
   diameterMm: number | null;
+  specs: Record<string, string> | null;
   offers: OfferView[];
 };
 

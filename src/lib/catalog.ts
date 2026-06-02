@@ -211,6 +211,12 @@ export const getCatalog = cache(
     const brands = buildFacets(
       all.map((p) => ({ value: p.brandSlug, label: p.brandName })),
     ).map((f) => ({ ...f, logoUrl: brandLogos.get(f.value) ?? null }));
+    // Cores reais como faceta (ignora "Variado", que é cor desconhecida).
+    const colors = buildFacets(
+      all
+        .filter((p) => p.color && p.color !== "Variado")
+        .map((p) => ({ value: p.color, label: p.color })),
+    );
 
     let products = all;
     if (filters.material) {
@@ -219,9 +225,12 @@ export const getCatalog = cache(
     if (filters.marca) {
       products = products.filter((p) => p.brandSlug === filters.marca);
     }
+    if (filters.cor) {
+      products = products.filter((p) => p.color === filters.cor);
+    }
     products = sortProducts(products, filters.sort);
 
-    return { products, materials, brands };
+    return { products, materials, brands, colors };
   },
 );
 
@@ -279,9 +288,11 @@ export const getComparableProducts = cache(
       name: p.name,
       material: p.material,
       brandName: p.brand.name,
+      color: p.color,
       imageUrl: p.imageUrl,
       netWeightG: p.netWeightG,
       diameterMm: p.diameterMm,
+      specs: (p.specs as Record<string, string> | null) ?? null,
       offers: p.offers.map((o) => buildOfferView(o, now)),
     }));
   },
@@ -460,5 +471,10 @@ export function parseCatalogFilters(sp: RawSearchParams): CatalogFilters {
     sortRaw === "preco-desc" || sortRaw === "nome" || sortRaw === "preco-asc"
       ? sortRaw
       : undefined;
-  return { material: first(sp.material), marca: first(sp.marca), sort };
+  return {
+    material: first(sp.material),
+    marca: first(sp.marca),
+    cor: first(sp.cor),
+    sort,
+  };
 }

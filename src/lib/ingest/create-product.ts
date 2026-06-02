@@ -118,6 +118,8 @@ function brandFromName(raw: string): string | null {
   const m = raw.match(/[-–|]\s*([^-–|]+?)\s*$/);
   const cand = m?.[1]?.trim();
   if (!cand || SPEC_RE.test(cand) || cand.length > 30) return null;
+  // Não confunda cor com marca (ex.: "Resina … - Branco").
+  if (COLOR_MAP.some(([re]) => re.test(cand))) return null;
   return cand;
 }
 
