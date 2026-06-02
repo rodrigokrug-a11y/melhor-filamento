@@ -173,7 +173,8 @@ export async function ingestSource(sourceId: string): Promise<IngestResult> {
     const sellerName = source.seller?.name ?? null;
     result.found = candidates.length;
     for (const c of candidates) {
-      if (c.price == null || !c.name) continue;
+      // Ignora sem preço ou preço zero (ex.: variável/fora de estoque sem valor).
+      if (c.price == null || c.price <= 0 || !c.name) continue;
       // Canoniza nome+marca IGUAL à criação — senão o re-scrape não casa com o
       // produto já salvo (limpo/normalizado) e duplicaríamos a cada execução.
       const canon = deriveCanonical(c.name, c.brand, sellerName);

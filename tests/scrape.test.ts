@@ -53,6 +53,31 @@ describe("isPathAllowed", () => {
 });
 
 describe("extractOffer", () => {
+  it("lê preço de priceSpecification (WooCommerce, ex.: 3D Prime)", () => {
+    const ld = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: "Impressora 3D Bambu Lab A1 MINI",
+      offers: {
+        "@type": "Offer",
+        priceSpecification: [
+          {
+            "@type": "UnitPriceSpecification",
+            price: "2319.00",
+            priceCurrency: "BRL",
+          },
+        ],
+        availability: "https://schema.org/OutOfStock",
+      },
+    };
+    const html = `<html><head><script type="application/ld+json">${JSON.stringify(
+      ld,
+    )}</script></head><body></body></html>`;
+    const r = extractOffer(html, "https://3dprime.com.br/produto/p/");
+    expect(r?.price).toBe(2319);
+    expect(r?.source).toBe("json-ld");
+  });
+
   it("extrai de JSON-LD Product", () => {
     const ld = {
       "@context": "https://schema.org",

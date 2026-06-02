@@ -103,8 +103,14 @@ function extractFromJsonLd($: cheerio.CheerioAPI, base: string): PartialOffer | 
   if (!product) return null;
 
   const offer = offerFromNode(product);
+  // Alguns WooCommerce guardam o preço em priceSpecification (UnitPriceSpecification),
+  // não em offer.price — ex.: 3D Prime.
+  const priceSpec = asRecord(firstOf(offer?.priceSpecification));
   const price = parsePrice(
-    asString(offer?.price) ?? asString(offer?.lowPrice) ?? null,
+    asString(offer?.price) ??
+      asString(offer?.lowPrice) ??
+      asString(priceSpec?.price) ??
+      null,
   );
 
   return {
