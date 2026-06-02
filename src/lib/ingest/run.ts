@@ -132,7 +132,8 @@ export async function ingestSource(sourceId: string): Promise<IngestResult> {
       // Filtro amplo de URL de produto: /produto/ (WooCommerce) e /prod-/ (Tray)
       // — cobre as plataformas comuns no Brasil sem puxar páginas/categorias.
       const urls = await discoverUrls(source.url, {
-        limit: 50,
+        limit: 250,
+        maxFetches: 50,
         include: /produto|product|prod-/i,
       });
       candidates = [];
