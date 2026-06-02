@@ -2,9 +2,13 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Loader2, Megaphone } from "lucide-react";
+import { Eye, EyeOff, Loader2, Megaphone, Trash2 } from "lucide-react";
 
-import { bulkUpdateOffers, updateOfferPrice } from "@/app/admin/anuncios/actions";
+import {
+  bulkUpdateOffers,
+  deleteOffers,
+  updateOfferPrice,
+} from "@/app/admin/anuncios/actions";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -55,6 +59,22 @@ export function OffersTable({ offers }: { offers: Row[] }) {
     });
   }
 
+  function del() {
+    if (sel.size === 0) return;
+    if (
+      !window.confirm(
+        `Excluir ${sel.size} anúncio(s) definitivamente? Não dá para desfazer.`,
+      )
+    )
+      return;
+    const ids = [...sel];
+    start(async () => {
+      await deleteOffers(ids);
+      setSel(new Set());
+      router.refresh();
+    });
+  }
+
   return (
     <div className="space-y-3">
       {sel.size > 0 ? (
@@ -76,6 +96,16 @@ export function OffersTable({ offers }: { offers: Row[] }) {
           </Button>
           <Button size="sm" variant="outline" onClick={() => bulk({ isSponsored: false })} disabled={pending}>
             Despatrocinar
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={del}
+            disabled={pending}
+            className="text-destructive hover:bg-destructive/10"
+          >
+            <Trash2 className="size-4" />
+            Excluir
           </Button>
           {pending ? <Loader2 className="size-4 animate-spin text-muted-foreground" /> : null}
         </div>

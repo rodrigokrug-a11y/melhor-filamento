@@ -1,70 +1,52 @@
-import { Check, X } from "lucide-react";
+import type { Metadata } from "next";
 
-import { Stars } from "@/components/stars";
-import { Button } from "@/components/ui/button";
-import { getPendingReviews } from "@/lib/reviews";
+import { AdminReviewList } from "@/components/admin-review-list";
+import { prisma } from "@/lib/db";
 
-import { approveReview, rejectReview } from "./actions";
+export const metadata: Metadata = {
+  title: "Avaliações",
+  robots: { index: false },
+};
+
+const ORDER: Record<string, number> = { PENDING: 0, APPROVED: 1, REJECTED: 2 };
 
 export default async function AvaliacoesPage() {
-  const reviews = await getPendingReviews();
+  const reviews = await prisma.review.findMany({
+    orderBy: { createdAt: "desc" },
+    take: 300,
+    include: {
+      product: { select: { name: true } },
+      brand: { select: { name: true } },
+    },
+  });
+
+  const rows = reviews
+    .map((r) => ({
+      id: r.id,
+      authorName: r.authorName,
+      rating: r.rating,
+      title: r.title,
+      comment: r.comment,
+      status: r.status,
+      context: r.product
+        ? `Modelo: ${r.product.name}`
+        : r.brand
+          ? `Marca: ${r.brand.name}`
+          : "",
+    }))
+    .sort((a, b) => (ORDER[a.status] ?? 9) - (ORDER[b.status] ?? 9));
+
+  const pending = reviews.filter((r) => r.status === "PENDING").length;
 
   return (
     <div>
       <h2 className="text-lg font-semibold">Moderação de avaliações</h2>
       <p className="mb-4 mt-1 text-sm text-muted-foreground">
-        Avaliações aguardando aprovação. As aprovadas entram no ranking e nas
-        páginas.
+        {pending > 0 ? `${pending} pendente(s) no topo. ` : ""}
+        Aprove, rejeite ou apague qualquer avaliação. As publicadas entram no
+        ranking e nas páginas.
       </p>
-
-      {reviews.length === 0 ? (
-        <div className="rounded-xl border border-dashed p-10 text-center text-sm text-muted-foreground">
-          Nenhuma avaliação pendente.
-        </div>
-      ) : (
-        <ul className="divide-y rounded-xl border">
-          {reviews.map((r) => (
-            <li
-              key={r.id}
-              className="flex flex-col gap-3 p-4 sm:flex-row sm:items-start sm:justify-between"
-            >
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-medium">{r.authorName}</span>
-                  <Stars value={r.rating} size={14} />
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  {r.product
-                    ? `Modelo: ${r.product.name}`
-                    : r.brand
-                      ? `Marca: ${r.brand.name}`
-                      : ""}
-                </p>
-                {r.title ? <p className="mt-1 font-medium">{r.title}</p> : null}
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {r.comment}
-                </p>
-              </div>
-              <div className="flex shrink-0 gap-2">
-                <form action={approveReview}>
-                  <input type="hidden" name="reviewId" value={r.id} />
-                  <Button size="sm" type="submit">
-                    <Check />
-                    Aprovar
-                  </Button>
-                </form>
-                <form action={rejectReview}>
-                  <input type="hidden" name="reviewId" value={r.id} />
-                  <Button size="sm" variant="outline" type="submit">
-                    <X />
-                    Rejeitar
-                  </Button>
-                </form>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+      <AdminReviewList reviews={rows} />
     </div>
   );
 }

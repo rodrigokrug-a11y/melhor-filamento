@@ -40,3 +40,30 @@ export async function updateOfferPrice(id: string, price: number): Promise<void>
   await prisma.priceSnapshot.create({ data: { offerId: id, price: value } });
   revalidatePath("/admin/anuncios");
 }
+
+/** Apaga anúncios (ofertas) de vez, junto com histórico e cliques. Preserva
+ *  leads (desvincula a oferta) para não perder contatos. */
+export async function deleteOffers(ids: string[]): Promise<void> {
+  await requireAdmin();
+  if (ids.length === 0) return;
+  const offers = await prisma.offer.findMany({
+    where: { id: { in: ids } },
+    select: { product: { select: { slug: true, brand: { select: { slug: true } } } } },
+  });
+  await prisma.lead.updateMany({
+    where: { offerId: { in: ids } },
+    data: { offerId: null },
+  });
+  await prisma.priceSnapshot.deleteMany({ where: { offerId: { in: ids } } });
+  await prisma.clickEvent.deleteMany({ where: { offerId: { in: ids } } });
+  await prisma.offer.deleteMany({ where: { id: { in: ids } } });
+
+  revalidatePath("/admin/anuncios");
+  revalidatePath("/");
+  for (const s of new Set(offers.map((o) => o.product.slug))) {
+    revalidatePath(`/produto/${s}`);
+  }
+  for (const s of new Set(offers.map((o) => o.product.brand.slug))) {
+    revalidatePath(`/marca/${s}`);
+  }
+}

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Megaphone, X } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
@@ -31,7 +32,12 @@ export default async function AdminMarcasPage() {
                   <BrandLogo name={b.name} logoUrl={b.logoUrl} size={40} />
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="truncate font-medium">{b.name}</span>
+                      <Link
+                        href={`/admin/marcas/${b.id}`}
+                        className="truncate font-medium underline-offset-2 hover:underline"
+                      >
+                        {b.name}
+                      </Link>
                       {b.promotedActive ? (
                         <Badge className="gap-1">
                           <Megaphone className="size-3" />
@@ -39,10 +45,14 @@ export default async function AdminMarcasPage() {
                         </Badge>
                       ) : null}
                     </div>
-                    <span className="text-xs text-muted-foreground">
+                    <Link
+                      href={`/admin/marcas/${b.id}`}
+                      className="text-xs text-muted-foreground hover:text-foreground"
+                    >
                       {b.productCount}{" "}
-                      {b.productCount === 1 ? "produto" : "produtos"}
-                    </span>
+                      {b.productCount === 1 ? "produto" : "produtos"} · anúncios e
+                      avaliações →
+                    </Link>
                   </div>
                 </div>
                 <div className="shrink-0">

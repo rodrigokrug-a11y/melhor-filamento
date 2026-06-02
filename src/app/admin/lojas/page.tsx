@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { BadgeCheck } from "lucide-react";
 
 import { SellerLocationForm } from "@/components/seller-location-form";
@@ -37,7 +38,12 @@ export default async function LojasPage() {
               <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
-                  <p className="truncate font-medium">{seller.name}</p>
+                  <Link
+                    href={`/admin/lojas/${seller.id}`}
+                    className="truncate font-medium underline-offset-2 hover:underline"
+                  >
+                    {seller.name}
+                  </Link>
                   {seller.isVerified ? (
                     <Badge variant="success" className="gap-1">
                       <BadgeCheck className="size-3" />
@@ -45,11 +51,13 @@ export default async function LojasPage() {
                     </Badge>
                   ) : null}
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <Link
+                  href={`/admin/lojas/${seller.id}`}
+                  className="text-xs text-muted-foreground hover:text-foreground"
+                >
                   {TYPE_LABELS[seller.type] ?? seller.type} ·{" "}
-                  {seller._count.offers} ofertas
-                  {seller.website ? ` · ${seller.website}` : ""}
-                </p>
+                  {seller._count.offers} anúncios →
+                </Link>
               </div>
               <form action={toggleSellerVerified} className="shrink-0">
                 <input type="hidden" name="sellerId" value={seller.id} />
