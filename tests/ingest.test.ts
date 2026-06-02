@@ -73,6 +73,26 @@ describe("inferProductFields (resina)", () => {
     expect(f.kind).toBe("FILAMENT");
   });
 
+  it("acessório que cita impressora NÃO vira impressora", () => {
+    expect(
+      inferProductFields("Bico Hotend Aço Inox 0,4mm Impressora 3D Creality").kind,
+    ).not.toBe("PRINTER");
+    expect(
+      inferProductFields("Display Lcd P/ Impressora 3D Ender 3").kind,
+    ).not.toBe("PRINTER");
+  });
+
+  it("marca da impressora vem do fabricante no nome; voltagem não é marca", () => {
+    expect(
+      deriveCanonical("Impressora 3D Bambu Lab H2D - 220V", null, "3D Prime")
+        .brandName,
+    ).toBe("Bambu Lab");
+    expect(
+      deriveCanonical("Impressora 3D Creality Ender 3 V3", null, "3D Lab")
+        .brandName,
+    ).toBe("Creality");
+  });
+
   it("NÃO exclui insumo 'para impressora 3D'", () => {
     const f = inferProductFields("Filamento PLA para impressora 3D Preto 1kg 1,75mm");
     expect(f.material).toBe("PLA");

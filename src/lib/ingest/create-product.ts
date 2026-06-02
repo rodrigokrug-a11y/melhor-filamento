@@ -47,7 +47,7 @@ const MACHINE_RE =
   /\b(?:impressora|printer|scanner|secadora|estufa|desumidificad|wash\s*(?:and|&|n)?\s*cure|c[âa]mara\s+de\s+cura|m[áa]quina)/i;
 
 function looksLikeMachine(name: string): boolean {
-  if (/para\s+impressora/i.test(name)) {
+  if (/\b(para|p\/)\s*impressora/i.test(name)) {
     return /\b(?:scanner|secadora|estufa|desumidificad|wash\s*(?:and|&|n)?\s*cure|c[âa]mara\s+de\s+cura)/i.test(
       name,
     );
@@ -70,11 +70,32 @@ export function detectPrinterTech(name: string): string {
     : "FDM";
 }
 
+// Acessórios/peças que citam "impressora" mas NÃO são a impressora.
+const PRINTER_ACCESSORY_RE =
+  /\b(bico|hotend|hot\s?end|nozzle|display|fonte|sensor|correia|rolamento|polia|ventoinha|cooler|esp[áa]tula|fim de curso|end\s?stop|acoplamento|engrenagem|cabo|adaptador|suporte)\b/i;
+
+// Fabricantes 3D conhecidos — p/ acertar a marca pelo nome (ex.: "Bambu Lab").
+const KNOWN_3D_BRANDS = [
+  "Bambu Lab", "Creality", "Elegoo", "Anycubic", "Prusa", "Flashforge",
+  "FLSUN", "Snapmaker", "Sovol", "Sermoon", "Artillery", "Kywoo", "Qidi",
+  "Two Trees", "Raise3D", "Phrozen", "Sethi3D", "GTMax", "Cliever",
+  "eSun", "Sunlu", "Polymaker", "Eryone", "Voolt",
+];
+function brandFromKnown(name: string): string | null {
+  for (const b of KNOWN_3D_BRANDS) {
+    const esc = b.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    if (new RegExp(`\\b${esc}\\b`, "i").test(name)) return b;
+  }
+  return null;
+}
+
 /** Infere material, cor, peso/volume e diâmetro a partir do nome do produto. */
 export function inferProductFields(name: string): Inferred {
-  // Impressora 3D é um TIPO de produto (não insumo, não máquina a excluir).
+  // Impressora 3D é um TIPO de produto (não insumo, não acessório, não máquina).
   const isPrinter =
-    /\bimpressora|\bprinter/i.test(name) && !/para\s+impressora/i.test(name);
+    /\bimpressora|\bprinter/i.test(name) &&
+    !/\b(para|p\/)\s*impressora/i.test(name) &&
+    !PRINTER_ACCESSORY_RE.test(name);
   if (isPrinter) {
     return {
       kind: "PRINTER",
@@ -139,6 +160,8 @@ function brandFromName(raw: string): string | null {
   if (!cand || SPEC_RE.test(cand) || cand.length > 30) return null;
   // Não confunda cor com marca (ex.: "Resina … - Branco").
   if (COLOR_MAP.some(([re]) => re.test(cand))) return null;
+  // Voltagem não é marca (ex.: "… - 220V").
+  if (/^\d+\s*v(olts?)?$/i.test(cand)) return null;
   return cand;
 }
 
@@ -183,7 +206,11 @@ export function deriveCanonical(
   sellerName: string | null,
 ): { name: string; brandName: string } {
   const brandName = normalizeBrand(
-    extractedBrand ?? brandFromName(rawName) ?? sellerName ?? "Sem marca",
+    extractedBrand ??
+      brandFromKnown(rawName) ??
+      brandFromName(rawName) ??
+      sellerName ??
+      "Sem marca",
   );
   const name = cleanName(rawName, sellerName, brandName) || rawName;
   return { name, brandName };
