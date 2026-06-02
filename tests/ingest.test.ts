@@ -91,6 +91,10 @@ describe("inferProductFields (resina)", () => {
       deriveCanonical("Impressora 3D Creality Ender 3 V3", null, "3D Lab")
         .brandName,
     ).toBe("Creality");
+    // sufixo de voltagem some do nome (consolida 110V/220V no mesmo produto)
+    expect(
+      deriveCanonical("Impressora 3D Bambu Lab H2D - 220V", null, "3D Prime").name,
+    ).toBe("Impressora 3D Bambu Lab H2D");
   });
 
   it("NÃO exclui insumo 'para impressora 3D'", () => {

@@ -180,6 +180,9 @@ function cleanName(
   let n = raw.replace(/\s*para impressora 3d\s*/i, " ");
   n = stripSuffix(n, brand);
   n = stripSuffix(n, sellerName);
+  // Remove sufixo de voltagem (impressoras) p/ consolidar 110V/220V/Bivolt
+  // no mesmo produto — senão o re-scrape recria a variante a cada execução.
+  n = n.replace(/\s*[-–]\s*(110\s*v|220\s*v|bivolt)\s*$/i, "");
   return n.replace(/\s{2,}/g, " ").trim();
 }
 
