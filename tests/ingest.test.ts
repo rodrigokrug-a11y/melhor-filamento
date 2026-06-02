@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { inferProductFields } from "@/lib/ingest/create-product";
+import { deriveCanonical, inferProductFields } from "@/lib/ingest/create-product";
 import {
   matchProduct,
   normalizeText,
@@ -134,5 +134,31 @@ describe("matchProduct", () => {
     expect(
       matchProduct({ name: "Produto inexistente", gtin: null, brand: null }, index),
     ).toBeNull();
+  });
+
+  it("re-scrape NÃO duplica: candidato canonizado casa com o produto salvo", () => {
+    // Produto como fica salvo após a criação: nome limpo + marca normalizada.
+    const stored: ProductRef = {
+      id: "abs1",
+      name: "Filamento ABS Azul Céu",
+      gtin: null,
+      brandName: "3D Fila",
+      signature: productSignature({
+        name: "Filamento ABS Azul Céu",
+        brand: "3D Fila",
+        material: "ABS",
+        netWeightG: 1000,
+        diameterMm: 1.75,
+      }),
+    };
+    // Re-scrape real: nome bruto com sufixo da loja e marca ausente (brand=null).
+    const canon = deriveCanonical(
+      "Filamento ABS Azul Céu - 3D Fila",
+      null,
+      "3D Fila Oficial",
+    );
+    expect(
+      matchProduct({ name: canon.name, gtin: null, brand: canon.brandName }, [stored]),
+    ).toBe("abs1");
   });
 });

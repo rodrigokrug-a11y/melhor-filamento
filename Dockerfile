@@ -20,9 +20,14 @@ COPY . .
 # Build-args do next build:
 #  - DATABASE_URL: SSG e sitemap leem o banco em tempo de build.
 #  - NEXT_PUBLIC_SITE_URL: é "inlined" no bundle (OG/canonical/sitemap) — precisa no build.
+#  - NEXT_SERVER_ACTIONS_ENCRYPTION_KEY: chave AES estável p/ Server Actions —
+#    sem ela o Next gera uma nova a cada build e abas antigas quebram com
+#    "Failed to find Server Action" após um deploy. É embutida no build.
 ARG DATABASE_URL
 ARG NEXT_PUBLIC_SITE_URL
+ARG NEXT_SERVER_ACTIONS_ENCRYPTION_KEY
 ENV NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
+ENV NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=${NEXT_SERVER_ACTIONS_ENCRYPTION_KEY}
 RUN npm run build
 
 # ---- runner: imagem mínima que serve o app ----

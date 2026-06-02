@@ -1,5 +1,6 @@
 import {
   createProductFromExtracted,
+  deriveCanonical,
   inferProductFields,
 } from "@/lib/ingest/create-product";
 import { loadProductIndex, matchProduct, productSignature } from "@/lib/ingest/match";
@@ -172,7 +173,13 @@ export async function ingestSource(sourceId: string): Promise<IngestResult> {
     result.found = candidates.length;
     for (const c of candidates) {
       if (c.price == null || !c.name) continue;
-      let productId = matchProduct(c, index);
+      // Canoniza nome+marca IGUAL à criação — senão o re-scrape não casa com o
+      // produto já salvo (limpo/normalizado) e duplicaríamos a cada execução.
+      const canon = deriveCanonical(c.name, c.brand, sellerName);
+      let productId = matchProduct(
+        { name: canon.name, gtin: c.gtin, brand: canon.brandName },
+        index,
+      );
       if (!productId) {
         // Só cria o produto se parecer filamento/resina (evita impressoras/peças).
         const fields = inferProductFields(c.name);
@@ -194,15 +201,16 @@ export async function ingestSource(sourceId: string): Promise<IngestResult> {
           sellerName,
         );
         productId = product.id;
-        // Adiciona ao índice em memória p/ casar variações na mesma execução.
+        // Adiciona ao índice em memória p/ casar variações na mesma execução
+        // (mesma canonização usada acima e no próximo loadProductIndex).
         index.push({
           id: product.id,
           name: product.name,
           gtin: c.gtin,
-          brandName: c.brand ?? "",
+          brandName: canon.brandName,
           signature: productSignature({
-            name: c.name,
-            brand: c.brand,
+            name: canon.name,
+            brand: canon.brandName,
             material: fields.material,
             netWeightG: fields.netWeightG,
             diameterMm: fields.diameterMm,

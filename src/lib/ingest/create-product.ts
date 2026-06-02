@@ -149,6 +149,25 @@ function normalizeBrand(raw: string): string {
   return n || raw.trim();
 }
 
+/**
+ * Deriva os campos canônicos (nome limpo + marca normalizada) a partir do nome
+ * bruto, da marca extraída e da loja. É a MESMA derivação usada na criação do
+ * produto — por isso precisa ser usada também no casamento, senão o re-scrape
+ * (que vem com o nome bruto e, às vezes, sem marca) não bate com o produto já
+ * salvo e o ingest duplica o produto a cada execução.
+ */
+export function deriveCanonical(
+  rawName: string,
+  extractedBrand: string | null,
+  sellerName: string | null,
+): { name: string; brandName: string } {
+  const brandName = normalizeBrand(
+    extractedBrand ?? brandFromName(rawName) ?? sellerName ?? "Sem marca",
+  );
+  const name = cleanName(rawName, sellerName, brandName) || rawName;
+  return { name, brandName };
+}
+
 async function resolveBrandId(name: string): Promise<string> {
   const existing = await prisma.brand.findFirst({
     where: { name: { equals: name, mode: "insensitive" } },
@@ -171,10 +190,11 @@ export async function createProductFromExtracted(
   sellerName: string | null,
 ): Promise<{ id: string; name: string }> {
   const rawName = extracted.name ?? "Produto importado";
-  const brandName = normalizeBrand(
-    extracted.brand ?? brandFromName(rawName) ?? sellerName ?? "Sem marca",
+  const { name, brandName } = deriveCanonical(
+    rawName,
+    extracted.brand ?? null,
+    sellerName,
   );
-  const name = cleanName(rawName, sellerName, brandName) || rawName;
   const fields = inferProductFields(rawName);
   const brandId = await resolveBrandId(brandName);
 
