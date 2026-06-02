@@ -3,7 +3,29 @@
 import { type CouponType } from "@/lib/pricing";
 import { type ShippingRuleLite } from "@/lib/shipping";
 
-export type ProductKind = "FILAMENT" | "RESIN";
+export type ProductKind = "FILAMENT" | "RESIN" | "PRINTER";
+
+export const KIND_LABELS: Record<string, string> = {
+  FILAMENT: "Filamento",
+  RESIN: "Resina",
+  PRINTER: "Impressora 3D",
+};
+
+/** Campos técnicos de impressora (na ordem de exibição). Guardados em `specs`;
+ *  preenchidos por importação — "—" quando ausentes. */
+export const PRINTER_SPEC_FIELDS: { key: string; label: string }[] = [
+  { key: "tecnologia", label: "Tecnologia" },
+  { key: "volume", label: "Volume de impressão" },
+  { key: "resolucao", label: "Resolução" },
+  { key: "velocidade", label: "Velocidade máx." },
+  { key: "bico", label: "Temp. máx. do bico" },
+  { key: "mesa", label: "Temp. máx. da mesa" },
+  { key: "nivelamento", label: "Nivelamento" },
+  { key: "conectividade", label: "Conectividade" },
+  { key: "tela", label: "Tela" },
+  { key: "dimensoes", label: "Dimensões" },
+  { key: "peso", label: "Peso" },
+];
 
 export type CatalogSort = "preco-asc" | "preco-desc" | "nome";
 
@@ -11,6 +33,7 @@ export type CatalogFilters = {
   material?: string;
   marca?: string;
   cor?: string;
+  tech?: string;
   sort?: CatalogSort;
 };
 
@@ -119,6 +142,7 @@ export type ProductListItem = {
   kind: ProductKind;
   material: string;
   color: string;
+  tech: string | null;
   netWeightG: number;
   diameterMm: number | null;
   imageUrl: string | null;
@@ -135,6 +159,7 @@ export type CatalogResult = {
   materials: FacetOption[];
   brands: FacetOption[];
   colors: FacetOption[];
+  techs: FacetOption[];
 };
 
 export type BrandProfile = {
@@ -198,6 +223,7 @@ export type CompareProduct = {
   id: string;
   slug: string;
   name: string;
+  kind: ProductKind;
   material: string;
   brandName: string;
   color: string;

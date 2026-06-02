@@ -63,9 +63,28 @@ type Inferred = {
   diameterMm: number | null;
 };
 
+/** Tecnologia da impressora a partir do nome (Resina vs FDM). */
+export function detectPrinterTech(name: string): string {
+  return /resina|resin|\blcd\b|\bdlp\b|\bsla\b|mslcd|\bmono\b/i.test(name)
+    ? "Resina"
+    : "FDM";
+}
+
 /** Infere material, cor, peso/volume e diâmetro a partir do nome do produto. */
 export function inferProductFields(name: string): Inferred {
-  // Equipamentos (impressora, scanner, secadora…) não entram no catálogo de insumos.
+  // Impressora 3D é um TIPO de produto (não insumo, não máquina a excluir).
+  const isPrinter =
+    /\bimpressora|\bprinter/i.test(name) && !/para\s+impressora/i.test(name);
+  if (isPrinter) {
+    return {
+      kind: "PRINTER",
+      material: "OUTRO",
+      color: "Variado",
+      netWeightG: 0,
+      diameterMm: null,
+    };
+  }
+  // Outros equipamentos (scanner, secadora, wash&cure…) não entram no catálogo.
   if (looksLikeMachine(name)) {
     return {
       kind: "FILAMENT",
@@ -198,6 +217,11 @@ export async function createProductFromExtracted(
     sellerName,
   );
   const fields = inferProductFields(rawName);
+  // Impressora começa só com a tecnologia; demais specs entram por importação.
+  const specs =
+    fields.kind === "PRINTER"
+      ? { tecnologia: detectPrinterTech(rawName) }
+      : undefined;
   const brandId = await resolveBrandId(brandName);
 
   const product = await prisma.product.create({
@@ -212,6 +236,7 @@ export async function createProductFromExtracted(
       brandId,
       gtin: extracted.gtin,
       imageUrl: extracted.image, // puxa a foto do produto
+      ...(specs ? { specs } : {}),
     },
     select: { id: true, name: true },
   });

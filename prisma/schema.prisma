@@ -11,6 +11,7 @@ datasource db {
 enum ProductKind {
   FILAMENT
   RESIN
+  PRINTER
 }
 
 enum Material {

@@ -26,6 +26,7 @@ function buildHref(
   if (next.material) sp.set("material", next.material);
   if (next.marca) sp.set("marca", next.marca);
   if (next.cor) sp.set("cor", next.cor);
+  if (next.tech) sp.set("tech", next.tech);
   if (next.sort && next.sort !== "preco-asc") sp.set("sort", next.sort);
   const qs = sp.toString();
   return qs ? `${basePath}?${qs}` : basePath;
@@ -40,12 +41,33 @@ export function CatalogView({
   result: CatalogResult;
   filters: CatalogFilters;
 }) {
-  const { products, materials, brands, colors } = result;
+  const { products, materials, brands, colors, techs } = result;
   const activeSort = filters.sort ?? "preco-asc";
 
   return (
     <div className="space-y-6">
       <div className="space-y-3 rounded-2xl border bg-card p-4 shadow-sm">
+        {techs.length > 1 ? (
+          <FilterRow label="Tecnologia">
+            <Chip
+              href={buildHref(basePath, filters, { tech: undefined })}
+              active={!filters.tech}
+            >
+              Todas
+            </Chip>
+            {techs.map((t) => (
+              <Chip
+                key={t.value}
+                href={buildHref(basePath, filters, { tech: t.value })}
+                active={filters.tech === t.value}
+              >
+                {t.label}{" "}
+                <span className="font-normal opacity-60">({t.count})</span>
+              </Chip>
+            ))}
+          </FilterRow>
+        ) : null}
+
         {materials.length > 1 ? (
           <FilterRow label="Material">
             <Chip

@@ -175,6 +175,83 @@ async function importProfiles(profiles: unknown[]): Promise<ImportState> {
   return { ok: true, summary };
 }
 
+const PRINTER_SPEC_KEYS = [
+  "tecnologia",
+  "volume",
+  "resolucao",
+  "velocidade",
+  "bico",
+  "mesa",
+  "nivelamento",
+  "conectividade",
+  "tela",
+  "dimensoes",
+  "peso",
+];
+
+/** Atualiza as specs técnicas das impressoras (mescla em Product.specs),
+ *  casando por slug ou por nome (kind=PRINTER). */
+async function importPrinterSpecs(printers: unknown[]): Promise<ImportState> {
+  const summary = {
+    sellersCreated: 0,
+    sellersUpdated: 0,
+    brandsCreated: 0,
+    feedsCreated: 0,
+    geocoded: 0,
+    warnings: [] as string[],
+  };
+  let updated = 0;
+  let unmatched = 0;
+  for (const item of printers) {
+    const p = (item ?? {}) as Record<string, unknown>;
+    const str = (...keys: string[]): string | undefined => {
+      for (const k of keys) {
+        const v = p[k];
+        if (typeof v === "string" && v.trim()) return v.trim();
+        if (typeof v === "number") return String(v);
+      }
+      return undefined;
+    };
+    const name = str("name", "nome", "model", "modelo");
+    const slug = str("slug");
+    if (!name && !slug) continue;
+
+    const patch: Record<string, string> = {};
+    for (const k of PRINTER_SPEC_KEYS) {
+      const v = str(k);
+      if (v) patch[k] = v;
+    }
+    if (Object.keys(patch).length === 0) continue;
+
+    const prods = await prisma.product.findMany({
+      where: slug
+        ? { slug }
+        : { name: { equals: name, mode: "insensitive" }, kind: "PRINTER" },
+      select: { id: true, specs: true },
+    });
+    if (prods.length === 0) {
+      unmatched += 1;
+      continue;
+    }
+    for (const prod of prods) {
+      const merged = {
+        ...((prod.specs as Record<string, string> | null) ?? {}),
+        ...patch,
+      };
+      await prisma.product.update({
+        where: { id: prod.id },
+        data: { specs: merged },
+      });
+      updated += 1;
+    }
+  }
+  summary.warnings.push(`${updated} impressora(s) com specs atualizadas.`);
+  if (unmatched)
+    summary.warnings.push(`${unmatched} sem impressora correspondente.`);
+  revalidatePath("/impressoras");
+  return { ok: true, summary };
+}
+
 export async function importSuppliers(
   _prev: ImportState,
   formData: FormData,
@@ -210,6 +287,16 @@ export async function importSuppliers(
     Array.isArray((payload as { profiles?: unknown }).profiles)
   ) {
     return importProfiles((payload as { profiles: unknown[] }).profiles);
+  }
+
+  // Modo specs de impressora: { "printers": [{ name|slug, tecnologia, ... }] }.
+  if (
+    payload &&
+    typeof payload === "object" &&
+    !Array.isArray(payload) &&
+    Array.isArray((payload as { printers?: unknown }).printers)
+  ) {
+    return importPrinterSpecs((payload as { printers: unknown[] }).printers);
   }
 
   const parsed = PayloadSchema.safeParse(payload);

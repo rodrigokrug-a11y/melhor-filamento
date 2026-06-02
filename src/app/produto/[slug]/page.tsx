@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Boxes, FlaskConical, Plus } from "lucide-react";
+import { ArrowLeft, Boxes, FlaskConical, Plus, Printer } from "lucide-react";
 
 import { OfferComparison } from "@/components/offer-table";
 import { PriceHistoryChart } from "@/components/price-history-chart";
@@ -10,6 +10,7 @@ import { RegionNotice } from "@/components/region-notice";
 import { ReviewForm } from "@/components/review-form";
 import { ReviewList } from "@/components/review-list";
 import { Badge } from "@/components/ui/badge";
+import { PRINTER_SPEC_FIELDS } from "@/lib/catalog-types";
 import {
   getAllProductSlugs,
   getPriceHistory,
@@ -64,9 +65,21 @@ export default async function ProdutoPage({ params }: { params: Params }) {
 
   const reviewData = await getProductReviews(product.id);
   const priceHistory = await getPriceHistory(product.id, 180);
-  const kindHref = product.kind === "RESIN" ? "/resinas" : "/filamentos";
-  const kindLabel = product.kind === "RESIN" ? "Resinas" : "Filamentos";
-  const Icon = product.kind === "RESIN" ? FlaskConical : Boxes;
+  const isPrinter = product.kind === "PRINTER";
+  const kindHref = isPrinter
+    ? "/impressoras"
+    : product.kind === "RESIN"
+      ? "/resinas"
+      : "/filamentos";
+  const kindLabel = isPrinter
+    ? "Impressoras"
+    : product.kind === "RESIN"
+      ? "Resinas"
+      : "Filamentos";
+  const Icon = isPrinter ? Printer : product.kind === "RESIN" ? FlaskConical : Boxes;
+  const badgeLabel = isPrinter
+    ? (product.specs?.tecnologia ?? "Impressora 3D")
+    : product.materialLabel;
   const specEntries = product.specs ? Object.entries(product.specs) : [];
 
   return (
@@ -103,7 +116,7 @@ export default async function ProdutoPage({ params }: { params: Params }) {
 
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="secondary">{product.materialLabel}</Badge>
+            <Badge variant="secondary">{badgeLabel}</Badge>
             <Link
               href={`/marca/${product.brandSlug}`}
               className="text-sm text-muted-foreground hover:text-foreground hover:underline"
@@ -115,16 +128,37 @@ export default async function ProdutoPage({ params }: { params: Params }) {
             {product.name}
           </h1>
 
-          <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
-            <Spec label="Cor" value={product.color} />
-            <Spec label="Peso" value={`${product.netWeightG} g`} />
-            {product.diameterMm != null ? (
-              <Spec label="Diâmetro" value={`${product.diameterMm} mm`} />
-            ) : null}
-            {specEntries.map(([key, value]) => (
-              <Spec key={key} label={key} value={String(value)} />
-            ))}
-          </dl>
+          {isPrinter ? (
+            <div className="mt-4 rounded-2xl border bg-card">
+              <p className="border-b px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Especificações técnicas
+              </p>
+              <dl className="grid grid-cols-1 sm:grid-cols-2">
+                {PRINTER_SPEC_FIELDS.map((f) => (
+                  <div
+                    key={f.key}
+                    className="flex items-baseline justify-between gap-3 border-b px-4 py-2 text-sm sm:[&:nth-last-child(-n+2)]:border-b-0"
+                  >
+                    <dt className="text-muted-foreground">{f.label}</dt>
+                    <dd className="text-right font-medium">
+                      {product.specs?.[f.key] ?? "—"}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          ) : (
+            <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+              <Spec label="Cor" value={product.color} />
+              <Spec label="Peso" value={`${product.netWeightG} g`} />
+              {product.diameterMm != null ? (
+                <Spec label="Diâmetro" value={`${product.diameterMm} mm`} />
+              ) : null}
+              {specEntries.map(([key, value]) => (
+                <Spec key={key} label={key} value={String(value)} />
+              ))}
+            </dl>
+          )}
 
           {product.bestPrice != null ? (
             <p className="mt-6 text-sm text-muted-foreground">
@@ -181,7 +215,7 @@ export default async function ProdutoPage({ params }: { params: Params }) {
       <section className="mt-12">
         <h2 className="text-lg font-semibold">Avaliações</h2>
         <p className="mb-4 mt-1 text-sm text-muted-foreground">
-          O que a comunidade achou deste filamento.
+          O que a comunidade achou deste produto.
         </p>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-[1.2fr_1fr]">
           <ReviewList

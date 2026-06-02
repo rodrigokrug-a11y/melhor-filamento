@@ -132,6 +132,7 @@ function buildListItem(p: ProductWithOffers): ProductListItem | null {
     kind: p.kind as ProductKind,
     material: p.material,
     color: p.color,
+    tech: (p.specs as Record<string, string> | null)?.tecnologia ?? null,
     netWeightG: p.netWeightG,
     diameterMm: p.diameterMm,
     imageUrl: p.imageUrl,
@@ -217,6 +218,12 @@ export const getCatalog = cache(
         .filter((p) => p.color && p.color !== "Variado")
         .map((p) => ({ value: p.color, label: p.color })),
     );
+    // Tecnologia (impressoras) — vinda de specs.tecnologia.
+    const techs = buildFacets(
+      all
+        .filter((p) => p.tech)
+        .map((p) => ({ value: p.tech as string, label: p.tech as string })),
+    );
 
     let products = all;
     if (filters.material) {
@@ -228,9 +235,12 @@ export const getCatalog = cache(
     if (filters.cor) {
       products = products.filter((p) => p.color === filters.cor);
     }
+    if (filters.tech) {
+      products = products.filter((p) => p.tech === filters.tech);
+    }
     products = sortProducts(products, filters.sort);
 
-    return { products, materials, brands, colors };
+    return { products, materials, brands, colors, techs };
   },
 );
 
@@ -286,6 +296,7 @@ export const getComparableProducts = cache(
       id: p.id,
       slug: p.slug,
       name: p.name,
+      kind: p.kind as ProductKind,
       material: p.material,
       brandName: p.brand.name,
       color: p.color,
@@ -484,6 +495,7 @@ export function parseCatalogFilters(sp: RawSearchParams): CatalogFilters {
     material: first(sp.material),
     marca: first(sp.marca),
     cor: first(sp.cor),
+    tech: first(sp.tech),
     sort,
   };
 }

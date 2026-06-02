@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Boxes, FlaskConical, Tag } from "lucide-react";
+import { Boxes, FlaskConical, Printer, Tag } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { materialLabel, type ProductListItem } from "@/lib/catalog-types";
@@ -15,7 +15,16 @@ export function ProductCard({
   displayPrice?: number;
   freteIncluded?: boolean;
 }) {
-  const Icon = product.kind === "RESIN" ? FlaskConical : Boxes;
+  const Icon =
+    product.kind === "PRINTER"
+      ? Printer
+      : product.kind === "RESIN"
+        ? FlaskConical
+        : Boxes;
+  const tagLabel =
+    product.kind === "PRINTER"
+      ? (product.tech ?? "Impressora 3D")
+      : materialLabel(product.material);
   const price = displayPrice ?? product.bestPrice;
 
   return (
@@ -42,7 +51,7 @@ export function ProductCard({
               variant="secondary"
               className="bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60"
             >
-              {materialLabel(product.material)}
+              {tagLabel}
             </Badge>
           </span>
           {product.bestPriceHasCoupon ? (

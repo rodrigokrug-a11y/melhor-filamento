@@ -10,7 +10,9 @@ import { Badge } from "@/components/ui/badge";
 import { useRegion } from "@/components/use-region";
 import {
   type CompareProduct,
+  type ProductKind,
   MATERIAL_INFO,
+  PRINTER_SPEC_FIELDS,
   materialLabel,
 } from "@/lib/catalog-types";
 import { estimateShipping, totalForRegion } from "@/lib/shipping";
@@ -49,13 +51,16 @@ export function CompareView({
   products,
   materials,
   initialSlugs,
+  kind = "FILAMENT",
 }: {
   products: CompareProduct[];
   materials: MaterialOverview[];
   initialSlugs: string[];
+  kind?: ProductKind;
 }) {
   const { region } = useRegion();
   const uf = region?.uf ?? null;
+  const isPrinter = kind === "PRINTER";
 
   const [ids, setIds] = useState<string[]>(() => {
     const out: string[] = [];
@@ -66,15 +71,19 @@ export function CompareView({
     if (out.length === 0) for (const p of products.slice(0, 3)) out.push(p.id);
     return out.slice(0, MAX);
   });
-  const [fMaterial, setFMaterial] = useState("");
+  const [fPrimary, setFPrimary] = useState("");
   const [fBrand, setFBrand] = useState("");
 
   const selected = ids
     .map((id) => products.find((p) => p.id === id))
     .filter((p): p is CompareProduct => Boolean(p));
 
-  const materialsList = [...new Set(products.map((p) => p.material))].sort(
-    (a, b) => materialLabel(a).localeCompare(materialLabel(b), "pt-BR"),
+  // Eixo principal do filtro: tecnologia (impressoras) ou material (insumos).
+  const primaryOf = (p: CompareProduct) =>
+    isPrinter ? (p.specs?.tecnologia ?? "") : p.material;
+  const primaryLabel = (v: string) => (isPrinter ? v : materialLabel(v));
+  const primaryList = [...new Set(products.map(primaryOf).filter(Boolean))].sort(
+    (a, b) => primaryLabel(a).localeCompare(primaryLabel(b), "pt-BR"),
   );
   const brandsList = [...new Set(products.map((p) => p.brandName))].sort((a, b) =>
     a.localeCompare(b, "pt-BR"),
@@ -82,7 +91,7 @@ export function CompareView({
   const candidates = products.filter(
     (p) =>
       !ids.includes(p.id) &&
-      (!fMaterial || p.material === fMaterial) &&
+      (!fPrimary || primaryOf(p) === fPrimary) &&
       (!fBrand || p.brandName === fBrand),
   );
 
@@ -96,15 +105,35 @@ export function CompareView({
     ...new Set(selected.flatMap((p) => (p.specs ? Object.keys(p.specs) : []))),
   ].sort((a, b) => a.localeCompare(b, "pt-BR"));
 
-  const rows: { label: string; value: (p: CompareProduct) => string }[] = [
-    { label: "Marca", value: (p) => p.brandName || DASH },
-    { label: "Tipo", value: (p) => materialLabel(p.material) },
-    { label: "Cor", value: (p) => (p.color && p.color !== "Variado" ? p.color : DASH) },
-    { label: "Peso", value: (p) => (p.netWeightG ? `${p.netWeightG} g` : DASH) },
-    { label: "Diâmetro", value: (p) => (p.diameterMm ? `${p.diameterMm} mm` : DASH) },
-    { label: "Temp. do bico", value: (p) => MATERIAL_INFO[p.material]?.nozzle ?? DASH },
-    { label: "Temp. da mesa", value: (p) => MATERIAL_INFO[p.material]?.bed ?? DASH },
-  ];
+  const rows: { label: string; value: (p: CompareProduct) => string }[] = isPrinter
+    ? [
+        { label: "Marca", value: (p) => p.brandName || DASH },
+        ...PRINTER_SPEC_FIELDS.map((f) => ({
+          label: f.label,
+          value: (p: CompareProduct) => p.specs?.[f.key] ?? DASH,
+        })),
+      ]
+    : [
+        { label: "Marca", value: (p) => p.brandName || DASH },
+        { label: "Tipo", value: (p) => materialLabel(p.material) },
+        {
+          label: "Cor",
+          value: (p) => (p.color && p.color !== "Variado" ? p.color : DASH),
+        },
+        { label: "Peso", value: (p) => (p.netWeightG ? `${p.netWeightG} g` : DASH) },
+        {
+          label: "Diâmetro",
+          value: (p) => (p.diameterMm ? `${p.diameterMm} mm` : DASH),
+        },
+        {
+          label: "Temp. do bico",
+          value: (p) => MATERIAL_INFO[p.material]?.nozzle ?? DASH,
+        },
+        {
+          label: "Temp. da mesa",
+          value: (p) => MATERIAL_INFO[p.material]?.bed ?? DASH,
+        },
+      ];
 
   const dicaMaterials = [...new Set(selected.map((p) => p.material))]
     .filter((m) => MATERIAL_INFO[m])
@@ -129,7 +158,8 @@ export function CompareView({
       <div className="space-y-3 rounded-xl border bg-card p-4">
         <div className="flex items-center justify-between gap-2">
           <p className="text-sm font-medium">
-            Produtos para comparar ({selected.length}/{MAX})
+            {isPrinter ? "Impressoras" : "Produtos"} para comparar (
+            {selected.length}/{MAX})
           </p>
           {selected.length > 0 ? (
             <button
@@ -166,15 +196,17 @@ export function CompareView({
         {selected.length < MAX ? (
           <div className="grid gap-2 sm:grid-cols-[1fr_1fr_1.4fr]">
             <select
-              value={fMaterial}
-              onChange={(e) => setFMaterial(e.target.value)}
+              value={fPrimary}
+              onChange={(e) => setFPrimary(e.target.value)}
               className={selectClass}
-              aria-label="Filtrar por tipo"
+              aria-label={isPrinter ? "Filtrar por tecnologia" : "Filtrar por tipo"}
             >
-              <option value="">Todos os tipos</option>
-              {materialsList.map((m) => (
+              <option value="">
+                {isPrinter ? "Todas as tecnologias" : "Todos os tipos"}
+              </option>
+              {primaryList.map((m) => (
                 <option key={m} value={m}>
-                  {materialLabel(m)}
+                  {primaryLabel(m)}
                 </option>
               ))}
             </select>
@@ -197,7 +229,9 @@ export function CompareView({
               className={selectClass}
               aria-label="Adicionar produto"
             >
-              <option value="">+ Adicionar produto…</option>
+              <option value="">
+                + Adicionar {isPrinter ? "impressora" : "produto"}…
+              </option>
               {candidates.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name} — {p.brandName}
@@ -207,7 +241,7 @@ export function CompareView({
           </div>
         ) : (
           <p className="text-xs text-muted-foreground">
-            Máximo de {MAX} produtos. Remova um para trocar.
+            Máximo de {MAX} itens. Remova um para trocar.
           </p>
         )}
       </div>
@@ -217,7 +251,7 @@ export function CompareView({
       {/* Tabela de comparação */}
       {selected.length === 0 ? (
         <div className="rounded-xl border border-dashed p-12 text-center text-muted-foreground">
-          Adicione produtos acima para comparar lado a lado.
+          Adicione itens acima para comparar lado a lado.
         </div>
       ) : (
         <div className="overflow-x-auto rounded-xl border bg-card">
@@ -304,16 +338,18 @@ export function CompareView({
                   ))}
                 </tr>
               ))}
-              {specKeys.map((k) => (
-                <tr key={k}>
-                  <td className="p-3 text-muted-foreground">{k}</td>
-                  {computed.map(({ p }) => (
-                    <td key={p.id} className="border-l p-3">
-                      {p.specs?.[k] ?? DASH}
-                    </td>
-                  ))}
-                </tr>
-              ))}
+              {!isPrinter
+                ? specKeys.map((k) => (
+                    <tr key={k}>
+                      <td className="p-3 text-muted-foreground">{k}</td>
+                      {computed.map(({ p }) => (
+                        <td key={p.id} className="border-l p-3">
+                          {p.specs?.[k] ?? DASH}
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                : null}
             </tbody>
           </table>
         </div>
@@ -324,7 +360,7 @@ export function CompareView({
         o fabricante pode incluí-la.
       </p>
 
-      {/* Dicas dos materiais comparados */}
+      {/* Dicas dos materiais comparados (insumos) */}
       {dicaMaterials.length > 0 ? (
         <section className="mt-6 border-t pt-8">
           <div className="flex items-center gap-2">

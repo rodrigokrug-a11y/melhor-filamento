@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { deriveCanonical, inferProductFields } from "@/lib/ingest/create-product";
+import {
+  deriveCanonical,
+  detectPrinterTech,
+  inferProductFields,
+} from "@/lib/ingest/create-product";
 import {
   matchProduct,
   normalizeText,
@@ -45,12 +49,28 @@ describe("normalizeText", () => {
 });
 
 describe("inferProductFields (resina)", () => {
-  it("exclui impressora que tem 'resina' no nome (material OUTRO → não vira produto)", () => {
-    expect(inferProductFields("Impressora 3D Resina Halot Mage Pro").material).toBe(
-      "OUTRO",
+  it("impressora vira tipo PRINTER; outros equipamentos seguem excluídos", () => {
+    expect(inferProductFields("Impressora 3D Resina Halot Mage Pro").kind).toBe(
+      "PRINTER",
     );
-    expect(inferProductFields("Impressora 3D Creality Ender 3 V3").material).toBe("OUTRO");
-    expect(inferProductFields("Wash and Cure 3.0 Anycubic").material).toBe("OUTRO");
+    expect(inferProductFields("Impressora 3D Creality Ender 3 V3").kind).toBe(
+      "PRINTER",
+    );
+    // Wash & Cure não é impressora nem insumo → excluído (OUTRO, não PRINTER).
+    const wash = inferProductFields("Wash and Cure 3.0 Anycubic");
+    expect(wash.kind).not.toBe("PRINTER");
+    expect(wash.material).toBe("OUTRO");
+  });
+
+  it("detecta a tecnologia da impressora e não confunde 'para impressora'", () => {
+    expect(detectPrinterTech("Impressora 3D Creality Ender 3 V3")).toBe("FDM");
+    expect(detectPrinterTech("Impressora 3D Resina Elegoo Mars 4 LCD")).toBe(
+      "Resina",
+    );
+    const f = inferProductFields(
+      "Filamento PLA para impressora 3D Preto 1kg 1,75mm",
+    );
+    expect(f.kind).toBe("FILAMENT");
   });
 
   it("NÃO exclui insumo 'para impressora 3D'", () => {

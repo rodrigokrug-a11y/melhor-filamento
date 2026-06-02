@@ -182,9 +182,9 @@ export async function ingestSource(sourceId: string): Promise<IngestResult> {
         index,
       );
       if (!productId) {
-        // Só cria o produto se parecer filamento/resina (evita impressoras/peças).
+        // Cria se for filamento/resina (material conhecido) OU impressora.
         const fields = inferProductFields(c.name);
-        if (fields.material === "OUTRO") {
+        if (fields.material === "OUTRO" && fields.kind !== "PRINTER") {
           result.unmatched += 1;
           continue;
         }
