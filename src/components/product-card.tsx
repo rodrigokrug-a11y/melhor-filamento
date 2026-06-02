@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Boxes, FlaskConical, Printer, Tag } from "lucide-react";
 
+import { ProductImage } from "@/components/product-image";
 import { Badge } from "@/components/ui/badge";
 import { materialLabel, type ProductListItem } from "@/lib/catalog-types";
 import { formatBRL } from "@/lib/utils";
@@ -34,18 +34,15 @@ export function ProductCard({
     >
       <article className="flex h-full flex-col overflow-hidden rounded-2xl border bg-card shadow-sm transition-all duration-200 group-hover:-translate-y-0.5 group-hover:border-brand/40 group-hover:shadow-lg group-hover:shadow-brand/5">
         <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-gradient-to-br from-brand-soft to-muted">
-          {product.imageUrl ? (
-            <Image
-              src={product.imageUrl}
-              alt={product.name}
-              fill
-              unoptimized
-              sizes="(max-width: 768px) 50vw, 25vw"
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-          ) : (
-            <Icon className="size-12 text-brand/40 transition-transform duration-300 group-hover:scale-110" />
-          )}
+          <ProductImage
+            src={product.imageUrl}
+            alt={product.name}
+            sizes="(max-width: 768px) 50vw, 25vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            fallback={
+              <Icon className="size-12 text-brand/40 transition-transform duration-300 group-hover:scale-110" />
+            }
+          />
           <span className="absolute left-2.5 top-2.5">
             <Badge
               variant="secondary"

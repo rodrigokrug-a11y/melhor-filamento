@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Boxes, FlaskConical, Plus, Printer } from "lucide-react";
 
 import { OfferComparison } from "@/components/offer-table";
 import { PriceHistoryChart } from "@/components/price-history-chart";
+import { ProductImage } from "@/components/product-image";
 import { RegionNotice } from "@/components/region-notice";
 import { ReviewForm } from "@/components/review-form";
 import { ReviewList } from "@/components/review-list";
@@ -97,22 +97,19 @@ export default async function ProdutoPage({ params }: { params: Params }) {
       </Link>
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-[1fr_1.4fr]">
-        {product.imageUrl ? (
-          <div className="relative aspect-square overflow-hidden rounded-2xl border">
-            <Image
-              src={product.imageUrl}
-              alt={product.name}
-              fill
-              unoptimized
-              sizes="(max-width: 768px) 100vw, 40vw"
-              className="object-cover"
-            />
-          </div>
-        ) : (
-          <div className="flex aspect-square items-center justify-center rounded-2xl border bg-gradient-to-br from-brand-soft to-muted">
-            <Icon className="size-20 text-brand/30" />
-          </div>
-        )}
+        <div className="relative aspect-square overflow-hidden rounded-2xl border">
+          <ProductImage
+            src={product.imageUrl}
+            alt={product.name}
+            sizes="(max-width: 768px) 100vw, 40vw"
+            className="object-cover"
+            fallback={
+              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-soft to-muted">
+                <Icon className="size-20 text-brand/30" />
+              </div>
+            }
+          />
+        </div>
 
         <div>
           <div className="flex flex-wrap items-center gap-2">
