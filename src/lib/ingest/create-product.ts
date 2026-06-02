@@ -15,16 +15,45 @@ const FILAMENT_PATTERNS: [RegExp, Material][] = [
 ];
 
 const RESIN_PATTERNS: [RegExp, Material][] = [
-  [/lav[áa]vel|washable|water/i, "RESIN_WATER_WASHABLE"],
-  [/tough|resistente|r[íi]gida/i, "RESIN_TOUGH"],
-  [/resina/i, "RESIN_STANDARD"],
+  [/lav[áa]vel|wash/i, "RESIN_WATER_WASHABLE"],
+  [/tough|tenaz|resistente|r[íi]gida|abs\s*-?\s*like/i, "RESIN_TOUGH"],
+  [/\bresin/i, "RESIN_STANDARD"],
 ];
 
-const COLORS = [
-  "amarelo", "preto", "branco", "vermelho", "azul", "verde", "cinza",
-  "laranja", "roxo", "rosa", "marrom", "dourado", "prata", "transparente",
-  "natural", "bege", "ciano", "magenta", "violeta", "turquesa",
+// Cores: detecta PT/EN e termos de resina (clear, incolor, cristal, skin…) e
+// guarda o rótulo canônico em português.
+const COLOR_MAP: [RegExp, string][] = [
+  [/\b(transparente|incolor|clear|cristal|cristalina|transl[úu]cid[oa])\b/i, "Transparente"],
+  [/\b(preto|preta|black)\b/i, "Preto"],
+  [/\b(branco|branca|white)\b/i, "Branco"],
+  [/\b(cinza|gray|grey|chumbo)\b/i, "Cinza"],
+  [/\b(verde|green)\b/i, "Verde"],
+  [/\b(azul|blue)\b/i, "Azul"],
+  [/\b(vermelh[oa]|red)\b/i, "Vermelho"],
+  [/\b(amarelo|yellow)\b/i, "Amarelo"],
+  [/\b(laranja|orange)\b/i, "Laranja"],
+  [/\b(ros[ae]|pink)\b/i, "Rosa"],
+  [/\b(roxo|lil[áa]s|purple|violeta)\b/i, "Roxo"],
+  [/\b(creme|bege|marfim|skin|pele|caqui)\b/i, "Bege"],
+  [/\b(dourado|ouro|gold)\b/i, "Dourado"],
+  [/\b(prata|prateado|silver)\b/i, "Prata"],
+  [/\b(marrom|brown)\b/i, "Marrom"],
+  [/\b(natural)\b/i, "Natural"],
 ];
+
+// Equipamentos que NÃO são insumo (impressora, scanner, secadora, wash&cure…).
+// "para impressora 3d" é insumo PARA a máquina, então não conta como máquina.
+const MACHINE_RE =
+  /\b(?:impressora|printer|scanner|secadora|estufa|desumidificad|wash\s*(?:and|&|n)?\s*cure|c[âa]mara\s+de\s+cura|m[áa]quina)/i;
+
+function looksLikeMachine(name: string): boolean {
+  if (/para\s+impressora/i.test(name)) {
+    return /\b(?:scanner|secadora|estufa|desumidificad|wash\s*(?:and|&|n)?\s*cure|c[âa]mara\s+de\s+cura)/i.test(
+      name,
+    );
+  }
+  return MACHINE_RE.test(name);
+}
 
 type Inferred = {
   kind: ProductKind;
@@ -34,9 +63,20 @@ type Inferred = {
   diameterMm: number | null;
 };
 
-/** Infere material, cor, peso e diâmetro a partir do nome do produto. */
+/** Infere material, cor, peso/volume e diâmetro a partir do nome do produto. */
 export function inferProductFields(name: string): Inferred {
-  const isResin = /resina/i.test(name);
+  // Equipamentos (impressora, scanner, secadora…) não entram no catálogo de insumos.
+  if (looksLikeMachine(name)) {
+    return {
+      kind: "FILAMENT",
+      material: "OUTRO",
+      color: "Variado",
+      netWeightG: 1000,
+      diameterMm: null,
+    };
+  }
+
+  const isResin = /\bresin/i.test(name);
   let material: Material = "OUTRO";
   for (const [re, m] of isResin ? RESIN_PATTERNS : FILAMENT_PATTERNS) {
     if (re.test(name)) {
@@ -45,17 +85,19 @@ export function inferProductFields(name: string): Inferred {
     }
   }
 
-  const lower = name.toLowerCase();
-  const color = COLORS.find((c) => lower.includes(c));
-  const colorCap = color ? color[0].toUpperCase() + color.slice(1) : "Variado";
+  const colorEntry = COLOR_MAP.find(([re]) => re.test(name));
+  const colorCap = colorEntry ? colorEntry[1] : "Variado";
 
-  let netWeightG = isResin ? 1000 : 1000;
-  const kg = name.match(/(\d+(?:[.,]\d+)?)\s*kg/i);
-  const g = name.match(/(\d+)\s*g\b/i);
+  // Peso (filamento, kg/g) ou volume (resina, ml/L) — guardado em netWeightG.
+  let netWeightG = 1000;
+  const kg = name.match(/(\d+(?:[.,]\d+)?)\s*kg\b/i);
   const ml = name.match(/(\d+)\s*ml\b/i);
+  const g = name.match(/(\d+)\s*g\b/i);
+  const l = name.match(/(\d+(?:[.,]\d+)?)\s*l(?:itros?)?\b/i);
   if (kg) netWeightG = Math.round(Number(kg[1].replace(",", ".")) * 1000);
-  else if (g) netWeightG = Number(g[1]);
   else if (ml) netWeightG = Number(ml[1]);
+  else if (g) netWeightG = Number(g[1]);
+  else if (l) netWeightG = Math.round(Number(l[1].replace(",", ".")) * 1000);
 
   const d = name.match(/(1[.,]75|2[.,]85|3[.,]0{1,2})\s*mm/i);
   const diameterMm = isResin ? null : d ? Number(d[1].replace(",", ".")) : 1.75;

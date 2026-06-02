@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { inferProductFields } from "@/lib/ingest/create-product";
 import {
   matchProduct,
   normalizeText,
@@ -40,6 +41,49 @@ const index: ProductRef[] = [p1, p2];
 describe("normalizeText", () => {
   it("remove acentos e pontuação", () => {
     expect(normalizeText("Resina Lavável (1,75mm)")).toBe("resina lavavel 1 75mm");
+  });
+});
+
+describe("inferProductFields (resina)", () => {
+  it("exclui impressora que tem 'resina' no nome (material OUTRO → não vira produto)", () => {
+    expect(inferProductFields("Impressora 3D Resina Halot Mage Pro").material).toBe(
+      "OUTRO",
+    );
+    expect(inferProductFields("Impressora 3D Creality Ender 3 V3").material).toBe("OUTRO");
+    expect(inferProductFields("Wash and Cure 3.0 Anycubic").material).toBe("OUTRO");
+  });
+
+  it("NÃO exclui insumo 'para impressora 3D'", () => {
+    const f = inferProductFields("Filamento PLA para impressora 3D Preto 1kg 1,75mm");
+    expect(f.material).toBe("PLA");
+    expect(f.kind).toBe("FILAMENT");
+  });
+
+  it("classifica resina lavável / tough / standard", () => {
+    expect(inferProductFields("Resina 3D Fila Water Washable Branca 1L").material).toBe(
+      "RESIN_WATER_WASHABLE",
+    );
+    expect(inferProductFields("Resina PrintaLot Tough Transparente 500g").material).toBe(
+      "RESIN_TOUGH",
+    );
+    expect(inferProductFields("Resina Premium Standard Cinza 1L").material).toBe(
+      "RESIN_STANDARD",
+    );
+  });
+
+  it("resina não tem diâmetro e lê volume em L/ml/g", () => {
+    expect(inferProductFields("Resina Standard Cinza 2L").netWeightG).toBe(2000);
+    expect(inferProductFields("Resina Standard Cinza 500ml").netWeightG).toBe(500);
+    expect(inferProductFields("Resina Tough Transparente 500g").netWeightG).toBe(500);
+    expect(inferProductFields("Resina Standard Cinza 1L").diameterMm).toBeNull();
+    expect(inferProductFields("Resina Standard Cinza 1L").kind).toBe("RESIN");
+  });
+
+  it("detecta cores PT/EN e de resina (clear/incolor/skin)", () => {
+    expect(inferProductFields("Resina Standard Clear 1L").color).toBe("Transparente");
+    expect(inferProductFields("Resina Standard Incolor 1L").color).toBe("Transparente");
+    expect(inferProductFields("Resina Skin Tom de Pele 500g").color).toBe("Bege");
+    expect(inferProductFields("Filamento PLA Grey 1kg 1,75mm").color).toBe("Cinza");
   });
 });
 
