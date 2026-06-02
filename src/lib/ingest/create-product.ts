@@ -72,7 +72,7 @@ export function detectPrinterTech(name: string): string {
 
 // Acessórios/peças que citam "impressora" mas NÃO são a impressora.
 const PRINTER_ACCESSORY_RE =
-  /\b(bico|hotend|hot\s?end|nozzle|display|fonte|sensor|correia|rolamento|polia|ventoinha|cooler|esp[áa]tula|fim de curso|end\s?stop|acoplamento|engrenagem|cabo|adaptador|suporte)\b/i;
+  /\b(bico|hotend|hot\s?end|nozzle|display|mesa|placa|chapa|fonte|sensor|correia|rolamento|polia|ventoinha|cooler|esp[áa]tula|fim de curso|end\s?stop|acoplamento|engrenagem|cabo|adaptador|suporte)\b/i;
 
 // Fabricantes 3D conhecidos — p/ acertar a marca pelo nome (ex.: "Bambu Lab").
 const KNOWN_3D_BRANDS = [
