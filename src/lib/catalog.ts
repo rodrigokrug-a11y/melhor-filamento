@@ -418,6 +418,15 @@ export const getBrandWithProducts = cache(
         brand.promotedUntil,
         new Date(),
       ),
+      profile: {
+        website: brand.website,
+        country: brand.country,
+        headquarters: brand.headquarters,
+        summary: brand.summary,
+        sells: brand.sells,
+        about: brand.about,
+        foundedYear: brand.foundedYear,
+      },
       products,
     };
   },

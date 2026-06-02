@@ -137,12 +137,23 @@ export type CatalogResult = {
   colors: FacetOption[];
 };
 
+export type BrandProfile = {
+  website: string | null;
+  country: string | null;
+  headquarters: string | null;
+  summary: string | null;
+  sells: string | null;
+  about: string | null;
+  foundedYear: number | null;
+};
+
 export type BrandPage = {
   id: string;
   slug: string;
   name: string;
   logoUrl: string | null;
   promotedActive: boolean;
+  profile: BrandProfile;
   products: ProductListItem[];
 };
 

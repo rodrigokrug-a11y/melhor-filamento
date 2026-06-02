@@ -76,6 +76,14 @@ model Brand {
   name          String
   slug          String    @unique
   logoUrl       String?
+  // Perfil da empresa (mesmos campos p/ todas) — preenchidos via importação.
+  website       String? // site oficial
+  country       String? // país de origem
+  headquarters  String? // sede / endereço (cidade, estado)
+  summary       String? // resumo curto (1–2 frases)
+  sells         String? // o que a empresa vende
+  about         String? // o que a empresa faz (descrição)
+  foundedYear   Int? // ano de fundação
   isPromoted    Boolean   @default(false) // marca patrocinada (destaque pago)
   promotedUntil DateTime?
   products      Product[]

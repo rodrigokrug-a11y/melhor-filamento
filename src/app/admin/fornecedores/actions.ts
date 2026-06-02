@@ -114,6 +114,67 @@ async function importLogos(logos: unknown[]): Promise<ImportState> {
   return { ok: true, summary };
 }
 
+/** Atualiza o perfil das marcas (resumo, o que faz/vende, sede, país, site,
+ *  ano) a partir de uma lista — mesmo conjunto de campos para todas. */
+async function importProfiles(profiles: unknown[]): Promise<ImportState> {
+  const summary = {
+    sellersCreated: 0,
+    sellersUpdated: 0,
+    brandsCreated: 0,
+    feedsCreated: 0,
+    geocoded: 0,
+    warnings: [] as string[],
+  };
+  let updated = 0;
+  let unmatched = 0;
+  for (const item of profiles) {
+    const p = (item ?? {}) as Record<string, unknown>;
+    const str = (...keys: string[]): string | undefined => {
+      for (const k of keys) {
+        const v = p[k];
+        if (typeof v === "string" && v.trim()) return v.trim();
+      }
+      return undefined;
+    };
+    const name = str("name", "brand", "marca");
+    if (!name) continue;
+
+    const data: Record<string, unknown> = {};
+    const website = str("website", "site");
+    if (website) data.website = website;
+    const country = str("country", "pais", "país");
+    if (country) data.country = country;
+    const headquarters = str("headquarters", "address", "endereco", "endereço", "sede");
+    if (headquarters) data.headquarters = headquarters;
+    const resumo = str("summary", "resumo");
+    if (resumo) data.summary = resumo;
+    const sells = str("sells", "vende", "o_que_vende");
+    if (sells) data.sells = sells;
+    const about = str("about", "faz", "o_que_faz", "description", "descricao", "descrição");
+    if (about) data.about = about;
+    const fyRaw = p.foundedYear ?? p.founded ?? p.ano ?? p.fundacao;
+    const year =
+      typeof fyRaw === "number"
+        ? fyRaw
+        : typeof fyRaw === "string" && /^\d{4}$/.test(fyRaw.trim())
+          ? Number(fyRaw.trim())
+          : undefined;
+    if (year) data.foundedYear = year;
+
+    if (Object.keys(data).length === 0) continue;
+    const r = await prisma.brand.updateMany({
+      where: { name: { equals: name, mode: "insensitive" } },
+      data,
+    });
+    if (r.count > 0) updated += r.count;
+    else unmatched += 1;
+  }
+  summary.warnings.push(`${updated} marca(s) com perfil atualizado.`);
+  if (unmatched) summary.warnings.push(`${unmatched} nome(s) sem marca correspondente.`);
+  revalidatePath("/marcas");
+  return { ok: true, summary };
+}
+
 export async function importSuppliers(
   _prev: ImportState,
   formData: FormData,
@@ -139,6 +200,16 @@ export async function importSuppliers(
     Array.isArray((payload as { logos?: unknown }).logos)
   ) {
     return importLogos((payload as { logos: unknown[] }).logos);
+  }
+
+  // Modo perfis: { "profiles": [{ name, summary, about, sells, ... }] }.
+  if (
+    payload &&
+    typeof payload === "object" &&
+    !Array.isArray(payload) &&
+    Array.isArray((payload as { profiles?: unknown }).profiles)
+  ) {
+    return importProfiles((payload as { profiles: unknown[] }).profiles);
   }
 
   const parsed = PayloadSchema.safeParse(payload);

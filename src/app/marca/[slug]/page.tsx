@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Megaphone } from "lucide-react";
+import {
+  ArrowLeft,
+  Calendar,
+  Globe,
+  MapPin,
+  Megaphone,
+  ShoppingBag,
+} from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { BrandRequestButton } from "@/components/brand-request-button";
@@ -47,6 +54,16 @@ export default async function MarcaPage({ params }: { params: Params }) {
   if (!brand) notFound();
 
   const reviewData = await getBrandReviews(brand.id);
+  const { profile } = brand;
+  const sede = [profile.headquarters, profile.country].filter(Boolean).join(" · ");
+  const hasProfile = Boolean(
+    profile.summary ||
+      profile.about ||
+      profile.sells ||
+      sede ||
+      profile.website ||
+      profile.foundedYear,
+  );
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Brand",
@@ -90,6 +107,51 @@ export default async function MarcaPage({ params }: { params: Params }) {
         </div>
       </div>
 
+      {hasProfile ? (
+        <section className="mb-8 rounded-2xl border bg-card p-5">
+          <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Sobre a empresa
+          </h2>
+          {profile.summary ? (
+            <p className="mt-2 text-base font-medium">{profile.summary}</p>
+          ) : null}
+          {profile.about ? (
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              {profile.about}
+            </p>
+          ) : null}
+          <dl className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {profile.sells ? (
+              <Fact icon={ShoppingBag} label="O que vende" value={profile.sells} />
+            ) : null}
+            {sede ? <Fact icon={MapPin} label="Sede" value={sede} /> : null}
+            {profile.foundedYear ? (
+              <Fact
+                icon={Calendar}
+                label="Fundada em"
+                value={String(profile.foundedYear)}
+              />
+            ) : null}
+            {profile.website ? (
+              <Fact
+                icon={Globe}
+                label="Site"
+                value={
+                  <a
+                    href={profile.website}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    className="text-teal hover:underline"
+                  >
+                    {profile.website.replace(/^https?:\/\/(www\.)?/, "")}
+                  </a>
+                }
+              />
+            ) : null}
+          </dl>
+        </section>
+      ) : null}
+
       <div className="mb-8 rounded-2xl border border-brand/20 bg-brand-soft p-4">
         <p className="text-sm font-medium">Quer ofertas da {brand.name}?</p>
         <p className="mb-3 text-xs text-muted-foreground">
@@ -121,6 +183,26 @@ export default async function MarcaPage({ params }: { params: Params }) {
           <ReviewForm brandId={brand.id} targetLabel={brand.name} />
         </div>
       </section>
+    </div>
+  );
+}
+
+function Fact({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  value: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-start gap-2.5">
+      <Icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+      <div className="min-w-0">
+        <dt className="text-xs text-muted-foreground">{label}</dt>
+        <dd className="text-sm font-medium">{value}</dd>
+      </div>
     </div>
   );
 }
