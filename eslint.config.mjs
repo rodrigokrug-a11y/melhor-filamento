@@ -15,6 +15,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Pasta privada (gitignored): pesquisa de fornecedores e scripts locais.
+    "data/**",
   ]),
 ]);
 

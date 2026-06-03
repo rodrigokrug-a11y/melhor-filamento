@@ -27,7 +27,7 @@ export function SiteHeader() {
         </Link>
 
         <div className="flex items-center gap-1.5">
-          <nav className="mr-1 hidden items-center gap-0.5 text-sm font-medium lg:flex">
+          <nav className="mr-1 hidden items-center gap-0.5 text-sm font-medium xl:flex">
             {MAIN_NAV.map((item) => (
               <Link
                 key={item.href}
