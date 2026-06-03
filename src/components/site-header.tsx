@@ -3,6 +3,7 @@ import { Plus, Search, Sparkles } from "lucide-react";
 
 import { AuthNav } from "@/components/auth-nav";
 import { CepSelector } from "@/components/cep-selector";
+import { FavoritesNavLink } from "@/components/favorites-nav-link";
 import { Logo } from "@/components/logo";
 import { MobileNav } from "@/components/mobile-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -60,6 +61,7 @@ export function SiteHeader() {
           >
             <Search className="size-5" />
           </Link>
+          <FavoritesNavLink />
           <CepSelector />
           <ThemeToggle />
           <div className="hidden sm:block">

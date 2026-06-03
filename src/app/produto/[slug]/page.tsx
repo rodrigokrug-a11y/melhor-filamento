@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Boxes, FlaskConical, Plus, Printer } from "lucide-react";
 
 import { PageBanner } from "@/components/banners";
+import { FavoriteButton } from "@/components/favorite-button";
 import { OfferComparison } from "@/components/offer-table";
 import { PriceAlertForm } from "@/components/price-alert-form";
 import { PriceHistoryChart } from "@/components/price-history-chart";
@@ -125,9 +126,16 @@ export default async function ProdutoPage({ params }: { params: Params }) {
               {product.brandName}
             </Link>
           </div>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight">
-            {product.name}
-          </h1>
+          <div className="mt-2 flex items-start justify-between gap-3">
+            <h1 className="text-2xl font-bold tracking-tight">
+              {product.name}
+            </h1>
+            <FavoriteButton
+              slug={product.slug}
+              size="lg"
+              className="mt-0.5 shrink-0 border"
+            />
+          </div>
 
           {isPrinter ? (
             <div className="mt-4 rounded-2xl border bg-card">

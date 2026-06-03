@@ -243,6 +243,26 @@ export async function searchSuggestions(
   }));
 }
 
+/** Produtos por slug (com oferta ativa), preservando a ordem informada. */
+export async function getProductsBySlugs(
+  slugs: string[],
+): Promise<ProductListItem[]> {
+  const unique = [...new Set(slugs.filter(Boolean))].slice(0, 100);
+  if (unique.length === 0) return [];
+
+  const rows = await prisma.product.findMany({
+    where: { slug: { in: unique }, offers: { some: ACTIVE_OFFER_WHERE } },
+    include: PRODUCT_WITH_OFFERS,
+  });
+
+  const byslug = new Map(rows.map((r) => [r.slug, r]));
+  return unique
+    .map((s) => byslug.get(s))
+    .filter((r): r is ProductWithOffers => r != null)
+    .map(buildListItem)
+    .filter((x): x is ProductListItem => x !== null);
+}
+
 function buildFacets(
   items: { value: string; label: string }[],
 ): FacetOption[] {
