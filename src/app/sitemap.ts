@@ -3,6 +3,7 @@ import type { MetadataRoute } from "next";
 import { getAllBrandSlugs, getAllProductSlugs } from "@/lib/catalog";
 import { FILAMENT_MATERIALS } from "@/lib/catalog-types";
 import { siteUrl } from "@/lib/seo";
+import { TOOLS } from "@/lib/tools";
 
 export const revalidate = 3600;
 
@@ -76,13 +77,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly",
       priority: 0.7,
     },
-    {
-      url: `${base}/ferramentas/calculadora-de-custo`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
   ];
+
+  // Páginas de cada ferramenta disponível (geradas a partir do registro).
+  const toolRoutes: MetadataRoute.Sitemap = TOOLS.filter(
+    (t) => t.available,
+  ).map((t) => ({
+    url: `${base}/ferramentas/${t.slug}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.6,
+  }));
 
   const materialRoutes: MetadataRoute.Sitemap = FILAMENT_MATERIALS.map(
     (material) => ({
@@ -109,6 +114,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     ...staticRoutes,
+    ...toolRoutes,
     ...materialRoutes,
     ...productRoutes,
     ...brandRoutes,
