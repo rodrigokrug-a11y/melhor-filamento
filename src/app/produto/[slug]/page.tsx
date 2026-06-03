@@ -5,6 +5,7 @@ import { ArrowLeft, Boxes, FlaskConical, Plus, Printer } from "lucide-react";
 
 import { PageBanner } from "@/components/banners";
 import { OfferComparison } from "@/components/offer-table";
+import { PriceAlertForm } from "@/components/price-alert-form";
 import { PriceHistoryChart } from "@/components/price-history-chart";
 import { PriceVerdict } from "@/components/price-verdict";
 import { ProductImage } from "@/components/product-image";
@@ -188,6 +189,12 @@ export default async function ProdutoPage({ params }: { params: Params }) {
           <RegionNotice />
         </div>
         <OfferComparison offers={product.offers} />
+        <div className="mt-4">
+          <PriceAlertForm
+            productId={product.id}
+            suggestedPrice={product.bestPrice}
+          />
+        </div>
         <div className="mt-4 flex flex-col items-start justify-between gap-3 rounded-2xl border border-dashed bg-brand-soft/40 p-4 sm:flex-row sm:items-center">
           <p className="text-sm">
             <span className="font-medium">Achou um preço melhor?</span>{" "}

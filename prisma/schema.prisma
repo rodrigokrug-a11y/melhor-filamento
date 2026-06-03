@@ -112,6 +112,7 @@ model Product {
   offers     Offer[]
   reviews    Review[]
   tips       Tip[]
+  priceAlerts PriceAlert[]
   createdAt  DateTime    @default(now())
 
   @@index([kind])
@@ -436,6 +437,24 @@ model Upload {
   mimeType  String
   data      Bytes
   createdAt DateTime @default(now())
+}
+
+// Alerta de preço: a pessoa informa e-mail + preço-alvo num produto e é
+// avisada por e-mail quando uma oferta cai abaixo do alvo. Sem login (token
+// para cancelar). Checado pela rota /api/alertas/check (no cron de ingestão).
+model PriceAlert {
+  id             String    @id @default(cuid())
+  productId      String
+  product        Product   @relation(fields: [productId], references: [id])
+  email          String
+  targetPrice    Decimal   @db.Decimal(10, 2)
+  active         Boolean   @default(true)
+  token          String    @unique // cancelar sem login
+  lastNotifiedAt DateTime?
+  createdAt      DateTime  @default(now())
+
+  @@index([productId, active])
+  @@index([email])
 }
 
 // Mensagem enviada pelo formulário "Entre em contato". Guardada sempre (mesmo
