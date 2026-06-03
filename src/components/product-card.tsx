@@ -52,7 +52,11 @@ export function ProductCard({
           >
             {tagLabel}
           </Badge>
-          {product.bestPriceHasCoupon ? (
+          {product.discountPct > 0 ? (
+            <Badge variant="deal">
+              <Tag className="size-3" />−{product.discountPct}%
+            </Badge>
+          ) : product.bestPriceHasCoupon ? (
             <Badge variant="deal">
               <Tag className="size-3" />
               cupom

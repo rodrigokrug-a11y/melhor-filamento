@@ -104,6 +104,7 @@ function buildListItem(p: ProductWithOffers): ProductListItem | null {
 
   let bestPrice = Infinity;
   let bestPriceHasCoupon = false;
+  let bestDiscountPct = 0;
   const offersLite: OfferShippingLite[] = [];
   for (const o of p.offers) {
     const price = toNumber(o.price);
@@ -117,7 +118,10 @@ function buildListItem(p: ProductWithOffers): ProductListItem | null {
     const eff = effectivePrice(coupon);
     if (eff < bestPrice) {
       bestPrice = eff;
-      bestPriceHasCoupon = discountAmount(coupon) > 0;
+      const disc = discountAmount(coupon);
+      bestPriceHasCoupon = disc > 0;
+      bestDiscountPct =
+        disc > 0 && price > 0 ? Math.round((disc / price) * 100) : 0;
     }
     offersLite.push({
       effectivePrice: eff,
@@ -141,6 +145,7 @@ function buildListItem(p: ProductWithOffers): ProductListItem | null {
     offerCount: p.offers.length,
     bestPrice,
     bestPriceHasCoupon,
+    discountPct: bestDiscountPct,
     boost: null,
     sortOrder: p.sortOrder,
     offers: offersLite,
@@ -262,6 +267,24 @@ export async function getProductsBySlugs(
     .map(buildListItem)
     .filter((x): x is ProductListItem => x !== null);
 }
+
+/** Ofertas do dia: produtos cuja melhor oferta tem desconto, do maior pro menor. */
+export const getDeals = cache(
+  async (limit = 24): Promise<ProductListItem[]> => {
+    const rows = await prisma.product.findMany({
+      where: {
+        offers: { some: { ...ACTIVE_OFFER_WHERE, couponType: { not: null } } },
+      },
+      include: PRODUCT_WITH_OFFERS,
+      take: 240,
+    });
+    return rows
+      .map(buildListItem)
+      .filter((x): x is ProductListItem => x !== null && x.discountPct > 0)
+      .sort((a, b) => b.discountPct - a.discountPct || a.bestPrice - b.bestPrice)
+      .slice(0, limit);
+  },
+);
 
 function buildFacets(
   items: { value: string; label: string }[],

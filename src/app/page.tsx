@@ -3,8 +3,8 @@ import Link from "next/link";
 import {
   ArrowRight,
   BadgeCheck,
-  BookOpen,
   Boxes,
+  Flame,
   FlaskConical,
   Lightbulb,
   MapPin,
@@ -290,12 +290,12 @@ function FeatureBlocks() {
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        <MiniBlock href="/ofertas" icon={<Flame />} label="Ofertas" />
         <MiniBlock href="/filamentos" icon={<Boxes />} label="Filamentos" />
         <MiniBlock href="/resinas" icon={<FlaskConical />} label="Resinas" />
         <MiniBlock href="/impressoras" icon={<Printer />} label="Impressoras" />
-        <MiniBlock href="/ferramentas" icon={<Wrench />} label="Ferramentas" />
         <MiniBlock href="/ranking" icon={<Trophy />} label="Ranking" />
-        <MiniBlock href="/receitas" icon={<BookOpen />} label="Receitas" />
+        <MiniBlock href="/ferramentas" icon={<Wrench />} label="Ferramentas" />
       </div>
     </section>
   );

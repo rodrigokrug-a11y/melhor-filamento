@@ -152,6 +152,7 @@ export type ProductListItem = {
   offerCount: number;
   bestPrice: number;
   bestPriceHasCoupon: boolean;
+  discountPct: number; // % de desconto da melhor oferta (0 = sem desconto)
   boost: number | null; // lance de destaque ativo (R$/mês); null = sem destaque
   sortOrder: number; // ordem manual do admin (maior = primeiro)
   offers: OfferShippingLite[];
