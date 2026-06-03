@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { FlaskConical } from "lucide-react";
 
 import { CatalogView } from "@/components/catalog-view";
+import { CatStrip } from "@/components/cat-strip";
 import { PageBanner } from "@/components/banners";
 import { PageHeader } from "@/components/page-header";
 import { getCatalog, parseCatalogFilters } from "@/lib/catalog";
@@ -32,15 +33,18 @@ export default async function ResinasPage({
   const result = await getCatalog("RESIN", filters);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
-      <PageBanner placement="RESINAS" />
-      <PageHeader
-        icon={FlaskConical}
-        eyebrow="Catálogo"
-        title="Resinas"
-        subtitle="Compare preços de resinas 3D entre lojas. Informe seu CEP para ranquear pelo custo total com frete."
-      />
-      <CatalogView basePath="/resinas" result={result} filters={filters} />
-    </div>
+    <>
+      <CatStrip active="resinas" />
+      <div className="mx-auto max-w-6xl px-4 py-8">
+        <PageBanner placement="RESINAS" />
+        <PageHeader
+          icon={FlaskConical}
+          eyebrow="Catálogo"
+          title="Resinas"
+          subtitle="Compare preços de resinas 3D entre lojas. Informe seu CEP para ranquear pelo custo total com frete."
+        />
+        <CatalogView basePath="/resinas" result={result} filters={filters} />
+      </div>
+    </>
   );
 }

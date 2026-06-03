@@ -20,6 +20,7 @@ import {
 
 import { PageBanner } from "@/components/banners";
 import { BrandLogo } from "@/components/brand-logo";
+import { CatStrip } from "@/components/cat-strip";
 import { ProductCard } from "@/components/product-card";
 import { Reveal } from "@/components/reveal";
 import { SearchBox } from "@/components/search-box";
@@ -58,6 +59,7 @@ export default async function HomePage() {
       </div>
       <Hero />
       <TrustBar />
+      <CatStrip />
 
       <div className="mx-auto max-w-6xl space-y-16 px-4 py-14">
         <Reveal>
@@ -140,6 +142,23 @@ function Hero() {
         </p>
         <div className="mx-auto mt-6 max-w-xl text-left">
           <SearchBox size="lg" placeholder="Ex: PLA preto 1kg, resina, Ender 3…" />
+        </div>
+        <div className="mx-auto mt-3 flex max-w-xl flex-wrap gap-2">
+          {[
+            { label: "PLA 1kg", href: "/filamentos?material=PLA" },
+            { label: "PETG", href: "/filamentos?material=PETG" },
+            { label: "ABS", href: "/filamentos?material=ABS" },
+            { label: "Resinas", href: "/resinas" },
+            { label: "Ender 3", href: "/busca?q=Ender+3" },
+          ].map((t) => (
+            <Link
+              key={t.label}
+              href={t.href}
+              className="rounded-full border bg-card px-3 py-1 font-mono text-xs text-muted-foreground transition-colors hover:border-brand/40 hover:text-foreground"
+            >
+              {t.label}
+            </Link>
+          ))}
         </div>
         <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
           <MapPin className="size-3.5 text-brand" />

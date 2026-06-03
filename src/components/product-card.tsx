@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Boxes, FlaskConical, Megaphone, Printer, Tag } from "lucide-react";
+import { Boxes, FlaskConical, Megaphone, Printer, Star, Tag } from "lucide-react";
 
 import { CompareButton } from "@/components/compare-button";
 import { FavoriteButton } from "@/components/favorite-button";
@@ -74,33 +74,47 @@ export function ProductCard({
             </Badge>
           </span>
         ) : null}
-        <p className="font-mono text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
-          {product.brandName}
-        </p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="truncate font-mono text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+            {product.brandName}
+          </p>
+          {product.rating != null ? (
+            <span className="inline-flex shrink-0 items-center gap-0.5 text-[11px] font-semibold text-muted-foreground">
+              <Star className="size-3 fill-gold text-gold" />
+              {product.rating.toFixed(1)}
+            </span>
+          ) : null}
+        </div>
         <h3 className="mt-1 line-clamp-2 text-sm font-semibold leading-snug">
           {product.name}
         </h3>
 
-        <div className="mt-auto flex items-end justify-between gap-2 pt-3">
-          <div>
+        <div className="mt-auto pt-3">
+          {product.listPrice > price + 0.01 ? (
+            <p className="text-[11px] text-muted-foreground line-through tnum">
+              {formatBRL(product.listPrice)}
+            </p>
+          ) : (
             <p className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground">
               {freteIncluded ? "menor total" : "a partir de"}
             </p>
+          )}
+          <div className="flex items-end justify-between gap-2">
             <p className="font-display text-xl font-bold tracking-tight tnum">
               {formatBRL(price)}
             </p>
-            {freteIncluded ? (
-              <p className="text-[11px] font-medium text-offer">com frete</p>
-            ) : perKg != null ? (
-              <p className="font-mono text-[10px] text-muted-foreground tnum">
-                {formatBRL(perKg)}/kg
-              </p>
-            ) : null}
+            <p className="shrink-0 font-mono text-[10px] text-muted-foreground">
+              {product.offerCount}{" "}
+              {product.offerCount === 1 ? "oferta" : "ofertas"}
+            </p>
           </div>
-          <p className="shrink-0 font-mono text-[10px] text-muted-foreground">
-            {product.offerCount}{" "}
-            {product.offerCount === 1 ? "oferta" : "ofertas"}
-          </p>
+          {freteIncluded ? (
+            <p className="text-[11px] font-medium text-offer">com frete</p>
+          ) : perKg != null ? (
+            <p className="font-mono text-[10px] text-muted-foreground tnum">
+              {formatBRL(perKg)}/kg
+            </p>
+          ) : null}
         </div>
       </div>
 

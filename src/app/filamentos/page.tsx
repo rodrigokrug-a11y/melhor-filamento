@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Boxes } from "lucide-react";
 
 import { CatalogView } from "@/components/catalog-view";
+import { CatStrip } from "@/components/cat-strip";
 import { PageBanner } from "@/components/banners";
 import { PageHeader } from "@/components/page-header";
 import { getCatalog, parseCatalogFilters } from "@/lib/catalog";
@@ -30,17 +31,22 @@ export default async function FilamentosPage({
 }) {
   const filters = parseCatalogFilters(await searchParams);
   const result = await getCatalog("FILAMENT", filters);
+  const active =
+    filters.materials?.length === 1 ? filters.materials[0] : "tudo";
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
-      <PageBanner placement="FILAMENTOS" />
+    <>
+      <CatStrip active={active} />
+      <div className="mx-auto max-w-6xl px-4 py-8">
+        <PageBanner placement="FILAMENTOS" />
       <PageHeader
         icon={Boxes}
         eyebrow="Catálogo"
         title="Filamentos"
         subtitle="Compare preços de filamentos 3D entre lojas. Informe seu CEP para ranquear pelo custo total com frete."
       />
-      <CatalogView basePath="/filamentos" result={result} filters={filters} />
-    </div>
+        <CatalogView basePath="/filamentos" result={result} filters={filters} />
+      </div>
+    </>
   );
 }

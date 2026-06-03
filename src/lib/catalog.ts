@@ -39,6 +39,7 @@ const PRODUCT_WITH_OFFERS = {
     where: ACTIVE_OFFER_WHERE,
     include: { seller: { include: { shippingRules: true } } },
   },
+  reviews: { where: { status: "APPROVED" }, select: { rating: true } },
 } satisfies Prisma.ProductInclude;
 
 type ProductWithOffers = Prisma.ProductGetPayload<{
@@ -104,6 +105,7 @@ function buildListItem(p: ProductWithOffers): ProductListItem | null {
   if (p.offers.length === 0) return null;
 
   let bestPrice = Infinity;
+  let bestListPrice = Infinity;
   let bestPriceHasCoupon = false;
   let bestDiscountPct = 0;
   const offersLite: OfferShippingLite[] = [];
@@ -119,6 +121,7 @@ function buildListItem(p: ProductWithOffers): ProductListItem | null {
     const eff = effectivePrice(coupon);
     if (eff < bestPrice) {
       bestPrice = eff;
+      bestListPrice = price;
       const disc = discountAmount(coupon);
       bestPriceHasCoupon = disc > 0;
       bestDiscountPct =
@@ -129,6 +132,12 @@ function buildListItem(p: ProductWithOffers): ProductListItem | null {
       shippingRules: mapShippingRules(o.seller.shippingRules),
     });
   }
+
+  const ratings = p.reviews.map((r) => r.rating);
+  const reviewCount = ratings.length;
+  const rating = reviewCount
+    ? ratings.reduce((a, b) => a + b, 0) / reviewCount
+    : null;
 
   return {
     id: p.id,
@@ -145,8 +154,11 @@ function buildListItem(p: ProductWithOffers): ProductListItem | null {
     brandSlug: p.brand.slug,
     offerCount: p.offers.length,
     bestPrice,
+    listPrice: bestListPrice,
     bestPriceHasCoupon,
     discountPct: bestDiscountPct,
+    rating,
+    reviewCount,
     boost: null,
     sortOrder: p.sortOrder,
     offers: offersLite,
@@ -314,7 +326,12 @@ export const getDeals = cache(
           ? Math.min(90, Math.round((1 - curRaw / histMax) * 100))
           : 0;
       const dealPct = Math.max(li.discountPct, dropPct);
-      if (dealPct >= minPct) deals.push({ ...li, discountPct: dealPct });
+      if (dealPct >= minPct)
+        deals.push({
+          ...li,
+          discountPct: dealPct,
+          listPrice: Math.max(li.listPrice, histMax),
+        });
     }
 
     return deals

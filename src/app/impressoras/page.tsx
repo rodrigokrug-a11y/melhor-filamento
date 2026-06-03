@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Printer } from "lucide-react";
 
 import { CatalogView } from "@/components/catalog-view";
+import { CatStrip } from "@/components/cat-strip";
 import { PageBanner } from "@/components/banners";
 import { PageHeader } from "@/components/page-header";
 import { getCatalog, parseCatalogFilters } from "@/lib/catalog";
@@ -32,15 +33,18 @@ export default async function ImpressorasPage({
   const result = await getCatalog("PRINTER", filters);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
-      <PageBanner placement="IMPRESSORAS" />
-      <PageHeader
-        icon={Printer}
-        eyebrow="Catálogo"
-        title="Impressoras 3D"
-        subtitle="Compare impressoras 3D (FDM e resina) entre lojas. Informe seu CEP para ranquear pelo custo total com frete."
-      />
-      <CatalogView basePath="/impressoras" result={result} filters={filters} />
-    </div>
+    <>
+      <CatStrip active="impressoras" />
+      <div className="mx-auto max-w-6xl px-4 py-8">
+        <PageBanner placement="IMPRESSORAS" />
+        <PageHeader
+          icon={Printer}
+          eyebrow="Catálogo"
+          title="Impressoras 3D"
+          subtitle="Compare impressoras 3D (FDM e resina) entre lojas. Informe seu CEP para ranquear pelo custo total com frete."
+        />
+        <CatalogView basePath="/impressoras" result={result} filters={filters} />
+      </div>
+    </>
   );
 }
