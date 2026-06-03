@@ -268,19 +268,49 @@ export async function getProductsBySlugs(
     .filter((x): x is ProductListItem => x !== null);
 }
 
-/** Ofertas do dia: produtos cuja melhor oferta tem desconto, do maior pro menor. */
+/**
+ * Ofertas do dia: produtos com cupom OU com queda de preço frente ao pico
+ * recente (até 45 dias de histórico). `discountPct` reflete a maior economia.
+ */
 export const getDeals = cache(
-  async (limit = 24): Promise<ProductListItem[]> => {
-    const rows = await prisma.product.findMany({
-      where: {
-        offers: { some: { ...ACTIVE_OFFER_WHERE, couponType: { not: null } } },
-      },
-      include: PRODUCT_WITH_OFFERS,
-      take: 240,
-    });
-    return rows
-      .map(buildListItem)
-      .filter((x): x is ProductListItem => x !== null && x.discountPct > 0)
+  async (limit = 36, minPct = 5): Promise<ProductListItem[]> => {
+    const since = new Date(Date.now() - 45 * 24 * 60 * 60 * 1000);
+
+    const [rows, snaps] = await Promise.all([
+      prisma.product.findMany({
+        where: { offers: { some: ACTIVE_OFFER_WHERE } },
+        include: PRODUCT_WITH_OFFERS,
+      }),
+      prisma.priceSnapshot.findMany({
+        where: { createdAt: { gte: since }, offer: { status: "APPROVED" } },
+        select: { price: true, offer: { select: { productId: true } } },
+      }),
+    ]);
+
+    // Maior preço por produto no período (pico recente).
+    const peak = new Map<string, number>();
+    for (const s of snaps) {
+      const pid = s.offer.productId;
+      const price = toNumber(s.price);
+      const cur = peak.get(pid);
+      if (cur == null || price > cur) peak.set(pid, price);
+    }
+
+    const deals: ProductListItem[] = [];
+    for (const p of rows) {
+      const li = buildListItem(p);
+      if (!li) continue;
+      const curRaw = Math.min(...p.offers.map((o) => toNumber(o.price)));
+      const histMax = peak.get(p.id) ?? 0;
+      const dropPct =
+        histMax > 0 && curRaw < histMax
+          ? Math.min(90, Math.round((1 - curRaw / histMax) * 100))
+          : 0;
+      const dealPct = Math.max(li.discountPct, dropPct);
+      if (dealPct >= minPct) deals.push({ ...li, discountPct: dealPct });
+    }
+
+    return deals
       .sort((a, b) => b.discountPct - a.discountPct || a.bestPrice - b.bestPrice)
       .slice(0, limit);
   },
