@@ -22,6 +22,7 @@ import { PageBanner } from "@/components/banners";
 import { BrandLogo } from "@/components/brand-logo";
 import { ProductCard } from "@/components/product-card";
 import { Reveal } from "@/components/reveal";
+import { SearchBox } from "@/components/search-box";
 import { Stars } from "@/components/stars";
 import { getBrandsOverview, getCatalog } from "@/lib/catalog";
 import {
@@ -137,6 +138,9 @@ function Hero() {
           Compare ofertas de várias lojas com o frete pro seu CEP — e use as
           ferramentas do site (inclusive IA) pra imprimir com mais sucesso.
         </p>
+        <div className="mx-auto mt-6 max-w-xl text-left">
+          <SearchBox size="lg" placeholder="Ex: PLA preto 1kg, resina, Ender 3…" />
+        </div>
         <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
           <MapPin className="size-3.5 text-brand" />
           Informe seu CEP no topo para ranquear pelo custo total com frete.

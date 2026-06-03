@@ -167,6 +167,38 @@ function sortProducts(
   return sorted;
 }
 
+/**
+ * Busca textual em todo o catálogo (nome, marca e cor), por tokens — cada
+ * palavra precisa aparecer em algum campo. Só produtos com oferta ativa.
+ */
+export const searchProducts = cache(
+  async (query: string, sort: CatalogSort = "preco-asc"): Promise<ProductListItem[]> => {
+    const q = query.trim();
+    if (q.length < 2) return [];
+    const tokens = q.split(/\s+/).filter(Boolean).slice(0, 6);
+
+    const rows = await prisma.product.findMany({
+      where: {
+        offers: { some: ACTIVE_OFFER_WHERE },
+        AND: tokens.map((tok) => ({
+          OR: [
+            { name: { contains: tok, mode: "insensitive" as const } },
+            { brand: { name: { contains: tok, mode: "insensitive" as const } } },
+            { color: { contains: tok, mode: "insensitive" as const } },
+          ],
+        })),
+      },
+      include: PRODUCT_WITH_OFFERS,
+      take: 80,
+    });
+
+    const items = rows
+      .map(buildListItem)
+      .filter((x): x is ProductListItem => x !== null);
+    return sortProducts(items, sort);
+  },
+);
+
 function buildFacets(
   items: { value: string; label: string }[],
 ): FacetOption[] {

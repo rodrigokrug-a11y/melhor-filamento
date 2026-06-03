@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { Menu, Plus, Sparkles, X } from "lucide-react";
+import { Menu, Plus, Search, Sparkles, X } from "lucide-react";
 
 import { Logo } from "@/components/logo";
 import { MAIN_NAV } from "@/lib/nav";
@@ -55,6 +55,15 @@ export function MobileNav() {
                     <X className="size-5" />
                   </button>
                 </div>
+
+                <Link
+                  href="/busca"
+                  onClick={() => setOpen(false)}
+                  className="mb-2 flex items-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                >
+                  <Search className="size-4" />
+                  Buscar produtos
+                </Link>
 
                 <nav className="flex flex-col gap-0.5">
                   {MAIN_NAV.map((item) =>

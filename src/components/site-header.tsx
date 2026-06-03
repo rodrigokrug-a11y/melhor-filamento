@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Plus, Sparkles } from "lucide-react";
+import { Plus, Search, Sparkles } from "lucide-react";
 
 import { AuthNav } from "@/components/auth-nav";
 import { CepSelector } from "@/components/cep-selector";
@@ -52,6 +52,13 @@ export function SiteHeader() {
           >
             <Plus className="size-4" />
             Cadastrar oferta
+          </Link>
+          <Link
+            href="/busca"
+            aria-label="Buscar"
+            className="inline-flex size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+          >
+            <Search className="size-5" />
           </Link>
           <CepSelector />
           <ThemeToggle />
