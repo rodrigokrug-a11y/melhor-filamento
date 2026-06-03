@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-const MODEL = process.env.ANTHROPIC_MODEL ?? "claude-3-5-haiku-latest";
+const MODEL = process.env.ANTHROPIC_MODEL ?? "claude-haiku-4-5-20251001";
 
 const SYSTEM = `Você é o assistente do Melhor Filamento (melhorfilamento.com.br), um comparador de preços e guia de impressão 3D no Brasil.
 Ajude com dúvidas de impressão 3D: filamentos (PLA, PETG, ABS, ASA, TPU, Nylon, PCTG), resinas, impressoras, configurações de fatiador (temperatura, velocidade, retração, adesão) e troubleshooting (warping, stringing, sub/superextrusão, primeira camada, entupimento).

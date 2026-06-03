@@ -5,7 +5,7 @@ export const runtime = "nodejs";
 export const maxDuration = 90;
 
 const MODEL =
-  process.env.ANTHROPIC_VISION_MODEL ?? "claude-3-5-sonnet-latest";
+  process.env.ANTHROPIC_VISION_MODEL ?? "claude-sonnet-4-5-20250929";
 
 const ALLOWED = new Set([
   "image/jpeg",
