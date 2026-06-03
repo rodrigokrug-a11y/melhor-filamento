@@ -1,8 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
-  <rect width="32" height="32" rx="7" fill="#0e0c0a" />
-  <circle cx="14" cy="16" r="9" fill="#F2541B" />
-  <circle cx="14" cy="16" r="6" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="1.2" />
-  <circle cx="14" cy="16" r="2.8" fill="#ffffff" />
-  <path d="M22 13.7c4.4 0.4 4.4 6.2 0 6.6" fill="none" stroke="#16d6c4" stroke-width="2.6" stroke-linecap="round" />
-  <circle cx="22.1" cy="20.3" r="1.7" fill="#16d6c4" />
+  <defs>
+    <linearGradient id="mf" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0E7E7B" />
+      <stop offset="100%" stop-color="#54B62E" />
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="7" fill="#0C1F23" />
+  <path d="M5 8.5V17c0 1.5 3.4 2.7 7.6 2.7S20.2 18.5 20.2 17V8.5" fill="url(#mf)" />
+  <ellipse cx="12.6" cy="8.5" rx="7.6" ry="2.6" fill="#0E7E7B" />
+  <ellipse cx="12.6" cy="8.5" rx="2" ry="0.7" fill="#ffffff" opacity="0.6" />
+  <circle cx="21.6" cy="21.4" r="5.6" fill="#0C1F23" />
+  <circle cx="21.6" cy="21.4" r="5.6" fill="none" stroke="#2C9591" stroke-width="1.8" />
+  <path d="M25.9 25.7 28.6 28.5" stroke="#2C9591" stroke-width="2.4" stroke-linecap="round" />
+  <path d="M18.8 21.5 20.9 23.5 24.4 19.8" fill="none" stroke="#74CF45" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
 </svg>

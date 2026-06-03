@@ -15,8 +15,9 @@ export default function Image() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "linear-gradient(135deg, #FFF1E9 0%, #FBF8F4 55%)",
-          color: "#16120e",
+          background:
+            "linear-gradient(135deg, #0C1F23 0%, #102A2F 55%, #123E3A 100%)",
+          color: "#E7EFEE",
           padding: "72px 80px",
           fontFamily: "sans-serif",
         }}
@@ -31,7 +32,7 @@ export default function Image() {
               width: 72,
               height: 72,
               borderRadius: 36,
-              background: "#F2541B",
+              background: "linear-gradient(135deg, #0E7E7B 0%, #54B62E 100%)",
             }}
           >
             <div
@@ -39,18 +40,30 @@ export default function Image() {
                 width: 24,
                 height: 24,
                 borderRadius: 12,
-                background: "#FBF8F4",
+                background: "#0C1F23",
               }}
             />
           </div>
           <div style={{ display: "flex", fontSize: 40, fontWeight: 700 }}>
-            <span>Melhor</span>
-            <span style={{ color: "#F2541B" }}>Filamento</span>
+            <span style={{ color: "#FFFFFF" }}>Melhor</span>
+            <span style={{ color: "#5FB3AF" }}>Filamento</span>
           </div>
         </div>
 
         {/* Mensagem */}
         <div style={{ display: "flex", flexDirection: "column" }}>
+          <div
+            style={{
+              display: "flex",
+              fontSize: 22,
+              fontWeight: 700,
+              letterSpacing: "0.18em",
+              color: "#5FB3AF",
+              marginBottom: 22,
+            }}
+          >
+            COMPARE · DESCUBRA · COMPRE MELHOR
+          </div>
           <div
             style={{
               display: "flex",
@@ -61,17 +74,24 @@ export default function Image() {
               letterSpacing: "-0.02em",
             }}
           >
-            <span>O melhor preço em&nbsp;</span>
-            <span style={{ color: "#F2541B" }}>filamento e resina 3D</span>
+            <span style={{ color: "#FFFFFF" }}>O melhor preço em&nbsp;</span>
+            <span style={{ color: "#9BE06A" }}>filamento e resina 3D</span>
           </div>
-          <div style={{ display: "flex", fontSize: 34, color: "#6f675b", marginTop: 26 }}>
+          <div
+            style={{
+              display: "flex",
+              fontSize: 34,
+              color: "#9FC0BC",
+              marginTop: 26,
+            }}
+          >
             Compare ofertas de várias lojas com frete para o seu CEP.
           </div>
           <div
             style={{
               display: "flex",
               fontSize: 26,
-              color: "#F2541B",
+              color: "#5FB3AF",
               fontWeight: 600,
               marginTop: 36,
             }}
@@ -88,7 +108,7 @@ export default function Image() {
             left: 0,
             width: "100%",
             height: 12,
-            background: "linear-gradient(90deg, #F2541B 0%, #0D9488 100%)",
+            background: "linear-gradient(90deg, #0E7E7B 0%, #54B62E 100%)",
           }}
         />
       </div>

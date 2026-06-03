@@ -28,17 +28,41 @@ export default async function Image({
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "white",
-          color: "#0a0a0a",
+          background: "#F6F9F8",
+          color: "#131B1A",
           padding: "80px",
           fontFamily: "sans-serif",
         }}
       >
-        <div style={{ display: "flex", fontSize: 36, color: "#737373" }}>
-          melhorfilamento.com.br
+        {/* Marca */}
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 48,
+              height: 48,
+              borderRadius: 24,
+              background: "linear-gradient(135deg, #0E7E7B 0%, #54B62E 100%)",
+            }}
+          >
+            <div
+              style={{
+                width: 16,
+                height: 16,
+                borderRadius: 8,
+                background: "#F6F9F8",
+              }}
+            />
+          </div>
+          <div style={{ display: "flex", fontSize: 30, fontWeight: 700 }}>
+            <span style={{ color: "#131B1A" }}>Melhor</span>
+            <span style={{ color: "#0E7E7B" }}>Filamento</span>
+          </div>
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ display: "flex", fontSize: 32, color: "#737373" }}>
+          <div style={{ display: "flex", fontSize: 32, color: "#4F5D5C" }}>
             {brand}
           </div>
           <div
@@ -48,6 +72,7 @@ export default async function Image({
               fontWeight: 700,
               marginTop: 12,
               lineHeight: 1.1,
+              letterSpacing: "-0.02em",
             }}
           >
             {name}
@@ -56,19 +81,45 @@ export default async function Image({
         <div style={{ display: "flex", alignItems: "baseline", gap: 16 }}>
           {price ? (
             <>
-              <div style={{ display: "flex", fontSize: 32, color: "#737373" }}>
-                a partir de
+              <div
+                style={{
+                  display: "flex",
+                  fontSize: 28,
+                  color: "#0A6967",
+                  fontWeight: 700,
+                  letterSpacing: "0.1em",
+                }}
+              >
+                MELHOR PREÇO
               </div>
-              <div style={{ display: "flex", fontSize: 68, fontWeight: 700 }}>
+              <div
+                style={{
+                  display: "flex",
+                  fontSize: 68,
+                  fontWeight: 700,
+                  color: "#0E7E7B",
+                }}
+              >
                 {price}
               </div>
             </>
           ) : (
-            <div style={{ display: "flex", fontSize: 32, color: "#737373" }}>
+            <div style={{ display: "flex", fontSize: 32, color: "#4F5D5C" }}>
               Compare preços entre lojas
             </div>
           )}
         </div>
+        {/* Faixa de acento */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            height: 12,
+            background: "linear-gradient(90deg, #0E7E7B 0%, #54B62E 100%)",
+          }}
+        />
       </div>
     ),
     { ...size },
