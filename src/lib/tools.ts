@@ -3,6 +3,7 @@ import {
   Calculator,
   ClipboardList,
   Disc3,
+  FileCode2,
   FlaskConical,
   Gauge,
   GitCompare,
@@ -49,6 +50,14 @@ export const TOOLS: Tool[] = [
     description:
       "Custo real de uma impressão (material, energia, desgaste e falhas) e o preço de venda com a sua margem.",
     icon: Calculator,
+    available: true,
+  },
+  {
+    slug: "custo-por-gcode",
+    name: "Custo pelo G-code",
+    description:
+      "Abra o arquivo fatiado (Cura, Prusa, Orca, Bambu) e calcule o custo — peso e tempo lidos automaticamente.",
+    icon: FileCode2,
     available: true,
   },
   {
