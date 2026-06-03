@@ -6,11 +6,10 @@ import { Plus } from "lucide-react";
 import { auth } from "@/auth";
 import { isAdminEmail } from "@/lib/admin-emails";
 import { CreateLojaForm } from "@/components/create-loja-form";
-import { OfferStatusBadge } from "@/components/offer-status-badge";
+import { SellerOffers } from "@/components/seller-offers";
 import { buttonVariants } from "@/components/ui/button";
-import { materialLabel } from "@/lib/catalog-types";
 import { prisma } from "@/lib/db";
-import { cn, formatBRL } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Painel",
@@ -62,30 +61,29 @@ export default async function PainelPage() {
         </Link>
       </div>
 
+      <p className="mb-4 text-sm text-muted-foreground">
+        Gerencie seus anúncios: edite preço, link, cupom e foto, e ative ou
+        pause cada um.
+      </p>
       {offers.length === 0 ? (
         <div className="rounded-xl border border-dashed p-12 text-center text-muted-foreground">
           Você ainda não cadastrou ofertas. Clique em “Cadastrar oferta” para
           publicar a primeira.
         </div>
       ) : (
-        <ul className="divide-y rounded-xl border">
-          {offers.map((offer) => (
-            <li
-              key={offer.id}
-              className="flex flex-wrap items-center justify-between gap-3 p-4"
-            >
-              <div className="min-w-0">
-                <p className="truncate font-medium">{offer.product.name}</p>
-                <p className="text-xs text-muted-foreground">
-                  {materialLabel(offer.product.material)} ·{" "}
-                  {formatBRL(Number(offer.price))}
-                  {offer.couponCode ? ` · cupom ${offer.couponCode}` : ""}
-                </p>
-              </div>
-              <OfferStatusBadge status={offer.status} />
-            </li>
-          ))}
-        </ul>
+        <SellerOffers
+          offers={offers.map((o) => ({
+            id: o.id,
+            productName: o.product.name,
+            productMaterial: o.product.material,
+            productImageUrl: o.product.imageUrl,
+            price: Number(o.price),
+            url: o.url,
+            couponCode: o.couponCode,
+            imageUrl: o.imageUrl,
+            status: o.status,
+          }))}
+        />
       )}
     </div>
   );

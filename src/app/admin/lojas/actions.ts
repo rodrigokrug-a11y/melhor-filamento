@@ -91,3 +91,42 @@ export async function updateSellerLocation(
   revalidatePath("/perto");
   return { ok: true };
 }
+
+/** Libera o autoatendimento: vincula um usuário (por e-mail) como dono da loja,
+ *  criando o usuário se não existir. Ele passa a gerenciar os anúncios em /painel. */
+export async function grantSellerAccess(formData: FormData): Promise<void> {
+  await requireAdmin();
+  const sellerId = String(formData.get("sellerId") ?? "");
+  const email = String(formData.get("email") ?? "")
+    .trim()
+    .toLowerCase();
+  if (!sellerId || !email.includes("@")) return;
+
+  let user = await prisma.user.findUnique({ where: { email } });
+  if (!user) {
+    user = await prisma.user.create({ data: { email, role: "SELLER" } });
+  }
+  // Um usuário é dono de no máximo uma loja (ownerUserId é único).
+  const owned = await prisma.seller.findUnique({
+    where: { ownerUserId: user.id },
+  });
+  if (owned && owned.id !== sellerId) return;
+
+  await prisma.seller.update({
+    where: { id: sellerId },
+    data: { ownerUserId: user.id },
+  });
+  revalidatePath(`/admin/lojas/${sellerId}`);
+}
+
+/** Remove o acesso de autoatendimento da loja. */
+export async function revokeSellerAccess(formData: FormData): Promise<void> {
+  await requireAdmin();
+  const sellerId = String(formData.get("sellerId") ?? "");
+  if (!sellerId) return;
+  await prisma.seller.update({
+    where: { id: sellerId },
+    data: { ownerUserId: null },
+  });
+  revalidatePath(`/admin/lojas/${sellerId}`);
+}

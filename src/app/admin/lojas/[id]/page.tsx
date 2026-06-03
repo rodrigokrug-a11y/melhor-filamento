@@ -5,7 +5,10 @@ import { ArrowLeft, BadgeCheck } from "lucide-react";
 
 import { OffersTable } from "@/components/offers-table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/db";
+
+import { grantSellerAccess, revokeSellerAccess } from "../actions";
 
 export const metadata: Metadata = { title: "Loja", robots: { index: false } };
 
@@ -19,7 +22,13 @@ export default async function AdminLojaDetailPage({
   const { id } = await params;
   const seller = await prisma.seller.findUnique({
     where: { id },
-    select: { id: true, name: true, website: true, isVerified: true },
+    select: {
+      id: true,
+      name: true,
+      website: true,
+      isVerified: true,
+      owner: { select: { email: true, name: true } },
+    },
   });
   if (!seller) notFound();
 
@@ -72,6 +81,43 @@ export default async function AdminLojaDetailPage({
           </a>
         ) : null}
       </div>
+
+      <section className="mb-8 rounded-2xl border bg-card p-4">
+        <h3 className="font-semibold">Acesso da loja (autoatendimento)</h3>
+        <p className="mb-3 mt-1 text-sm text-muted-foreground">
+          Libere para a loja gerenciar os próprios anúncios (preço, foto, link,
+          ativar/pausar) em <code>/painel</code>.
+        </p>
+        {seller.owner ? (
+          <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border bg-background p-3">
+            <p className="text-sm">
+              Dono:{" "}
+              <span className="font-medium">{seller.owner.email}</span>
+              {seller.owner.name ? ` (${seller.owner.name})` : ""}
+            </p>
+            <form action={revokeSellerAccess}>
+              <input type="hidden" name="sellerId" value={seller.id} />
+              <Button size="sm" variant="outline" type="submit">
+                Remover acesso
+              </Button>
+            </form>
+          </div>
+        ) : (
+          <form action={grantSellerAccess} className="flex flex-wrap gap-2">
+            <input type="hidden" name="sellerId" value={seller.id} />
+            <input
+              name="email"
+              type="email"
+              required
+              placeholder="email@loja.com.br"
+              className="h-9 min-w-0 flex-1 rounded-md border border-input bg-background px-2.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            />
+            <Button size="sm" type="submit">
+              Liberar acesso
+            </Button>
+          </form>
+        )}
+      </section>
 
       <section>
         <h3 className="mb-1 font-semibold">Anúncios desta loja</h3>

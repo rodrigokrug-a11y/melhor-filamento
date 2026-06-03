@@ -139,6 +139,8 @@ model Seller {
   offers        Offer[]
   shippingRules ShippingRule[]
   sources       Source[]
+  boosts        Boost[]
+  banners       Banner[]
   createdAt     DateTime       @default(now())
 }
 
@@ -152,6 +154,7 @@ model Offer {
   seller         Seller       @relation(fields: [sellerId], references: [id])
   price          Decimal      @db.Decimal(10, 2)
   url            String // link de saída/afiliado
+  imageUrl       String? // foto da oferta (a loja pode trocar; sobrepõe a do produto)
   couponCode     String?
   couponDiscount Decimal?     @db.Decimal(10, 2)
   couponType     CouponType?
@@ -375,4 +378,65 @@ model Tip {
 
   @@index([material, status])
   @@index([status])
+}
+
+// ───────────── Monetização: leilão de destaque + banners ─────────────
+
+enum BoostPlacement {
+  TOP_FILAMENT
+  TOP_RESIN
+  TOP_PRINTER
+}
+
+enum AdStatus {
+  PENDING // aguardando aprovação/pagamento
+  ACTIVE // pago e no ar
+  PAUSED
+  REJECTED
+  ENDED
+}
+
+// Lance de destaque (pay-to-top, estilo Google Ads): a loja dá um lance mensal
+// por um slot; o maior lance ACTIVE vence o topo daquela listagem.
+model Boost {
+  id        String         @id @default(cuid())
+  sellerId  String
+  seller    Seller         @relation(fields: [sellerId], references: [id])
+  placement BoostPlacement
+  bidAmount Decimal        @db.Decimal(10, 2) // lance mensal em R$
+  status    AdStatus       @default(PENDING)
+  startsAt  DateTime?
+  endsAt    DateTime?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@index([placement, status])
+  @@index([sellerId])
+}
+
+enum BannerPlacement {
+  HOME // banner grande na home
+  GLOBAL // faixa menor em todas as páginas
+}
+
+// Banner pago: a loja envia imagem/link/texto e dá um lance; o maior lance
+// ACTIVE por placement é exibido.
+model Banner {
+  id        String          @id @default(cuid())
+  sellerId  String?
+  seller    Seller?         @relation(fields: [sellerId], references: [id])
+  placement BannerPlacement
+  title     String
+  subtitle  String?
+  imageUrl  String?
+  linkUrl   String
+  bidAmount Decimal         @db.Decimal(10, 2) @default(0)
+  status    AdStatus        @default(PENDING)
+  startsAt  DateTime?
+  endsAt    DateTime?
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@index([placement, status])
+  @@index([sellerId])
 }

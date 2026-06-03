@@ -1,10 +1,27 @@
 "use server";
 
+import { type OfferStatus } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
+
+/** Retorna a oferta SE ela pertence à loja do usuário logado (segurança). */
+async function myOffer(offerId: string) {
+  const session = await auth();
+  if (!session?.user?.id || !offerId) return null;
+  const offer = await prisma.offer.findUnique({
+    where: { id: offerId },
+    include: {
+      seller: { select: { ownerUserId: true } },
+      product: { select: { slug: true } },
+    },
+  });
+  if (!offer || offer.seller.ownerUserId !== session.user.id) return null;
+  return offer;
+}
 
 type State = { error?: string };
 
@@ -80,4 +97,53 @@ export async function createSeller(
   }
 
   redirect("/painel");
+}
+
+/** A loja edita a própria oferta: preço, link, cupom e foto. */
+export async function updateMyOffer(formData: FormData): Promise<void> {
+  const offer = await myOffer(String(formData.get("offerId") ?? ""));
+  if (!offer) return;
+
+  const data: {
+    price?: string;
+    url?: string;
+    couponCode?: string | null;
+    imageUrl?: string | null;
+  } = {};
+
+  const priceN = Number(
+    String(formData.get("price") ?? "")
+      .replace(/[^\d,.-]/g, "")
+      .replace(",", "."),
+  );
+  if (Number.isFinite(priceN) && priceN > 0) data.price = priceN.toFixed(2);
+
+  const url = String(formData.get("url") ?? "").trim();
+  if (url && isValidHttpUrl(url)) data.url = url;
+
+  const coupon = String(formData.get("couponCode") ?? "").trim();
+  data.couponCode = coupon || null;
+
+  const img = String(formData.get("imageUrl") ?? "").trim();
+  if (img === "") data.imageUrl = null;
+  else if (isValidHttpUrl(img)) data.imageUrl = img;
+
+  await prisma.offer.update({ where: { id: offer.id }, data });
+  if (data.price) {
+    await prisma.priceSnapshot.create({
+      data: { offerId: offer.id, price: data.price },
+    });
+  }
+  revalidatePath("/painel");
+  revalidatePath(`/produto/${offer.product.slug}`);
+}
+
+/** A loja ativa (APPROVED) ou pausa (PENDING) a própria oferta. */
+export async function setMyOfferStatus(formData: FormData): Promise<void> {
+  const offer = await myOffer(String(formData.get("offerId") ?? ""));
+  const status = String(formData.get("status") ?? "") as OfferStatus;
+  if (!offer || (status !== "APPROVED" && status !== "PENDING")) return;
+  await prisma.offer.update({ where: { id: offer.id }, data: { status } });
+  revalidatePath("/painel");
+  revalidatePath(`/produto/${offer.product.slug}`);
 }
