@@ -439,6 +439,28 @@ model Upload {
   createdAt DateTime @default(now())
 }
 
+// Receita / perfil de fatiador enviado pela comunidade (material + impressora →
+// temperaturas, velocidade, retração…). Moderado antes de aparecer.
+model Recipe {
+  id           String        @id @default(cuid())
+  material     Material
+  printer      String // marca/modelo da impressora (texto livre)
+  nozzleTempC  Int
+  bedTempC     Int
+  speedMms     Int?
+  retractionMm Float?
+  flowPct      Int?
+  fanPct       Int?
+  notes        String?
+  authorName   String
+  authorEmail  String?
+  status       ContentStatus @default(PENDING)
+  createdAt    DateTime      @default(now())
+
+  @@index([material, status])
+  @@index([status])
+}
+
 // Alerta de preço: a pessoa informa e-mail + preço-alvo num produto e é
 // avisada por e-mail quando uma oferta cai abaixo do alvo. Sem login (token
 // para cancelar). Checado pela rota /api/alertas/check (no cron de ingestão).

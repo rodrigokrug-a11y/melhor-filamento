@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Lightbulb, Wrench } from "lucide-react";
+import { ArrowRight, BookOpen, Lightbulb, Wrench } from "lucide-react";
 
 import { PageBanner } from "@/components/banners";
 import { PageHeader } from "@/components/page-header";
@@ -37,21 +37,38 @@ export default async function DicasPage() {
         subtitle="Guias práticos e dicas da comunidade para imprimir cada material com sucesso. Escolha um filamento para ver o tutorial e as dicas."
       />
 
-      <Link
-        href="/ferramentas"
-        className="group mb-6 flex items-center gap-3 rounded-2xl border bg-brand-soft/50 p-4 transition-colors hover:bg-brand-soft"
-      >
-        <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-brand text-white">
-          <Wrench className="size-5" />
-        </span>
-        <div className="min-w-0">
-          <p className="font-semibold">Ferramentas para impressão 3D</p>
-          <p className="text-sm text-muted-foreground">
-            Calculadora de custo e mais — tudo no navegador.
-          </p>
-        </div>
-        <ArrowRight className="ml-auto size-4 shrink-0 text-brand transition-transform group-hover:translate-x-0.5" />
-      </Link>
+      <div className="mb-6 grid gap-3 sm:grid-cols-2">
+        <Link
+          href="/ferramentas"
+          className="group flex items-center gap-3 rounded-2xl border bg-brand-soft/50 p-4 transition-colors hover:bg-brand-soft"
+        >
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-brand text-white">
+            <Wrench className="size-5" />
+          </span>
+          <div className="min-w-0">
+            <p className="font-semibold">Ferramentas</p>
+            <p className="text-sm text-muted-foreground">
+              Calculadoras de custo, filamento e mais.
+            </p>
+          </div>
+          <ArrowRight className="ml-auto size-4 shrink-0 text-brand transition-transform group-hover:translate-x-0.5" />
+        </Link>
+        <Link
+          href="/receitas"
+          className="group flex items-center gap-3 rounded-2xl border bg-brand-soft/50 p-4 transition-colors hover:bg-brand-soft"
+        >
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-brand text-white">
+            <BookOpen className="size-5" />
+          </span>
+          <div className="min-w-0">
+            <p className="font-semibold">Receitas</p>
+            <p className="text-sm text-muted-foreground">
+              Perfis de fatiador da comunidade, por material.
+            </p>
+          </div>
+          <ArrowRight className="ml-auto size-4 shrink-0 text-brand transition-transform group-hover:translate-x-0.5" />
+        </Link>
+      </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {overview.map(({ material, tipCount }) => {
