@@ -12,6 +12,7 @@ import {
   Ruler,
   Scaling,
   ShoppingCart,
+  Wand2,
   Zap,
   type LucideIcon,
 } from "lucide-react";
@@ -139,6 +140,14 @@ export const TOOLS: Tool[] = [
     description:
       "Peça saiu maior ou menor? Calcule o fator de escala pra acertar a medida (encolhimento).",
     icon: Ruler,
+    available: true,
+  },
+  {
+    slug: "quiz-filamento",
+    name: "Qual filamento pra você?",
+    description:
+      "Responda 4 perguntas e descubra o material ideal (PLA, PETG, ABS…) pro seu projeto, com a opção mais barata.",
+    icon: Wand2,
     available: true,
   },
   {
