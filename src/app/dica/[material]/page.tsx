@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Layers, Thermometer } from "lucide-react";
 
+import { PageBanner } from "@/components/banners";
 import { TipForm } from "@/components/tip-form";
 import { TipList } from "@/components/tip-list";
 import {
@@ -62,6 +63,7 @@ export default async function DicaPage({ params }: { params: Params }) {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
+      <PageBanner placement="DICAS" />
       <Link
         href="/dicas"
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"

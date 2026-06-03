@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { MapPin } from "lucide-react";
 
 import { NearbyView } from "@/components/nearby-view";
+import { PageBanner } from "@/components/banners";
 import { PageHeader } from "@/components/page-header";
 import { getStoresForMap } from "@/lib/catalog";
 
@@ -26,6 +27,7 @@ export default async function PertoPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
+      <PageBanner placement="GLOBAL" />
       <PageHeader
         icon={MapPin}
         eyebrow="Perto de você"

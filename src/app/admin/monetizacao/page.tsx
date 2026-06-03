@@ -27,9 +27,31 @@ const PLACEMENT_LABELS: Record<string, string> = {
   TOP_FILAMENT: "Topo · Filamentos",
   TOP_RESIN: "Topo · Resinas",
   TOP_PRINTER: "Topo · Impressoras",
-  HOME: "Banner · Home",
-  GLOBAL: "Faixa · Global",
+  HOME: "Banner · Página inicial",
+  FILAMENTOS: "Banner · Filamentos",
+  RESINAS: "Banner · Resinas",
+  IMPRESSORAS: "Banner · Impressoras",
+  MARCAS: "Banner · Marcas",
+  COMPARAR: "Banner · Comparar",
+  RANKING: "Banner · Ranking",
+  DICAS: "Banner · Dicas",
+  PRODUTO: "Banner · Páginas de produto",
+  GLOBAL: "Banner · Todas as páginas (fallback)",
 };
+
+// Posições de banner por página, na ordem do menu (GLOBAL por último, é o fallback).
+const BANNER_PLACEMENT_OPTIONS: { value: string; label: string }[] = [
+  { value: "HOME", label: "Página inicial" },
+  { value: "FILAMENTOS", label: "Filamentos" },
+  { value: "RESINAS", label: "Resinas" },
+  { value: "IMPRESSORAS", label: "Impressoras" },
+  { value: "MARCAS", label: "Marcas" },
+  { value: "COMPARAR", label: "Comparar" },
+  { value: "RANKING", label: "Ranking" },
+  { value: "DICAS", label: "Dicas" },
+  { value: "PRODUTO", label: "Páginas de produto" },
+  { value: "GLOBAL", label: "Todas as páginas (fallback)" },
+];
 
 const inputCls =
   "h-9 min-w-0 rounded-md border border-input bg-background px-2.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
@@ -122,15 +144,18 @@ function BannerFields({
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       <label className={fieldCls}>
-        Posição
+        Página (onde aparece)
         <select
           name="placement"
           required
           defaultValue={banner?.placement ?? "HOME"}
           className={inputCls}
         >
-          <option value="HOME">Banner · Home (grande)</option>
-          <option value="GLOBAL">Faixa · Global (todas as páginas)</option>
+          {BANNER_PLACEMENT_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
         </select>
       </label>
       <label className={fieldCls}>
@@ -344,9 +369,11 @@ export default async function AdminMonetizacaoPage() {
       <section>
         <h2 className="text-lg font-semibold">Banners</h2>
         <p className="mb-4 mt-1 text-sm text-muted-foreground">
-          Crie banners para a <strong>home</strong> (grande) ou para{" "}
-          <strong>todas as páginas</strong> (faixa). O de maior lance ativo por
-          posição é exibido. Você gere tudo aqui.
+          O banner aparece <strong>acima do título</strong>, como primeira coisa
+          da página. Escolha <strong>uma página</strong> (cada uma pode ter um
+          banner diferente) ou use <strong>Todas as páginas</strong> para repetir
+          o mesmo em todo o site — a página com banner próprio sempre tem
+          prioridade. Você gere tudo aqui.
         </p>
 
         <details className="rounded-xl border bg-muted/30 p-4">

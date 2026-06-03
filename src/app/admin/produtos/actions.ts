@@ -128,3 +128,19 @@ export async function createProduct(
   revalidatePath("/admin/produtos");
   redirect("/admin/produtos");
 }
+
+/** Define a ordem manual do produto na listagem (maior = aparece primeiro). */
+export async function setProductOrder(formData: FormData): Promise<void> {
+  await requireAdmin();
+  const id = String(formData.get("productId") ?? "");
+  const order = Math.trunc(Number(formData.get("order")));
+  if (!id || !Number.isFinite(order)) return;
+  await prisma.product.update({
+    where: { id },
+    data: { sortOrder: order },
+  });
+  revalidatePath("/admin/produtos");
+  revalidatePath("/filamentos");
+  revalidatePath("/resinas");
+  revalidatePath("/impressoras");
+}

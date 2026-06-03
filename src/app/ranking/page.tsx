@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Trophy } from "lucide-react";
 
+import { PageBanner } from "@/components/banners";
 import { PageHeader } from "@/components/page-header";
 import { Stars } from "@/components/stars";
 import { materialLabel } from "@/lib/catalog-types";
@@ -40,6 +41,7 @@ export default async function RankingPage({
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
+      <PageBanner placement="RANKING" />
       <PageHeader
         icon={Trophy}
         eyebrow="Comunidade"

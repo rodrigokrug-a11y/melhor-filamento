@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Lightbulb } from "lucide-react";
 
+import { PageBanner } from "@/components/banners";
 import { PageHeader } from "@/components/page-header";
 import { MATERIAL_INFO, materialLabel } from "@/lib/catalog-types";
 import { getMaterialsOverview } from "@/lib/tips";
@@ -28,6 +29,7 @@ export default async function DicasPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
+      <PageBanner placement="DICAS" />
       <PageHeader
         icon={Lightbulb}
         eyebrow="Aprenda a imprimir"

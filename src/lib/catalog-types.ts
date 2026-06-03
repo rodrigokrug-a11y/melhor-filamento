@@ -127,6 +127,7 @@ export type BrandSummary = {
   logoUrl: string | null;
   productCount: number;
   promotedActive: boolean;
+  sortOrder: number; // ordem manual do admin (maior = primeiro)
 };
 
 /** Dados mínimos por oferta para o cliente calcular o total por região. */
@@ -152,6 +153,7 @@ export type ProductListItem = {
   bestPrice: number;
   bestPriceHasCoupon: boolean;
   boost: number | null; // lance de destaque ativo (R$/mês); null = sem destaque
+  sortOrder: number; // ordem manual do admin (maior = primeiro)
   offers: OfferShippingLite[];
 };
 

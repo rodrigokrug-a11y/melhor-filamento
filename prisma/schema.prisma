@@ -87,6 +87,7 @@ model Brand {
   foundedYear   Int? // ano de fundação
   isPromoted    Boolean   @default(false) // marca patrocinada (destaque pago)
   promotedUntil DateTime?
+  sortOrder     Int       @default(0) // ordem manual do admin (maior = primeiro)
   products      Product[]
   reviews       Review[]
   offerRequests OfferRequest[]
@@ -106,6 +107,7 @@ model Product {
   brand      Brand       @relation(fields: [brandId], references: [id])
   specs      Json?
   imageUrl   String?
+  sortOrder  Int         @default(0) // ordem manual do admin (maior = primeiro)
   gtin       String? // EAN/GTIN p/ casamento na ingestão
   offers     Offer[]
   reviews    Review[]
@@ -415,8 +417,16 @@ model Boost {
 }
 
 enum BannerPlacement {
-  HOME // banner grande na home
-  GLOBAL // faixa menor em todas as páginas
+  HOME // página inicial
+  FILAMENTOS // listagem de filamentos
+  RESINAS // listagem de resinas
+  IMPRESSORAS // listagem de impressoras
+  MARCAS // marcas (listagem e página da marca)
+  COMPARAR // comparador
+  RANKING // ranking
+  DICAS // dicas e tutoriais
+  PRODUTO // páginas de produto
+  GLOBAL // fallback: usado quando a página não tem banner próprio
 }
 
 // Banner pago: a loja envia imagem/link/texto e dá um lance; o maior lance

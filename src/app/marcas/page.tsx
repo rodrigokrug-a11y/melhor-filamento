@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Megaphone, Store } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
+import { PageBanner } from "@/components/banners";
 import { PageHeader } from "@/components/page-header";
 import { getBrandsOverview } from "@/lib/catalog";
 
@@ -28,6 +29,7 @@ export default async function MarcasPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
+      <PageBanner placement="MARCAS" />
       <PageHeader
         icon={Store}
         eyebrow="Marcas"

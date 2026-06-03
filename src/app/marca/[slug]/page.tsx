@@ -10,6 +10,7 @@ import {
   ShoppingBag,
 } from "lucide-react";
 
+import { PageBanner } from "@/components/banners";
 import { BrandLogo } from "@/components/brand-logo";
 import { BrandRequestButton } from "@/components/brand-request-button";
 import { CatalogGrid } from "@/components/catalog-grid";
@@ -74,6 +75,7 @@ export default async function MarcaPage({ params }: { params: Params }) {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
+      <PageBanner placement="MARCAS" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

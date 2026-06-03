@@ -6,7 +6,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getBrandsOverview } from "@/lib/catalog";
 
-import { promoteBrand, setBrandLogo, unpromoteBrand } from "./actions";
+import {
+  promoteBrand,
+  setBrandLogo,
+  setBrandOrder,
+  unpromoteBrand,
+} from "./actions";
 
 export default async function AdminMarcasPage() {
   const brands = await getBrandsOverview();
@@ -15,8 +20,9 @@ export default async function AdminMarcasPage() {
     <div>
       <h2 className="text-lg font-semibold">Marcas</h2>
       <p className="mb-4 mt-1 text-sm text-muted-foreground">
-        Defina o logo e promova marcas (patrocinadas ganham destaque na home e na
-        listagem, com selo).
+        Defina o logo, a <strong>ordem</strong> (maior número = aparece primeiro;
+        0 = ordem normal) e promova marcas (patrocinadas ganham destaque, com
+        selo). A ordem vale para a página de Marcas, os chips de filtro e a home.
       </p>
 
       {brands.length === 0 ? (
@@ -76,20 +82,42 @@ export default async function AdminMarcasPage() {
                 </div>
               </div>
 
-              <form action={setBrandLogo} className="flex gap-2">
-                <input type="hidden" name="brandId" value={b.id} />
-                <input
-                  name="logoUrl"
-                  type="url"
-                  defaultValue={b.logoUrl ?? ""}
-                  placeholder="https://.../logo.png"
-                  aria-label={`Logo de ${b.name}`}
-                  className="h-9 w-full rounded-md border border-input bg-background px-2.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                />
-                <Button size="sm" variant="outline" type="submit">
-                  Salvar logo
-                </Button>
-              </form>
+              <div className="flex flex-wrap gap-2">
+                <form action={setBrandLogo} className="flex min-w-[240px] flex-1 gap-2">
+                  <input type="hidden" name="brandId" value={b.id} />
+                  <input
+                    name="logoUrl"
+                    type="url"
+                    defaultValue={b.logoUrl ?? ""}
+                    placeholder="https://.../logo.png"
+                    aria-label={`Logo de ${b.name}`}
+                    className="h-9 w-full rounded-md border border-input bg-background px-2.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  />
+                  <Button size="sm" variant="outline" type="submit">
+                    Salvar logo
+                  </Button>
+                </form>
+                <form
+                  action={setBrandOrder}
+                  className="flex shrink-0 items-center gap-2"
+                >
+                  <input type="hidden" name="brandId" value={b.id} />
+                  <label className="text-xs font-medium text-muted-foreground">
+                    Ordem
+                  </label>
+                  <input
+                    name="order"
+                    type="number"
+                    step={1}
+                    defaultValue={b.sortOrder}
+                    aria-label={`Ordem de ${b.name}`}
+                    className="h-9 w-20 rounded-md border border-input bg-background px-2.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  />
+                  <Button size="sm" variant="outline" type="submit">
+                    Salvar
+                  </Button>
+                </form>
+              </div>
             </li>
           ))}
         </ul>

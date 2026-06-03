@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { FlaskConical } from "lucide-react";
 
 import { CatalogView } from "@/components/catalog-view";
+import { PageBanner } from "@/components/banners";
 import { PageHeader } from "@/components/page-header";
 import { getCatalog, parseCatalogFilters } from "@/lib/catalog";
 
@@ -32,6 +33,7 @@ export default async function ResinasPage({
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
+      <PageBanner placement="RESINAS" />
       <PageHeader
         icon={FlaskConical}
         eyebrow="Catálogo"

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Scale } from "lucide-react";
 
 import { CompareView } from "@/components/compare-view";
+import { PageBanner } from "@/components/banners";
 import { PageHeader } from "@/components/page-header";
 import { getComparableProducts } from "@/lib/catalog";
 import { type ProductKind } from "@/lib/catalog-types";
@@ -57,6 +58,7 @@ export default async function CompararPage({
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
+      <PageBanner placement="COMPARAR" />
       <PageHeader
         icon={Scale}
         eyebrow="Comparador ao vivo"

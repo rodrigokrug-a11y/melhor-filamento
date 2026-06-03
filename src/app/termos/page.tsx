@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { FileText } from "lucide-react";
 
+import { PageBanner } from "@/components/banners";
 import { PageHeader } from "@/components/page-header";
 
 export const metadata: Metadata = {
@@ -35,6 +36,7 @@ function Section({
 export default function TermosPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
+      <PageBanner placement="GLOBAL" />
       <PageHeader
         icon={FileText}
         eyebrow="Termos"

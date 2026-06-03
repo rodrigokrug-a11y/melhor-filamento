@@ -16,7 +16,18 @@ const BOOST_PLACEMENTS: BoostPlacement[] = [
   "TOP_RESIN",
   "TOP_PRINTER",
 ];
-const BANNER_PLACEMENTS: BannerPlacement[] = ["HOME", "GLOBAL"];
+const BANNER_PLACEMENTS: BannerPlacement[] = [
+  "HOME",
+  "FILAMENTOS",
+  "RESINAS",
+  "IMPRESSORAS",
+  "MARCAS",
+  "COMPARAR",
+  "RANKING",
+  "DICAS",
+  "PRODUTO",
+  "GLOBAL",
+];
 
 /** Revalida home + listagens (onde aparecem destaque e banners). */
 function revalidateListings() {

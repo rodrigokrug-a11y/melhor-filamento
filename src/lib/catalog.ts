@@ -142,6 +142,7 @@ function buildListItem(p: ProductWithOffers): ProductListItem | null {
     bestPrice,
     bestPriceHasCoupon,
     boost: null,
+    sortOrder: p.sortOrder,
     offers: offersLite,
   };
 }
@@ -213,6 +214,7 @@ export const getCatalog = cache(
 
     const all: ProductListItem[] = [];
     const brandLogos = new Map<string, string | null>();
+    const brandOrder = new Map<string, number>();
     for (const p of rows) {
       const item = buildListItem(p);
       if (!item) continue;
@@ -225,6 +227,7 @@ export const getCatalog = cache(
       all.push(item);
       if (!brandLogos.has(p.brand.slug)) {
         brandLogos.set(p.brand.slug, p.brand.logoUrl);
+        brandOrder.set(p.brand.slug, p.brand.sortOrder);
       }
     }
 
@@ -233,7 +236,14 @@ export const getCatalog = cache(
     );
     const brands = buildFacets(
       all.map((p) => ({ value: p.brandSlug, label: p.brandName })),
-    ).map((f) => ({ ...f, logoUrl: brandLogos.get(f.value) ?? null }));
+    )
+      .map((f) => ({ ...f, logoUrl: brandLogos.get(f.value) ?? null }))
+      // Ordem manual do admin primeiro (maior sortOrder), depois alfabética.
+      .sort(
+        (a, b) =>
+          (brandOrder.get(b.value) ?? 0) - (brandOrder.get(a.value) ?? 0) ||
+          a.label.localeCompare(b.label, "pt-BR"),
+      );
     // Cores reais como faceta (ignora "Variado", que é cor desconhecida).
     const colors = buildFacets(
       all
@@ -261,8 +271,13 @@ export const getCatalog = cache(
       products = products.filter((p) => p.tech === filters.tech);
     }
     products = sortProducts(products, filters.sort);
-    // Destaque pago no topo (maior lance primeiro); empate mantém a ordenação.
+    // Destaque pago acima da ordenação base (maior lance primeiro).
     products = [...products].sort((a, b) => (b.boost ?? 0) - (a.boost ?? 0));
+    // Ordem manual do admin tem prioridade máxima (maior sortOrder primeiro).
+    // Por padrão sortOrder=0 em tudo → não altera nada (ordenação estável).
+    products = [...products].sort(
+      (a, b) => (b.sortOrder ?? 0) - (a.sortOrder ?? 0),
+    );
 
     return { products, materials, brands, colors, techs };
   },
@@ -487,8 +502,11 @@ export const getBrandsOverview = cache(async (): Promise<BrandSummary[]> => {
       logoUrl: b.logoUrl,
       productCount: b.products.length,
       promotedActive: isSponsoredActive(b.isPromoted, b.promotedUntil, now),
+      sortOrder: b.sortOrder,
     }))
     .sort((a, b) => {
+      // Ordem manual do admin primeiro; depois patrocinadas; depois alfabética.
+      if (a.sortOrder !== b.sortOrder) return b.sortOrder - a.sortOrder;
       if (a.promotedActive !== b.promotedActive) return a.promotedActive ? -1 : 1;
       return a.name.localeCompare(b.name, "pt-BR");
     });

@@ -57,3 +57,20 @@ export async function unpromoteBrand(formData: FormData): Promise<void> {
   });
   revalidateBrandSurfaces();
 }
+
+/** Define a ordem manual da marca (maior = aparece primeiro). */
+export async function setBrandOrder(formData: FormData): Promise<void> {
+  await requireAdmin();
+  const brandId = String(formData.get("brandId") ?? "");
+  const order = Math.trunc(Number(formData.get("order")));
+  if (!brandId || !Number.isFinite(order)) return;
+  await prisma.brand.update({
+    where: { id: brandId },
+    data: { sortOrder: order },
+  });
+  revalidateBrandSurfaces();
+  // Afeta também os chips de marca nas listagens.
+  revalidatePath("/filamentos");
+  revalidatePath("/resinas");
+  revalidatePath("/impressoras");
+}

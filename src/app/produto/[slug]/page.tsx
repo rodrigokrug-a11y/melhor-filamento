@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Boxes, FlaskConical, Plus, Printer } from "lucide-react";
 
+import { PageBanner } from "@/components/banners";
 import { OfferComparison } from "@/components/offer-table";
 import { PriceHistoryChart } from "@/components/price-history-chart";
 import { ProductImage } from "@/components/product-image";
@@ -84,6 +85,7 @@ export default async function ProdutoPage({ params }: { params: Params }) {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
+      <PageBanner placement="PRODUTO" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: productJsonLd(product) }}
