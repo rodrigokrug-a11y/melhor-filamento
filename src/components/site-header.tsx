@@ -11,10 +11,7 @@ import { MAIN_NAV } from "@/lib/nav";
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div
-        aria-hidden
-        className="h-[3px] w-full bg-gradient-to-r from-brand to-teal"
-      />
+      <div aria-hidden className="grad-brand h-[3px] w-full" />
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
         <Link
           href="/"
@@ -33,7 +30,7 @@ export function SiteHeader() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="ml-1 inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-brand to-teal px-3 py-1.5 font-semibold text-white shadow-sm transition-opacity hover:opacity-90"
+                  className="grad-brand ml-1 inline-flex items-center gap-1 rounded-full px-3 py-1.5 font-semibold text-white shadow-sm transition-opacity hover:opacity-90"
                 >
                   <Sparkles className="size-3.5" />
                   {item.label}

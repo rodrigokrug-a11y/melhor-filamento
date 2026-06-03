@@ -23,7 +23,7 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* Cores de marca (Fusão) */
+  /* Cores de marca — Petrol/Teal (ação) · Verde (economia) · Navy (escuro) */
   --color-brand: var(--brand);
   --color-brand-foreground: var(--brand-foreground);
   --color-brand-soft: var(--brand-soft);
@@ -31,6 +31,12 @@
   --color-teal-foreground: var(--teal-foreground);
   --color-offer: var(--offer);
   --color-offer-foreground: var(--offer-foreground);
+  --color-deal: var(--offer);
+  --color-deal-bg: var(--deal-bg);
+  --color-accent-text: var(--accent-text);
+  --color-gold: var(--gold);
+  --color-navy: var(--navy-900);
+  --color-navy-700: var(--navy-700);
 
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
@@ -47,89 +53,142 @@
   --radius-xl: calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
 
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-space-grotesk);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-manrope);
+  --font-display: var(--font-sora);
+  --font-mono: var(--font-space-mono);
 }
 
 :root {
-  --radius: 0.75rem;
+  --radius: 0.875rem;
 
-  --background: #fbf8f4;
-  --foreground: #16120e;
+  /* ---- Escalas da marca (referência absoluta) ---- */
+  --teal-50: #ecf6f5;
+  --teal-100: #cde8e6;
+  --teal-200: #9bd0cd;
+  --teal-300: #5fb3af;
+  --teal-400: #2c9591;
+  --teal-500: #0e7e7b;
+  --teal-600: #0a6967;
+  --teal-700: #095553;
+  --teal-800: #084341;
+  --teal-900: #063432;
+
+  --green-100: #e4f7d6;
+  --green-200: #c3eca6;
+  --green-300: #9be06a;
+  --green-400: #74cf45;
+  --green-500: #54b62e;
+  --green-600: #429222;
+  --green-700: #357a1c;
+
+  --navy-900: #0c1f23;
+  --navy-800: #102a2f;
+  --navy-700: #16383e;
+  --navy-600: #1e474e;
+
+  --n-50: #f1f5f4;
+  --n-100: #e7edec;
+  --n-200: #d6dedd;
+  --n-300: #bcc8c7;
+  --n-400: #93a2a1;
+  --n-500: #6c7b7a;
+  --n-600: #4f5d5c;
+  --n-700: #374342;
+  --n-800: #222c2b;
+  --n-900: #131b1a;
+
+  /* ---- Gradientes / sombras ---- */
+  --grad-brand: linear-gradient(135deg, #0e7e7b 0%, #54b62e 100%);
+  --grad-brand-soft: linear-gradient(135deg, #0a6967 0%, #429222 100%);
+  --grad-dark: linear-gradient(155deg, #0c1f23 0%, #123e3a 70%, #16463f 100%);
+  --grad-mesh:
+    radial-gradient(900px 500px at 88% -10%, rgba(84, 182, 46, 0.18), transparent 60%),
+    radial-gradient(800px 600px at -5% 20%, rgba(14, 126, 123, 0.35), transparent 55%),
+    #0c1f23;
+  --shadow-teal: 0 10px 26px rgba(14, 126, 123, 0.3);
+
+  /* ---- Semânticos (claro) ---- */
+  --background: #f6f9f8;
+  --foreground: #131b1a;
   --card: #ffffff;
-  --card-foreground: #16120e;
+  --card-foreground: #131b1a;
   --popover: #ffffff;
-  --popover-foreground: #16120e;
+  --popover-foreground: #131b1a;
 
-  --primary: #f2541b;
+  --primary: #0e7e7b;
   --primary-foreground: #ffffff;
-  --secondary: #f1ebe3;
-  --secondary-foreground: #322a20;
-  --muted: #f3eee7;
-  --muted-foreground: #6f675b;
-  --accent: #f4eee5;
-  --accent-foreground: #16120e;
-  --destructive: #dc2626;
-  --border: #e9e1d6;
-  --input: #e4dccf;
-  --ring: #f2541b;
+  --secondary: #e7edec;
+  --secondary-foreground: #222c2b;
+  --muted: #eff4f3;
+  --muted-foreground: #4f5d5c;
+  --accent: #ecf6f5;
+  --accent-foreground: #095553;
+  --destructive: #c24b36;
+  --border: #d6dedd;
+  --input: #bcc8c7;
+  --ring: #0e7e7b;
 
-  --brand: #f2541b;
+  --brand: #0e7e7b;
   --brand-foreground: #ffffff;
-  --brand-soft: #fdeee6;
-  --teal: #0d9488;
+  --brand-soft: #ecf6f5;
+  --teal: #095553;
   --teal-foreground: #ffffff;
-  --offer: #16a34a;
+  --offer: #429222;
   --offer-foreground: #ffffff;
+  --deal-bg: #e4f7d6;
+  --accent-text: #357a1c;
+  --gold: #e0a92e;
 
   --sidebar: #ffffff;
-  --sidebar-foreground: #16120e;
-  --sidebar-primary: #f2541b;
+  --sidebar-foreground: #131b1a;
+  --sidebar-primary: #0e7e7b;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f4eee5;
-  --sidebar-accent-foreground: #16120e;
-  --sidebar-border: #e9e1d6;
-  --sidebar-ring: #f2541b;
+  --sidebar-accent: #ecf6f5;
+  --sidebar-accent-foreground: #095553;
+  --sidebar-border: #d6dedd;
+  --sidebar-ring: #0e7e7b;
 }
 
 .dark {
-  --background: #0e0c0a;
-  --foreground: #f6f1e9;
-  --card: #181410;
-  --card-foreground: #f6f1e9;
-  --popover: #181410;
-  --popover-foreground: #f6f1e9;
+  --background: #0c1f23;
+  --foreground: #e7efee;
+  --card: #102a2f;
+  --card-foreground: #e7efee;
+  --popover: #102a2f;
+  --popover-foreground: #e7efee;
 
-  --primary: #f2541b;
-  --primary-foreground: #ffffff;
-  --secondary: #221c15;
-  --secondary-foreground: #f1ebe3;
-  --muted: #1e1812;
-  --muted-foreground: #a99f90;
-  --accent: #241d15;
-  --accent-foreground: #f6f1e9;
-  --destructive: #f26161;
+  --primary: #2c9591;
+  --primary-foreground: #04211e;
+  --secondary: #16383e;
+  --secondary-foreground: #e7efee;
+  --muted: #16383e;
+  --muted-foreground: #9fc0bc;
+  --accent: #16383e;
+  --accent-foreground: #e7efee;
+  --destructive: #f26b53;
   --border: #ffffff1a;
   --input: #ffffff24;
-  --ring: #ff7a47;
+  --ring: #2c9591;
 
-  --brand: #ff7a47;
-  --brand-foreground: #1a0b04;
-  --brand-soft: #2a1810;
-  --teal: #2dd4c4;
+  --brand: #2c9591;
+  --brand-foreground: #04211e;
+  --brand-soft: #16383e;
+  --teal: #5fb3af;
   --teal-foreground: #04211e;
-  --offer: #34d399;
+  --offer: #74cf45;
   --offer-foreground: #052e1b;
+  --deal-bg: #16383e;
+  --accent-text: #9be06a;
+  --gold: #e0a92e;
 
-  --sidebar: #181410;
-  --sidebar-foreground: #f6f1e9;
-  --sidebar-primary: #ff7a47;
-  --sidebar-primary-foreground: #1a0b04;
-  --sidebar-accent: #241d15;
-  --sidebar-accent-foreground: #f6f1e9;
+  --sidebar: #102a2f;
+  --sidebar-foreground: #e7efee;
+  --sidebar-primary: #2c9591;
+  --sidebar-primary-foreground: #04211e;
+  --sidebar-accent: #16383e;
+  --sidebar-accent-foreground: #e7efee;
   --sidebar-border: #ffffff1a;
-  --sidebar-ring: #ff7a47;
+  --sidebar-ring: #2c9591;
 }
 
 @layer base {
@@ -145,9 +204,16 @@
   }
   h1,
   h2,
-  h3 {
+  h3,
+  h4,
+  h5 {
     font-family: var(--font-display);
+    font-weight: 700;
     letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  ::selection {
+    background: var(--teal-200);
   }
 }
 
@@ -155,6 +221,30 @@
 @utility tnum {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
+}
+
+/* Gradientes da marca como utilitários reutilizáveis */
+@utility grad-brand {
+  background-image: var(--grad-brand);
+}
+@utility grad-brand-soft {
+  background-image: var(--grad-brand-soft);
+}
+@utility grad-dark {
+  background-image: var(--grad-dark);
+}
+@utility grad-mesh {
+  background-image: var(--grad-mesh);
+}
+
+/* Eyebrow / tagline em Space Mono */
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal);
 }
 
 /* Reveal: entrada suave ao rolar (componente Reveal). */

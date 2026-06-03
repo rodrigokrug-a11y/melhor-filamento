@@ -56,6 +56,7 @@ export default async function HomePage() {
         <PageBanner placement="HOME" />
       </div>
       <Hero />
+      <TrustBar />
 
       <div className="mx-auto max-w-6xl space-y-16 px-4 py-14">
         <Reveal>
@@ -121,13 +122,13 @@ function Hero() {
       />
 
       <div className="mx-auto max-w-4xl px-4 py-12 text-center duration-700 animate-in fade-in slide-in-from-bottom-4 sm:py-16">
-        <span className="inline-flex items-center gap-1.5 rounded-full border bg-background/70 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur">
-          <Sparkles className="size-3.5 text-brand" />
-          Comparador de impressão 3D · Brasil
-        </span>
+        <p className="eyebrow">
+          Compare. Descubra.{" "}
+          <span className="text-offer">Compre melhor.</span>
+        </p>
         <h1 className="mx-auto mt-4 max-w-3xl text-balance font-display text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
           O melhor preço em{" "}
-          <span className="bg-gradient-to-r from-brand to-[#ff8a4c] bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-brand to-offer bg-clip-text text-transparent">
             filamento e resina 3D
           </span>{" "}
           do Brasil
@@ -142,6 +143,30 @@ function Hero() {
         </p>
       </div>
     </section>
+  );
+}
+
+function TrustBar() {
+  const items = [
+    { icon: <Scale />, text: "Compare preço por kg e custo total" },
+    { icon: <Truck />, text: "Frete estimado pro seu CEP" },
+    { icon: <BadgeCheck />, text: "Ofertas de várias lojas do Brasil" },
+    { icon: <MapPin />, text: "100% nacional" },
+  ];
+  return (
+    <div className="bg-navy">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-8 gap-y-2 px-4 py-3.5">
+        {items.map((it) => (
+          <span
+            key={it.text}
+            className="inline-flex items-center gap-2 font-mono text-xs text-[#9fc0bc] [&_svg]:size-4 [&_svg]:text-[var(--teal-300)]"
+          >
+            {it.icon}
+            {it.text}
+          </span>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -241,7 +266,7 @@ function FeatureBlocks() {
         {/* Comparar preços — destaque */}
         <Link
           href="/comparar"
-          className="group relative flex flex-col overflow-hidden rounded-2xl bg-gradient-to-br from-brand to-teal p-6 text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg"
+          className="group grad-brand relative flex flex-col overflow-hidden rounded-2xl p-6 text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg"
         >
           <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-0.5 text-xs font-medium">
             <Scale className="size-3.5" /> Comparador de preços
@@ -453,7 +478,7 @@ function DicasTeaser({
 function CtaBand() {
   return (
     <section className="mx-auto max-w-6xl px-4 pb-16">
-      <div className="relative overflow-hidden rounded-3xl bg-brand px-6 py-12 text-center text-brand-foreground sm:px-12">
+      <div className="grad-dark relative overflow-hidden rounded-3xl px-6 py-12 text-center text-white sm:px-12">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 opacity-20 [background-image:radial-gradient(white_1px,transparent_1px)] [background-size:20px_20px]"
@@ -463,20 +488,20 @@ function CtaBand() {
           <h2 className="mx-auto mt-3 max-w-xl font-display text-2xl font-bold tracking-tight sm:text-3xl">
             Pronto para pagar menos na sua próxima impressão?
           </h2>
-          <p className="mx-auto mt-2 max-w-lg text-brand-foreground/90">
+          <p className="mx-auto mt-2 max-w-lg text-[#bcd3d0]">
             Compare preços com frete por CEP e veja as ofertas de lojas
             verificadas.
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/filamentos"
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-background px-7 text-base font-medium text-foreground shadow-sm transition-transform hover:scale-[1.02] active:scale-[0.98]"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-7 text-base font-semibold text-teal shadow-sm transition-transform hover:scale-[1.02] active:scale-[0.98]"
             >
               Ver filamentos <ArrowRight className="size-4" />
             </Link>
             <Link
               href="/comparar"
-              className="inline-flex h-12 items-center justify-center rounded-xl border border-brand-foreground/40 px-7 text-base font-medium transition-colors hover:bg-brand-foreground/10"
+              className="inline-flex h-12 items-center justify-center rounded-full border border-white/30 px-7 text-base font-medium text-white transition-colors hover:bg-white/10"
             >
               Comparar
             </Link>

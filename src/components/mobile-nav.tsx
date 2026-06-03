@@ -63,7 +63,7 @@ export function MobileNav() {
                         key={item.href}
                         href={item.href}
                         onClick={() => setOpen(false)}
-                        className="mt-1 flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-brand to-teal px-3 py-2.5 text-sm font-semibold text-white"
+                        className="grad-brand mt-1 flex items-center gap-1.5 rounded-lg px-3 py-2.5 text-sm font-semibold text-white"
                       >
                         <Sparkles className="size-4" />
                         {item.label} — ferramentas de IA
