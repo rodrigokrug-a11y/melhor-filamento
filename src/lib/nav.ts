@@ -1,5 +1,6 @@
 // Navegação principal — compartilhada entre header (desktop) e menu mobile.
-export const MAIN_NAV: { href: string; label: string }[] = [
+// `accent` destaca o item (ex.: as ferramentas de IA).
+export const MAIN_NAV: { href: string; label: string; accent?: boolean }[] = [
   { href: "/filamentos", label: "Filamentos" },
   { href: "/resinas", label: "Resinas" },
   { href: "/impressoras", label: "Impressoras" },
@@ -10,4 +11,5 @@ export const MAIN_NAV: { href: string; label: string }[] = [
   { href: "/dicas", label: "Dicas" },
   { href: "/ferramentas", label: "Ferramentas" },
   { href: "/contato", label: "Contato" },
+  { href: "/ia", label: "IA", accent: true },
 ];

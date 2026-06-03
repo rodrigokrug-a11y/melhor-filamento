@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ExternalLink, Wrench } from "lucide-react";
+import { ArrowRight, ExternalLink, Sparkles, Wrench } from "lucide-react";
 
 import { PageBanner } from "@/components/banners";
 import { PageHeader } from "@/components/page-header";
@@ -32,6 +32,25 @@ export default function FerramentasPage() {
         title="Ferramentas para impressão 3D"
         subtitle="Mini-ferramentas grátis pra te ajudar no dia a dia da impressão 3D. Tudo roda no seu navegador. Novas ferramentas chegam com o tempo."
       />
+
+      <Link
+        href="/ia"
+        className="group mb-6 flex items-center gap-4 overflow-hidden rounded-2xl border border-cyan-400/30 bg-gradient-to-br from-slate-900 to-[#06201f] p-5 text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-cyan-500/10"
+      >
+        <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-cyan-400 text-slate-900">
+          <Sparkles className="size-6" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="font-display text-lg font-bold">
+            Ferramentas de IA ✨
+          </p>
+          <p className="text-sm text-slate-300">
+            Assistente de impressão e diagnóstico por foto — tire dúvidas e
+            resolva problemas na hora.
+          </p>
+        </div>
+        <ArrowRight className="ml-auto size-5 shrink-0 text-cyan-300 transition-transform group-hover:translate-x-0.5" />
+      </Link>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {TOOLS.map((t) => {

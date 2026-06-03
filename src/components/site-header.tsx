@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Plus, Sparkles } from "lucide-react";
 
 import { AuthNav } from "@/components/auth-nav";
 import { CepSelector } from "@/components/cep-selector";
@@ -28,15 +28,26 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-1.5">
           <nav className="mr-1 hidden items-center gap-0.5 text-sm font-medium xl:flex">
-            {MAIN_NAV.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {MAIN_NAV.map((item) =>
+              item.accent ? (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="ml-1 inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-brand to-teal px-3 py-1.5 font-semibold text-white shadow-sm transition-opacity hover:opacity-90"
+                >
+                  <Sparkles className="size-3.5" />
+                  {item.label}
+                </Link>
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                >
+                  {item.label}
+                </Link>
+              ),
+            )}
           </nav>
           <Link
             href="/cadastrar-oferta"

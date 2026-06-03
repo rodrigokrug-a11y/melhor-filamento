@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { Menu, Plus, X } from "lucide-react";
+import { Menu, Plus, Sparkles, X } from "lucide-react";
 
 import { Logo } from "@/components/logo";
 import { MAIN_NAV } from "@/lib/nav";
@@ -57,16 +57,28 @@ export function MobileNav() {
                 </div>
 
                 <nav className="flex flex-col gap-0.5">
-                  {MAIN_NAV.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setOpen(false)}
-                      className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-accent"
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
+                  {MAIN_NAV.map((item) =>
+                    item.accent ? (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setOpen(false)}
+                        className="mt-1 flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-brand to-teal px-3 py-2.5 text-sm font-semibold text-white"
+                      >
+                        <Sparkles className="size-4" />
+                        {item.label} — ferramentas de IA
+                      </Link>
+                    ) : (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setOpen(false)}
+                        className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+                      >
+                        {item.label}
+                      </Link>
+                    ),
+                  )}
                 </nav>
 
                 <Link
