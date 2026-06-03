@@ -54,13 +54,13 @@ export default async function RankingPage({
         subtitle="Ranking pela nota da comunidade — quanto melhor avaliado, mais alto."
       />
 
-      <div className="mb-5 inline-flex rounded-lg border bg-card p-0.5 text-sm">
+      <div className="mb-5 inline-flex rounded-full border bg-card p-1 text-sm font-medium">
         <Link
           href="/ranking"
           className={cn(
-            "rounded-md px-3 py-1.5 transition-colors",
+            "rounded-full px-4 py-1.5 transition-colors",
             !isPrinter
-              ? "bg-brand text-white"
+              ? "bg-brand text-white shadow-sm"
               : "text-muted-foreground hover:text-foreground",
           )}
         >
@@ -69,9 +69,9 @@ export default async function RankingPage({
         <Link
           href="/ranking?tipo=impressoras"
           className={cn(
-            "rounded-md px-3 py-1.5 transition-colors",
+            "rounded-full px-4 py-1.5 transition-colors",
             isPrinter
-              ? "bg-brand text-white"
+              ? "bg-brand text-white shadow-sm"
               : "text-muted-foreground hover:text-foreground",
           )}
         >

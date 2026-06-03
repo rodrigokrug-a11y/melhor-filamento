@@ -127,7 +127,7 @@ export function PriceAlertForm({
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand/90 disabled:opacity-60"
+              className="grad-brand inline-flex items-center gap-1.5 rounded-full px-5 py-2 text-sm font-semibold text-white transition-transform hover:-translate-y-px disabled:opacity-60"
             >
               {loading ? (
                 <Loader2 className="size-4 animate-spin" />

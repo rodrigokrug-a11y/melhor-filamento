@@ -84,7 +84,7 @@ export default function IaPage() {
               href={t.href}
               className="group relative flex flex-col overflow-hidden rounded-2xl border bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-brand/40 hover:shadow-xl"
             >
-              <span className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-brand to-teal text-white">
+              <span className="grad-brand flex size-14 items-center justify-center rounded-2xl text-white">
                 <t.icon className="size-7" />
               </span>
               <h2 className="mt-4 font-display text-xl font-bold">{t.title}</h2>

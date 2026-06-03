@@ -174,7 +174,7 @@ export function FilamentQuiz({ cheapest }: { cheapest: CheapestMap }) {
       <div className="mt-5 flex flex-wrap gap-2">
         <Link
           href={`/filamentos?material=${winner}`}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand/90"
+          className="grad-brand inline-flex items-center gap-1.5 rounded-full px-5 py-2 text-sm font-semibold text-white transition-transform hover:-translate-y-px"
         >
           Ver todos os filamentos {winner}
           <ArrowRight className="size-4" />

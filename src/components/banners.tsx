@@ -26,7 +26,7 @@ export async function PageBanner({
   const cta = b.linkUrl ? (b.ctaLabel?.trim() || "Saiba mais") : null;
 
   const inner = (
-    <div className="relative overflow-hidden rounded-2xl border bg-gradient-to-br from-brand to-teal text-white">
+    <div className="grad-brand relative overflow-hidden rounded-2xl border text-white">
       {b.imageUrl ? (
         <Image
           src={b.imageUrl.startsWith("/") ? b.imageUrl : proxied(b.imageUrl)}
