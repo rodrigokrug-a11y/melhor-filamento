@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope, Sora, Space_Mono } from "next/font/google";
 import "./globals.css";
+import { CompareBar } from "@/components/compare-bar";
 import { CookieConsent } from "@/components/cookie-consent";
 import { Providers } from "@/components/providers";
 import { SiteHeader } from "@/components/site-header";
@@ -83,6 +84,7 @@ export default function RootLayout({
             {children}
           </main>
           <SiteFooter />
+          <CompareBar />
           <CookieConsent />
         </Providers>
       </body>

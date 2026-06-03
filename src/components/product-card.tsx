@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Boxes, FlaskConical, Megaphone, Printer, Tag } from "lucide-react";
 
+import { CompareButton } from "@/components/compare-button";
 import { FavoriteButton } from "@/components/favorite-button";
 import { ProductImage } from "@/components/product-image";
 import { Badge } from "@/components/ui/badge";
@@ -108,6 +109,11 @@ export function ProductCard({
       <FavoriteButton
         slug={product.slug}
         className="absolute right-2.5 top-2.5 z-20"
+      />
+      <CompareButton
+        slug={product.slug}
+        kind={product.kind}
+        className="absolute right-12 top-2.5 z-20"
       />
     </article>
   );
