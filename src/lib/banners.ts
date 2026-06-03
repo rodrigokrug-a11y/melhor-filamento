@@ -16,7 +16,7 @@ export type ActiveBanner = {
 export const getActiveBanner = cache(
   async (placement: BannerPlacement): Promise<ActiveBanner | null> => {
     return prisma.banner.findFirst({
-      where: { placement, status: "ACTIVE" },
+      where: { placements: { has: placement }, status: "ACTIVE" },
       orderBy: { bidAmount: "desc" },
       select: {
         id: true,

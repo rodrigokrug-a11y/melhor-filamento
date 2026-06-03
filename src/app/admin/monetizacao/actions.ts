@@ -128,17 +128,22 @@ export async function setBoostStatus(formData: FormData): Promise<void> {
 
 /** Lê e valida os campos de um banner a partir do formulário. */
 function bannerDataFromForm(formData: FormData) {
-  const placement = String(formData.get("placement") ?? "") as BannerPlacement;
-  if (!BANNER_PLACEMENTS.includes(placement)) return null;
+  const placements = formData
+    .getAll("placements")
+    .map(String)
+    .filter((p): p is BannerPlacement =>
+      BANNER_PLACEMENTS.includes(p as BannerPlacement),
+    );
   const title = String(formData.get("title") ?? "").trim();
   const linkUrl = String(formData.get("linkUrl") ?? "").trim();
-  if (!title) return null; // link é opcional: vazio = banner não clicável
+  // precisa de título e de ao menos 1 página; link é opcional (vazio = não clicável)
+  if (!title || placements.length === 0) return null;
   const subtitle = String(formData.get("subtitle") ?? "").trim();
   const imageUrl = String(formData.get("imageUrl") ?? "").trim();
   const ctaLabel = String(formData.get("ctaLabel") ?? "").trim();
   const sellerId = String(formData.get("sellerId") ?? "").trim();
   return {
-    placement,
+    placements,
     title,
     subtitle: subtitle || null,
     imageUrl:

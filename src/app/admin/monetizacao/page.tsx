@@ -130,9 +130,10 @@ function DeleteButton({
 function BannerFields({
   banner,
   sellers,
+  taken,
 }: {
   banner?: {
-    placement: string;
+    placements: string[];
     title: string;
     subtitle: string | null;
     imageUrl: string | null;
@@ -142,24 +143,44 @@ function BannerFields({
     sellerId: string | null;
   };
   sellers: { id: string; name: string }[];
+  taken: Record<string, string>; // página → título do banner ativo que já a usa
 }) {
   return (
     <div className="grid gap-3 sm:grid-cols-2">
-      <label className={fieldCls}>
-        Página (onde aparece)
-        <select
-          name="placement"
-          required
-          defaultValue={banner?.placement ?? "HOME"}
-          className={inputCls}
-        >
-          {BANNER_PLACEMENT_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>
-              {o.label}
-            </option>
-          ))}
-        </select>
-      </label>
+      <div className={`${fieldCls} sm:col-span-2`}>
+        <span>Páginas onde aparece (marque uma ou mais)</span>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {BANNER_PLACEMENT_OPTIONS.map((o) => {
+            const usedBy = taken[o.value];
+            const checked = banner?.placements.includes(o.value) ?? false;
+            return (
+              <label
+                key={o.value}
+                className={`flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-normal ${
+                  usedBy
+                    ? "cursor-not-allowed opacity-50"
+                    : "cursor-pointer text-foreground hover:bg-accent"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  name="placements"
+                  value={o.value}
+                  defaultChecked={checked}
+                  disabled={!!usedBy}
+                  className="size-4 accent-brand"
+                />
+                <span>{o.label}</span>
+                {usedBy ? (
+                  <span className="ml-auto truncate text-[11px] text-muted-foreground">
+                    em uso
+                  </span>
+                ) : null}
+              </label>
+            );
+          })}
+        </div>
+      </div>
       <label className={fieldCls}>
         Lance (R$/mês)
         <input
@@ -249,6 +270,17 @@ export default async function AdminMonetizacaoPage() {
       orderBy: { name: "asc" },
     }),
   ]);
+
+  // Página → título do banner ATIVO que já a ocupa (para desabilitar no seletor).
+  // excludeId permite que, ao editar, o banner não bloqueie as próprias páginas.
+  const takenMap = (excludeId?: string): Record<string, string> => {
+    const m: Record<string, string> = {};
+    for (const b of banners) {
+      if (b.status !== "ACTIVE" || (excludeId && b.id === excludeId)) continue;
+      for (const p of b.placements) if (!(p in m)) m[p] = b.title;
+    }
+    return m;
+  };
 
   return (
     <div className="space-y-12">
@@ -376,10 +408,10 @@ export default async function AdminMonetizacaoPage() {
         <h2 className="text-lg font-semibold">Banners</h2>
         <p className="mb-4 mt-1 text-sm text-muted-foreground">
           O banner aparece <strong>acima do título</strong>, como primeira coisa
-          da página. Escolha <strong>uma página</strong> (cada uma pode ter um
-          banner diferente) ou use <strong>Todas as páginas</strong> para repetir
-          o mesmo em todo o site — a página com banner próprio sempre tem
-          prioridade. Você gere tudo aqui.
+          da página. Marque <strong>uma ou mais páginas</strong> onde ele deve
+          aparecer. Páginas já ocupadas por outro banner ativo ficam{" "}
+          <strong>desabilitadas</strong>. Use <strong>Todas as páginas</strong>{" "}
+          como reserva (vale onde não houver banner específico).
         </p>
 
         <details className="rounded-xl border bg-muted/30 p-4">
@@ -388,7 +420,7 @@ export default async function AdminMonetizacaoPage() {
             Novo banner
           </summary>
           <form action={createBanner} className="mt-4 space-y-3">
-            <BannerFields sellers={sellers} />
+            <BannerFields sellers={sellers} taken={takenMap()} />
             <Button type="submit">
               <Plus />
               Criar banner
@@ -408,7 +440,10 @@ export default async function AdminMonetizacaoPage() {
                   <div className="min-w-0">
                     <p className="font-medium">{b.title}</p>
                     <p className="text-xs text-muted-foreground">
-                      {PLACEMENT_LABELS[b.placement] ?? b.placement} ·{" "}
+                      {b.placements
+                        .map((p) => PLACEMENT_LABELS[p] ?? p)
+                        .join(", ") || "—"}{" "}
+                      ·{" "}
                       <strong>{formatBRL(Number(b.bidAmount))}/mês</strong>
                       {b.seller?.name ? ` · ${b.seller.name}` : ""} ·{" "}
                       {b.linkUrl ? (
@@ -449,8 +484,9 @@ export default async function AdminMonetizacaoPage() {
                     <input type="hidden" name="bannerId" value={b.id} />
                     <BannerFields
                       sellers={sellers}
+                      taken={takenMap(b.id)}
                       banner={{
-                        placement: b.placement,
+                        placements: b.placements,
                         title: b.title,
                         subtitle: b.subtitle,
                         imageUrl: b.imageUrl,

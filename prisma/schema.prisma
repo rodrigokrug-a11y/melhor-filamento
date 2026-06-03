@@ -458,22 +458,21 @@ model ContactMessage {
 // Banner pago: a loja envia imagem/link/texto e dá um lance; o maior lance
 // ACTIVE por placement é exibido.
 model Banner {
-  id        String          @id @default(cuid())
-  sellerId  String?
-  seller    Seller?         @relation(fields: [sellerId], references: [id])
-  placement BannerPlacement
-  title     String
-  subtitle  String?
-  imageUrl  String?
-  linkUrl   String
-  ctaLabel  String? // texto do botão (ex.: "Saiba mais"); null = padrão
-  bidAmount Decimal         @db.Decimal(10, 2) @default(0)
-  status    AdStatus        @default(PENDING)
-  startsAt  DateTime?
-  endsAt    DateTime?
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
+  id         String            @id @default(cuid())
+  sellerId   String?
+  seller     Seller?           @relation(fields: [sellerId], references: [id])
+  placements BannerPlacement[] // páginas onde o banner aparece (uma ou várias)
+  title      String
+  subtitle   String?
+  imageUrl   String?
+  linkUrl    String
+  ctaLabel   String? // texto do botão (ex.: "Saiba mais"); null = padrão
+  bidAmount  Decimal           @db.Decimal(10, 2) @default(0)
+  status     AdStatus          @default(PENDING)
+  startsAt   DateTime?
+  endsAt     DateTime?
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
 
-  @@index([placement, status])
   @@index([sellerId])
 }
