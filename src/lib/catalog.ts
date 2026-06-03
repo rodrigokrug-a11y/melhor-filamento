@@ -199,6 +199,50 @@ export const searchProducts = cache(
   },
 );
 
+export type SearchSuggestion = {
+  slug: string;
+  name: string;
+  brandName: string;
+  kind: ProductKind;
+};
+
+/** Sugestões rápidas para autocomplete (sem ofertas/preço — leve por tecla). */
+export async function searchSuggestions(
+  query: string,
+): Promise<SearchSuggestion[]> {
+  const q = query.trim();
+  if (q.length < 2) return [];
+  const tokens = q.split(/\s+/).filter(Boolean).slice(0, 6);
+
+  const rows = await prisma.product.findMany({
+    where: {
+      offers: { some: ACTIVE_OFFER_WHERE },
+      AND: tokens.map((tok) => ({
+        OR: [
+          { name: { contains: tok, mode: "insensitive" as const } },
+          { brand: { name: { contains: tok, mode: "insensitive" as const } } },
+          { color: { contains: tok, mode: "insensitive" as const } },
+        ],
+      })),
+    },
+    select: {
+      slug: true,
+      name: true,
+      kind: true,
+      brand: { select: { name: true } },
+    },
+    take: 7,
+    orderBy: { name: "asc" },
+  });
+
+  return rows.map((r) => ({
+    slug: r.slug,
+    name: r.name,
+    brandName: r.brand.name,
+    kind: r.kind as ProductKind,
+  }));
+}
+
 function buildFacets(
   items: { value: string; label: string }[],
 ): FacetOption[] {
