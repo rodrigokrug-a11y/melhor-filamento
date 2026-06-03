@@ -25,6 +25,7 @@ import { ProductCard } from "@/components/product-card";
 import { Reveal } from "@/components/reveal";
 import { SearchBox } from "@/components/search-box";
 import { Stars } from "@/components/stars";
+import { Badge } from "@/components/ui/badge";
 import { getBrandsOverview, getCatalog } from "@/lib/catalog";
 import {
   type BrandSummary,
@@ -34,6 +35,7 @@ import {
 } from "@/lib/catalog-types";
 import { getRanking } from "@/lib/reviews";
 import { getMaterialsOverview } from "@/lib/tips";
+import { formatBRL } from "@/lib/utils";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -57,9 +59,9 @@ export default async function HomePage() {
       <div className="mx-auto max-w-6xl px-4 pt-6">
         <PageBanner placement="HOME" />
       </div>
-      <Hero />
-      <TrustBar />
       <CatStrip />
+      <Hero cheapest={filamentos.products[0]} />
+      <TrustBar />
 
       <div className="mx-auto max-w-6xl space-y-16 px-4 py-14">
         <Reveal>
@@ -104,7 +106,11 @@ export default async function HomePage() {
   );
 }
 
-function Hero() {
+function Hero({ cheapest }: { cheapest?: ProductListItem }) {
+  const perKg =
+    cheapest && cheapest.netWeightG > 0
+      ? cheapest.bestPrice / (cheapest.netWeightG / 1000)
+      : null;
   return (
     <section className="relative overflow-hidden border-b">
       <div
@@ -124,46 +130,82 @@ function Hero() {
         className="pointer-events-none absolute inset-0 -z-10 opacity-50 [background-image:radial-gradient(var(--border)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:linear-gradient(to_bottom,black,transparent_75%)]"
       />
 
-      <div className="mx-auto max-w-4xl px-4 py-12 text-center duration-700 animate-in fade-in slide-in-from-bottom-4 sm:py-16">
-        <p className="eyebrow">
-          Compare. Descubra.{" "}
-          <span className="text-offer">Compre melhor.</span>
-        </p>
-        <h1 className="mx-auto mt-4 max-w-3xl text-balance font-display text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-          O melhor preço em{" "}
-          <span className="bg-gradient-to-r from-brand to-offer bg-clip-text text-transparent">
-            filamento e resina 3D
-          </span>{" "}
-          do Brasil
-        </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-pretty text-muted-foreground sm:text-lg">
-          Compare ofertas de várias lojas com o frete pro seu CEP — e use as
-          ferramentas do site (inclusive IA) pra imprimir com mais sucesso.
-        </p>
-        <div className="mx-auto mt-6 max-w-xl text-left">
-          <SearchBox size="lg" placeholder="Ex: PLA preto 1kg, resina, Ender 3…" />
+      <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 duration-700 animate-in fade-in slide-in-from-bottom-4 sm:py-16 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="text-center lg:text-left">
+          <p className="eyebrow">
+            Compare. Descubra.{" "}
+            <span className="text-offer">Compre melhor.</span>
+          </p>
+          <h1 className="mt-4 text-balance font-display text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+            O melhor preço em{" "}
+            <span className="bg-gradient-to-r from-brand to-offer bg-clip-text text-transparent">
+              filamento e resina 3D
+            </span>{" "}
+            do Brasil
+          </h1>
+          <p className="mx-auto mt-4 max-w-xl text-pretty text-muted-foreground sm:text-lg lg:mx-0">
+            Compare ofertas de várias lojas com o frete pro seu CEP — e use as
+            ferramentas do site (inclusive IA) pra imprimir com mais sucesso.
+          </p>
+          <div className="mx-auto mt-6 max-w-xl text-left lg:mx-0">
+            <SearchBox
+              size="lg"
+              placeholder="Ex: PLA preto 1kg, resina, Ender 3…"
+            />
+          </div>
+          <div className="mx-auto mt-3 flex max-w-xl flex-wrap justify-center gap-2 lg:mx-0 lg:justify-start">
+            {[
+              { label: "PLA 1kg", href: "/filamentos?material=PLA" },
+              { label: "PETG", href: "/filamentos?material=PETG" },
+              { label: "ABS", href: "/filamentos?material=ABS" },
+              { label: "Resinas", href: "/resinas" },
+              { label: "Ender 3", href: "/busca?q=Ender+3" },
+            ].map((t) => (
+              <Link
+                key={t.label}
+                href={t.href}
+                className="rounded-full border bg-card px-3 py-1 font-mono text-xs text-muted-foreground transition-colors hover:border-brand/40 hover:text-foreground"
+              >
+                {t.label}
+              </Link>
+            ))}
+          </div>
+          <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-muted-foreground lg:justify-start">
+            <MapPin className="size-3.5 text-brand" />
+            Informe seu CEP no topo para ranquear pelo custo total com frete.
+          </p>
         </div>
-        <div className="mx-auto mt-3 flex max-w-xl flex-wrap gap-2">
-          {[
-            { label: "PLA 1kg", href: "/filamentos?material=PLA" },
-            { label: "PETG", href: "/filamentos?material=PETG" },
-            { label: "ABS", href: "/filamentos?material=ABS" },
-            { label: "Resinas", href: "/resinas" },
-            { label: "Ender 3", href: "/busca?q=Ender+3" },
-          ].map((t) => (
-            <Link
-              key={t.label}
-              href={t.href}
-              className="rounded-full border bg-card px-3 py-1 font-mono text-xs text-muted-foreground transition-colors hover:border-brand/40 hover:text-foreground"
-            >
-              {t.label}
-            </Link>
-          ))}
+
+        {/* Visual (mesh) com card de preço real */}
+        <div className="hidden md:block">
+          <div className="grad-mesh relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-[28px] shadow-lg">
+            <div
+              aria-hidden
+              className="size-[62%] rounded-full [background:repeating-radial-gradient(circle,rgba(255,255,255,0.08)_0_6px,transparent_6px_12px)]"
+            />
+            {cheapest ? (
+              <Link
+                href={`/produto/${cheapest.slug}`}
+                className="absolute right-5 top-5 rounded-2xl bg-card p-3 shadow-lg transition-transform hover:-translate-y-0.5"
+              >
+                <p className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground">
+                  Melhor preço
+                </p>
+                <p className="font-display text-xl font-bold tnum">
+                  {formatBRL(cheapest.bestPrice)}
+                </p>
+                {perKg != null ? (
+                  <p className="font-mono text-[10px] font-bold text-accent-text">
+                    {formatBRL(perKg)}/kg
+                  </p>
+                ) : null}
+              </Link>
+            ) : null}
+            <div className="absolute bottom-5 left-5">
+              <Badge variant="best">★ Melhor compra</Badge>
+            </div>
+          </div>
         </div>
-        <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-          <MapPin className="size-3.5 text-brand" />
-          Informe seu CEP no topo para ranquear pelo custo total com frete.
-        </p>
       </div>
     </section>
   );
