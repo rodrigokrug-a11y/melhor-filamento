@@ -79,9 +79,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // Páginas de cada ferramenta disponível (geradas a partir do registro).
+  // Páginas internas de cada ferramenta (exclui as que apontam pra fora).
   const toolRoutes: MetadataRoute.Sitemap = TOOLS.filter(
-    (t) => t.available,
+    (t) => t.available && !t.externalUrl,
   ).map((t) => ({
     url: `${base}/ferramentas/${t.slug}`,
     lastModified: now,

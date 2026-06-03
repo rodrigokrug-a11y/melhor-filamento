@@ -16,6 +16,7 @@ export type Tool = {
   description: string;
   icon: LucideIcon;
   available: boolean;
+  externalUrl?: string; // se preenchido, o card abre este link (outro projeto)
 };
 
 export const TOOLS: Tool[] = [
@@ -63,9 +64,10 @@ export const TOOLS: Tool[] = [
     slug: "gerador-de-cases",
     name: "Gerador de cases",
     description:
-      "Gerar caixas/cases sob medida. Em definição de escopo — me conte o que você imagina.",
+      "Crie cases e estojos sob medida no nosso projeto parceiro, o MyMiniCase.",
     icon: Package,
-    available: false,
+    available: true,
+    externalUrl: "https://www.myminicase.com",
   },
 ];
 
