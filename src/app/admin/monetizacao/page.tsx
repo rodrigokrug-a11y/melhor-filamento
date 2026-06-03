@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ExternalLink, Megaphone, Pause, Play, Plus, Trash2 } from "lucide-react";
 
+import { BannerImageField } from "@/components/banner-image-field";
 import { ConfirmSubmitButton } from "@/components/confirm-submit-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -188,16 +189,10 @@ function BannerFields({
           className={inputCls}
         />
       </label>
-      <label className={`${fieldCls} sm:col-span-2`}>
-        URL da imagem (opcional)
-        <input
-          name="imageUrl"
-          type="url"
-          defaultValue={banner?.imageUrl ?? ""}
-          placeholder="https://…"
-          className={inputCls}
-        />
-      </label>
+      <div className={`${fieldCls} sm:col-span-2`}>
+        <span>Imagem (opcional) — envie do computador ou cole uma URL</span>
+        <BannerImageField defaultValue={banner?.imageUrl} />
+      </div>
       <label className={`${fieldCls} sm:col-span-2`}>
         Link de destino
         <input

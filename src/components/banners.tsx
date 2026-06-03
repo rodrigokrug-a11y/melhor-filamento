@@ -31,7 +31,9 @@ export async function PageBanner({
       <div className="relative overflow-hidden rounded-2xl border bg-gradient-to-br from-brand to-teal text-white">
         {b.imageUrl ? (
           <Image
-            src={proxied(b.imageUrl)}
+            src={
+              b.imageUrl.startsWith("/") ? b.imageUrl : proxied(b.imageUrl)
+            }
             alt={b.title}
             fill
             unoptimized
@@ -40,8 +42,8 @@ export async function PageBanner({
           />
         ) : null}
         <div
-          className={`relative flex min-h-[140px] flex-col justify-center gap-1.5 p-6 ${
-            b.imageUrl ? "bg-black/35" : ""
+          className={`relative flex flex-col justify-center gap-1.5 p-6 ${
+            b.imageUrl ? "min-h-[180px] bg-black/35" : "min-h-[140px]"
           }`}
         >
           <Badge

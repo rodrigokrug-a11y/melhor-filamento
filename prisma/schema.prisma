@@ -429,6 +429,15 @@ enum BannerPlacement {
   GLOBAL // fallback: usado quando a página não tem banner próprio
 }
 
+// Imagem enviada pelo admin (banner, logo etc.). Guardada no banco para
+// sobreviver a redeploys e entrar nos backups. Servida por /api/uploads/[id].
+model Upload {
+  id        String   @id @default(cuid())
+  mimeType  String
+  data      Bytes
+  createdAt DateTime @default(now())
+}
+
 // Banner pago: a loja envia imagem/link/texto e dá um lance; o maior lance
 // ACTIVE por placement é exibido.
 model Banner {

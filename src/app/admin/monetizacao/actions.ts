@@ -140,7 +140,11 @@ function bannerDataFromForm(formData: FormData) {
     placement,
     title,
     subtitle: subtitle || null,
-    imageUrl: imageUrl && isValidHttpUrl(imageUrl) ? imageUrl : null,
+    imageUrl:
+      imageUrl &&
+      (isValidHttpUrl(imageUrl) || imageUrl.startsWith("/api/uploads/"))
+        ? imageUrl
+        : null,
     linkUrl,
     bidAmount: (parseBid(formData.get("bid")) ?? 0).toFixed(2),
     sellerId: sellerId || null,
