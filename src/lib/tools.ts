@@ -2,6 +2,7 @@ import {
   ArrowLeftRight,
   Calculator,
   ClipboardList,
+  Coins,
   Disc3,
   FileCode2,
   FlaskConical,
@@ -58,6 +59,14 @@ export const TOOLS: Tool[] = [
     description:
       "Abra o arquivo fatiado (Cura, Prusa, Orca, Bambu) e calcule o custo — peso e tempo lidos automaticamente.",
     icon: FileCode2,
+    available: true,
+  },
+  {
+    slug: "ranking-de-custo",
+    name: "Ranking de custo",
+    description:
+      "Os filamentos mais econômicos por quilo (R$/kg) e por metro (R$/m), com os preços reais do catálogo.",
+    icon: Coins,
     available: true,
   },
   {
