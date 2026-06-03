@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ImageUp, Loader2, ScanSearch } from "lucide-react";
 
+import { Markdown } from "@/components/markdown";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -112,7 +113,10 @@ export function PrintDiagnosis() {
             <ScanSearch className="size-4 text-brand" />
             Diagnóstico
           </h2>
-          <p className="mt-3 whitespace-pre-line text-sm">{result}</p>
+          <Markdown
+            content={result}
+            className="mt-3 space-y-2 text-sm leading-relaxed [&_a]:text-brand"
+          />
           <p className="mt-4 text-xs text-muted-foreground">
             Gerado por IA — pode conter erros. Use como ponto de partida.
           </p>

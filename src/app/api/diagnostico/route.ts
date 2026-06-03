@@ -17,7 +17,9 @@ const ALLOWED = new Set([
 const PROMPT = `Esta é a foto de uma impressão 3D (FDM ou resina) que pode ter dado problema. Como especialista, faça um diagnóstico em português do Brasil:
 1) Identifique o(s) problema(s) visível(is): warping, stringing, sub/superextrusão, camadas separadas/deslocadas, má adesão, elephant foot, ringing/ghosting, falhas de suporte, etc.
 2) Para cada problema, dê 1–3 correções práticas (temperatura, velocidade, retração, adesão/mesa, ventilação, nivelamento, fluxo…).
-Use bullets, seja claro e direto. Se a imagem não parecer uma impressão 3D, diga isso gentilmente.`;
+Seja claro e direto. Se a imagem não parecer uma impressão 3D, diga isso gentilmente.
+
+Formate em Markdown: um título "## " por problema identificado, **negrito** nos termos-chave e valores (temperaturas, velocidades) e listas com "- " para as correções.`;
 
 const hits = new Map<string, number[]>();
 function rateLimited(ip: string, max = 8, windowMs = 60_000): boolean {

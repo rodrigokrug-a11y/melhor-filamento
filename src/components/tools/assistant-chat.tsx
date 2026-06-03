@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Bot, Loader2, Send, Sparkles, User } from "lucide-react";
 
+import { Markdown } from "@/components/markdown";
+
 type Msg = { role: "user" | "assistant"; content: string };
 
 const STARTERS = [
@@ -93,13 +95,20 @@ export function AssistantChat() {
                 )}
               </span>
               <div
-                className={`max-w-[80%] whitespace-pre-line rounded-2xl px-3.5 py-2.5 text-sm ${
+                className={`max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm ${
                   m.role === "user"
-                    ? "bg-brand text-white"
+                    ? "whitespace-pre-line bg-brand text-white"
                     : "bg-muted text-foreground"
                 }`}
               >
-                {m.content}
+                {m.role === "assistant" ? (
+                  <Markdown
+                    content={m.content}
+                    className="space-y-2 leading-relaxed [&_a]:text-brand"
+                  />
+                ) : (
+                  m.content
+                )}
               </div>
             </div>
           ))
