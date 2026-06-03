@@ -86,7 +86,7 @@ export type RankingItem = {
 };
 
 export const getRanking = cache(
-  async (material?: string): Promise<RankingItem[]> => {
+  async (material?: string, kind?: ProductKind): Promise<RankingItem[]> => {
     const groups = await prisma.review.groupBy({
       by: ["productId"],
       where: { status: "APPROVED", productId: { not: null } },
@@ -116,6 +116,7 @@ export const getRanking = cache(
         count: g?._count._all ?? 0,
       };
     });
+    if (kind) items = items.filter((it) => it.kind === kind);
     if (material) items = items.filter((it) => it.material === material);
     items.sort((a, b) => b.average - a.average || b.count - a.count);
     return items;

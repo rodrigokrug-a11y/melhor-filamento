@@ -10,13 +10,14 @@ import { getRanking } from "@/lib/reviews";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Ranking — Melhores filamentos",
+  title: "Ranking — Melhores filamentos e impressoras",
   description:
-    "Os filamentos 3D mais bem avaliados pela comunidade, ordenados pela nota.",
+    "Os filamentos e impressoras 3D mais bem avaliados pela comunidade, ordenados pela nota.",
   alternates: { canonical: "/ranking" },
   openGraph: {
-    title: "Ranking — Melhores filamentos",
-    description: "Os filamentos 3D mais bem avaliados pela comunidade.",
+    title: "Ranking — Melhores filamentos e impressoras",
+    description:
+      "Os filamentos e impressoras 3D mais bem avaliados pela comunidade.",
     url: "/ranking",
     type: "website",
   },
@@ -36,8 +37,12 @@ export default async function RankingPage({
   searchParams: SearchParams;
 }) {
   const sp = await searchParams;
-  const material = typeof sp.material === "string" ? sp.material : undefined;
-  const items = await getRanking(material);
+  const isPrinter = sp.tipo === "impressoras";
+  const material =
+    !isPrinter && typeof sp.material === "string" ? sp.material : undefined;
+  const items = isPrinter
+    ? await getRanking(undefined, "PRINTER")
+    : await getRanking(material, "FILAMENT");
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
@@ -45,15 +50,43 @@ export default async function RankingPage({
       <PageHeader
         icon={Trophy}
         eyebrow="Comunidade"
-        title="Melhores filamentos"
-        subtitle="Ranking pela nota da comunidade — avaliações de modelos e marcas."
+        title={isPrinter ? "Melhores impressoras" : "Melhores filamentos"}
+        subtitle="Ranking pela nota da comunidade — quanto melhor avaliado, mais alto."
       />
+
+      <div className="mb-5 inline-flex rounded-lg border bg-card p-0.5 text-sm">
+        <Link
+          href="/ranking"
+          className={cn(
+            "rounded-md px-3 py-1.5 transition-colors",
+            !isPrinter
+              ? "bg-brand text-white"
+              : "text-muted-foreground hover:text-foreground",
+          )}
+        >
+          Filamentos
+        </Link>
+        <Link
+          href="/ranking?tipo=impressoras"
+          className={cn(
+            "rounded-md px-3 py-1.5 transition-colors",
+            isPrinter
+              ? "bg-brand text-white"
+              : "text-muted-foreground hover:text-foreground",
+          )}
+        >
+          Impressoras
+        </Link>
+      </div>
 
       {items.length === 0 ? (
         <div className="rounded-2xl border border-dashed p-12 text-center text-muted-foreground">
-          Ainda não há avaliações.{" "}
-          <Link href="/filamentos" className="text-brand hover:underline">
-            Avalie um filamento
+          Ainda não há avaliações de {isPrinter ? "impressoras" : "filamentos"}.{" "}
+          <Link
+            href={isPrinter ? "/impressoras" : "/filamentos"}
+            className="text-brand hover:underline"
+          >
+            Avalie {isPrinter ? "uma impressora" : "um filamento"}
           </Link>{" "}
           para começar o ranking.
         </div>
@@ -76,7 +109,8 @@ export default async function RankingPage({
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-medium">{it.name}</p>
                   <p className="text-xs text-muted-foreground">
-                    {it.brandName} · {materialLabel(it.material)}
+                    {it.brandName}
+                    {!isPrinter ? ` · ${materialLabel(it.material)}` : ""}
                   </p>
                 </div>
                 <div className="shrink-0 text-right">
