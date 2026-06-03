@@ -255,21 +255,21 @@ export function CompareView({
         </div>
       ) : (
         <div className="overflow-x-auto rounded-xl border bg-card">
-          <table className="w-full min-w-[480px] text-sm">
+          <table className="w-full min-w-[480px] table-fixed text-sm">
             <thead>
               <tr className="border-b">
-                <th className="w-32 p-3 text-left align-bottom text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                <th className="w-28 p-3 text-left align-bottom text-xs font-medium uppercase tracking-wide text-muted-foreground sm:w-36">
                   Características
                 </th>
                 {computed.map(({ p }) => (
                   <th
                     key={p.id}
-                    className="min-w-[150px] border-l p-3 text-left align-bottom"
+                    className="border-l p-3 text-left align-bottom"
                   >
                     <div className="flex items-start justify-between gap-1">
                       <Link
                         href={`/produto/${p.slug}`}
-                        className="font-semibold leading-tight hover:underline"
+                        className="break-words font-semibold leading-tight hover:underline"
                       >
                         {p.name}
                       </Link>
