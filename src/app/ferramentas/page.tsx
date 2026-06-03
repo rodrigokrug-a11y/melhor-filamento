@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ExternalLink, Wrench } from "lucide-react";
 
@@ -65,31 +66,50 @@ export default function FerramentasPage() {
                 href={t.externalUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative overflow-hidden rounded-2xl border border-cyan-400/20 bg-gradient-to-br from-slate-900 to-[#06201f] p-6 text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-cyan-500/10 sm:col-span-2"
+                className="group relative overflow-hidden rounded-2xl border border-cyan-400/20 text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-cyan-500/10 sm:col-span-2"
               >
-                <div className="flex flex-wrap items-start gap-4">
-                  <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-cyan-400 text-slate-900">
-                    <Icon className="size-6" />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="font-display text-xl font-bold">{t.name}</h2>
-                      <span className="rounded-full border border-cyan-400/30 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-cyan-300">
-                        Projeto parceiro
+                {t.bgImage ? (
+                  <Image
+                    src={t.bgImage}
+                    alt=""
+                    fill
+                    unoptimized
+                    sizes="(max-width: 768px) 100vw, 1100px"
+                    className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-gradient-to-br from-slate-900 to-[#06201f]" />
+                )}
+                {/* Escurece tudo um pouco e bem mais à esquerda, pro texto sobressair. */}
+                <div className="absolute inset-0 bg-slate-950/30" />
+                <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent" />
+                <div className="relative p-6">
+                  <div className="flex flex-wrap items-start gap-4">
+                    <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-cyan-400 text-slate-900">
+                      <Icon className="size-6" />
+                    </span>
+                    <div className="min-w-0 max-w-xl flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h2 className="font-display text-xl font-bold">
+                          {t.name}
+                        </h2>
+                        <span className="rounded-full border border-cyan-400/30 bg-slate-950/40 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-cyan-300">
+                          Projeto parceiro
+                        </span>
+                      </div>
+                      {t.tagline ? (
+                        <p className="mt-0.5 font-display text-lg font-semibold text-cyan-300">
+                          {t.tagline}
+                        </p>
+                      ) : null}
+                      <p className="mt-2 max-w-md text-sm text-slate-200">
+                        {t.description}
+                      </p>
+                      <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-900 transition-colors group-hover:bg-cyan-300">
+                        {t.cta ?? "Acessar"}
+                        <ExternalLink className="size-4" />
                       </span>
                     </div>
-                    {t.tagline ? (
-                      <p className="mt-0.5 font-display text-lg font-semibold text-cyan-300">
-                        {t.tagline}
-                      </p>
-                    ) : null}
-                    <p className="mt-2 max-w-2xl text-sm text-slate-300">
-                      {t.description}
-                    </p>
-                    <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-900 transition-colors group-hover:bg-cyan-300">
-                      {t.cta ?? "Acessar"}
-                      <ExternalLink className="size-4" />
-                    </span>
                   </div>
                 </div>
               </a>

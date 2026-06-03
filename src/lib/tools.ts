@@ -26,9 +26,23 @@ export type Tool = {
   featured?: boolean; // card com identidade própria (destaque)
   tagline?: string; // chamada curta (cards em destaque)
   cta?: string; // texto do botão (cards em destaque)
+  bgImage?: string; // imagem de fundo do card em destaque
 };
 
 export const TOOLS: Tool[] = [
+  {
+    slug: "gerador-de-cases",
+    name: "MyMiniCase",
+    description:
+      "Envie seu STL e gere um case no formato exato da peça — pra transportar miniaturas de RPG, ferramentas, o que for. Faz um ou vários objetos de uma vez. Imprima em casa.",
+    icon: Package,
+    available: true,
+    externalUrl: "https://www.myminicase.com",
+    featured: true,
+    tagline: "Transporte suas minis com segurança.",
+    cta: "Acessar o MyMiniCase",
+    bgImage: "/img/myminicase-hero.jpg",
+  },
   {
     slug: "calculadora-de-custo",
     name: "Calculadora de custo",
@@ -116,18 +130,6 @@ export const TOOLS: Tool[] = [
       "PLA, PETG, ABS, ASA, TPU, Nylon e PC lado a lado: temperatura, resistência, dificuldade e usos.",
     icon: GitCompare,
     available: true,
-  },
-  {
-    slug: "gerador-de-cases",
-    name: "MyMiniCase",
-    description:
-      "Envie seu STL e gere um case no formato exato da peça — pra transportar miniaturas de RPG, ferramentas, o que for. Faz um ou vários objetos de uma vez. Imprima em casa.",
-    icon: Package,
-    available: true,
-    externalUrl: "https://www.myminicase.com",
-    featured: true,
-    tagline: "Transporte suas minis com segurança.",
-    cta: "Acessar o MyMiniCase",
   },
 ];
 
