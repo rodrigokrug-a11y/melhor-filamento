@@ -26,6 +26,10 @@ export function ProductCard({
       ? (product.tech ?? "Impressora 3D")
       : materialLabel(product.material);
   const price = displayPrice ?? product.bestPrice;
+  const perKg =
+    product.kind !== "PRINTER" && product.netWeightG > 0
+      ? price / (product.netWeightG / 1000)
+      : null;
 
   return (
     <Link
@@ -64,32 +68,36 @@ export function ProductCard({
         <div className="flex flex-1 flex-col p-4">
           {product.boost != null ? (
             <span className="mb-1.5 inline-flex w-fit">
-              <Badge className="gap-1">
+              <Badge variant="best">
                 <Megaphone className="size-3" />
                 Patrocinado
               </Badge>
             </span>
           ) : null}
-          <p className="text-xs font-medium text-muted-foreground">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
             {product.brandName}
           </p>
-          <h3 className="mt-0.5 line-clamp-2 text-sm font-semibold leading-snug">
+          <h3 className="mt-1 line-clamp-2 text-sm font-semibold leading-snug">
             {product.name}
           </h3>
 
           <div className="mt-auto flex items-end justify-between gap-2 pt-3">
             <div>
-              <p className="text-[11px] uppercase tracking-wide text-muted-foreground">
+              <p className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground">
                 {freteIncluded ? "menor total" : "a partir de"}
               </p>
-              <p className="font-display text-lg font-bold tnum">
+              <p className="font-display text-xl font-bold tracking-tight tnum">
                 {formatBRL(price)}
               </p>
               {freteIncluded ? (
                 <p className="text-[11px] font-medium text-offer">com frete</p>
+              ) : perKg != null ? (
+                <p className="font-mono text-[10px] text-muted-foreground tnum">
+                  {formatBRL(perKg)}/kg
+                </p>
               ) : null}
             </div>
-            <p className="shrink-0 text-xs text-muted-foreground">
+            <p className="shrink-0 font-mono text-[10px] text-muted-foreground">
               {product.offerCount}{" "}
               {product.offerCount === 1 ? "oferta" : "ofertas"}
             </p>

@@ -123,8 +123,8 @@ function OfferRow({ offer, isBest }: { offer: ComputedOffer; isBest: boolean }) 
             </Badge>
           ) : null}
           {isBest ? (
-            <Badge variant="success">
-              {offer.hasRegion ? "Menor total" : "Menor preço"}
+            <Badge variant="best">
+              ★ {offer.hasRegion ? "Menor total" : "Menor preço"}
             </Badge>
           ) : null}
         </div>

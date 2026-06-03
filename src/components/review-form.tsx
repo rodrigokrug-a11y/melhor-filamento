@@ -57,7 +57,7 @@ export function ReviewForm({
               className={cn(
                 "size-6",
                 n <= rating
-                  ? "fill-amber-400 text-amber-400"
+                  ? "fill-gold text-gold"
                   : "text-muted-foreground/40",
               )}
             />

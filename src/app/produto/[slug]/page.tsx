@@ -162,18 +162,28 @@ export default async function ProdutoPage({ params }: { params: Params }) {
           )}
 
           {product.bestPrice != null ? (
-            <p className="mt-6 text-sm text-muted-foreground">
-              Melhor preço:{" "}
-              <span className="text-lg font-bold text-foreground">
+            <div className="mt-6 rounded-2xl border border-[var(--teal-100)] bg-brand-soft p-5">
+              <p className="font-mono text-[11px] font-bold uppercase tracking-wide text-teal">
+                Melhor preço
+              </p>
+              <p className="mt-1 font-display text-3xl font-bold tracking-tight tnum">
                 {formatBRL(product.bestPrice)}
-              </span>
-            </p>
-          ) : null}
-          <PriceVerdict
-            bestPrice={product.bestPrice}
-            history={priceHistory}
-            months={6}
-          />
+              </p>
+              <div className="mt-2">
+                <PriceVerdict
+                  bestPrice={product.bestPrice}
+                  history={priceHistory}
+                  months={6}
+                />
+              </div>
+            </div>
+          ) : (
+            <PriceVerdict
+              bestPrice={product.bestPrice}
+              history={priceHistory}
+              months={6}
+            />
+          )}
         </div>
       </div>
 

@@ -384,7 +384,7 @@ export function CompareView({
       {dicaMaterials.length > 0 ? (
         <section className="mt-6 border-t pt-8">
           <div className="flex items-center gap-2">
-            <Lightbulb className="size-5 text-amber-500" />
+            <Lightbulb className="size-5 text-gold" />
             <h2 className="text-lg font-semibold">Dicas para esses materiais</h2>
           </div>
           <p className="mt-1 text-sm text-muted-foreground">

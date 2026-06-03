@@ -382,7 +382,7 @@ function RankingTeaser({
     <section className="rounded-2xl border bg-card p-5 shadow-sm">
       <div className="mb-4 flex items-center justify-between gap-3">
         <h2 className="inline-flex items-center gap-2 font-display text-lg font-bold tracking-tight">
-          <Trophy className="size-5 text-amber-500" />
+          <Trophy className="size-5 text-gold" />
           Mais bem avaliados
         </h2>
         <Link
@@ -437,7 +437,7 @@ function DicasTeaser({
     <section className="rounded-2xl border bg-card p-5 shadow-sm">
       <div className="mb-4 flex items-center justify-between gap-3">
         <h2 className="inline-flex items-center gap-2 font-display text-lg font-bold tracking-tight">
-          <Lightbulb className="size-5 text-amber-500" />
+          <Lightbulb className="size-5 text-gold" />
           Dicas e tutoriais
         </h2>
         <Link
