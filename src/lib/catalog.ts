@@ -141,6 +141,7 @@ function buildListItem(p: ProductWithOffers): ProductListItem | null {
     offerCount: p.offers.length,
     bestPrice,
     bestPriceHasCoupon,
+    boost: null,
     offers: offersLite,
   };
 }
@@ -195,11 +196,32 @@ export const getCatalog = cache(
       orderBy: { name: "asc" },
     });
 
+    // Lances de destaque ativos desta categoria (leilão pay-to-top).
+    const placement =
+      kind === "RESIN"
+        ? "TOP_RESIN"
+        : kind === "PRINTER"
+          ? "TOP_PRINTER"
+          : "TOP_FILAMENT";
+    const activeBoosts = await prisma.boost.findMany({
+      where: { placement, status: "ACTIVE" },
+      select: { sellerId: true, bidAmount: true },
+    });
+    const boostBySeller = new Map(
+      activeBoosts.map((b) => [b.sellerId, Number(b.bidAmount)]),
+    );
+
     const all: ProductListItem[] = [];
     const brandLogos = new Map<string, string | null>();
     for (const p of rows) {
       const item = buildListItem(p);
       if (!item) continue;
+      let boost: number | null = null;
+      for (const o of p.offers) {
+        const b = boostBySeller.get(o.sellerId);
+        if (b != null && (boost == null || b > boost)) boost = b;
+      }
+      item.boost = boost;
       all.push(item);
       if (!brandLogos.has(p.brand.slug)) {
         brandLogos.set(p.brand.slug, p.brand.logoUrl);
@@ -239,6 +261,8 @@ export const getCatalog = cache(
       products = products.filter((p) => p.tech === filters.tech);
     }
     products = sortProducts(products, filters.sort);
+    // Destaque pago no topo (maior lance primeiro); empate mantém a ordenação.
+    products = [...products].sort((a, b) => (b.boost ?? 0) - (a.boost ?? 0));
 
     return { products, materials, brands, colors, techs };
   },

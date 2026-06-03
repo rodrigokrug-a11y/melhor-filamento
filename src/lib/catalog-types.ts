@@ -151,6 +151,7 @@ export type ProductListItem = {
   offerCount: number;
   bestPrice: number;
   bestPriceHasCoupon: boolean;
+  boost: number | null; // lance de destaque ativo (R$/mês); null = sem destaque
   offers: OfferShippingLite[];
 };
 

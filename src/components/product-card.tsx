@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Boxes, FlaskConical, Printer, Tag } from "lucide-react";
+import { Boxes, FlaskConical, Megaphone, Printer, Tag } from "lucide-react";
 
 import { ProductImage } from "@/components/product-image";
 import { Badge } from "@/components/ui/badge";
@@ -62,6 +62,14 @@ export function ProductCard({
         </div>
 
         <div className="flex flex-1 flex-col p-4">
+          {product.boost != null ? (
+            <span className="mb-1.5 inline-flex w-fit">
+              <Badge className="gap-1">
+                <Megaphone className="size-3" />
+                Patrocinado
+              </Badge>
+            </span>
+          ) : null}
           <p className="text-xs font-medium text-muted-foreground">
             {product.brandName}
           </p>

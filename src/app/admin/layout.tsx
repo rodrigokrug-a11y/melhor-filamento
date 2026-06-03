@@ -20,6 +20,7 @@ const NAV = [
   { href: "/admin/fornecedores", label: "Fornecedores" },
   { href: "/admin/fontes", label: "Fontes" },
   { href: "/admin/patrocinios", label: "Patrocínios" },
+  { href: "/admin/monetizacao", label: "Monetização" },
   { href: "/admin/lojas", label: "Lojas" },
   { href: "/admin/marcas", label: "Marcas" },
   { href: "/admin/produtos", label: "Catálogo" },

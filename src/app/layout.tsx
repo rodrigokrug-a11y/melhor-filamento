@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import { GlobalBanner } from "@/components/banners";
 import { CookieConsent } from "@/components/cookie-consent";
 import { Providers } from "@/components/providers";
 import { SiteHeader } from "@/components/site-header";
@@ -77,6 +78,7 @@ export default function RootLayout({
         </a>
         <Providers>
           <SiteHeader />
+          <GlobalBanner />
           <main id="conteudo" className="flex-1">
             {children}
           </main>

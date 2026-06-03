@@ -14,6 +14,7 @@ import {
   Truck,
 } from "lucide-react";
 
+import { HomeBanner } from "@/components/banners";
 import { BrandLogo } from "@/components/brand-logo";
 import { ProductCard } from "@/components/product-card";
 import { Reveal } from "@/components/reveal";
@@ -52,6 +53,7 @@ export default async function HomePage() {
       <Hero />
 
       <div className="mx-auto max-w-6xl space-y-16 px-4 py-14">
+        <HomeBanner />
         <Reveal>
           <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <CategoryCard
