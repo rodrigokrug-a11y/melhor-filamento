@@ -1,5 +1,6 @@
 import {
   ArrowLeftRight,
+  Bot,
   Calculator,
   ClipboardList,
   Coins,
@@ -11,6 +12,8 @@ import {
   Package,
   Ruler,
   Scaling,
+  ScanSearch,
+  ShoppingBasket,
   ShoppingCart,
   Wand2,
   Zap,
@@ -143,6 +146,14 @@ export const TOOLS: Tool[] = [
     available: true,
   },
   {
+    slug: "otimizador-de-cesta",
+    name: "Otimizador de cesta",
+    description:
+      "Monte sua lista de compras e veja a combinação de lojas mais barata, contando o frete.",
+    icon: ShoppingBasket,
+    available: true,
+  },
+  {
     slug: "quiz-filamento",
     name: "Qual filamento pra você?",
     description:
@@ -156,6 +167,22 @@ export const TOOLS: Tool[] = [
     description:
       "PLA, PETG, ABS, ASA, TPU, Nylon e PC lado a lado: temperatura, resistência, dificuldade e usos.",
     icon: GitCompare,
+    available: true,
+  },
+  {
+    slug: "assistente",
+    name: "Assistente de impressão (IA)",
+    description:
+      "Tire dúvidas de materiais, configurações e problemas de impressão com a IA, na hora.",
+    icon: Bot,
+    available: true,
+  },
+  {
+    slug: "diagnostico",
+    name: "Diagnóstico por foto (IA)",
+    description:
+      "Mande a foto de uma impressão com problema e a IA diz o que houve e como corrigir.",
+    icon: ScanSearch,
     available: true,
   },
 ];
