@@ -137,6 +137,7 @@ function BannerFields({
     subtitle: string | null;
     imageUrl: string | null;
     linkUrl: string;
+    ctaLabel: string | null;
     bidAmount: number;
     sellerId: string | null;
   };
@@ -200,6 +201,17 @@ function BannerFields({
           type="url"
           defaultValue={banner?.linkUrl ?? ""}
           placeholder="https://… (deixe vazio para não ter link)"
+          className={inputCls}
+        />
+      </label>
+      <label className={`${fieldCls} sm:col-span-2`}>
+        Texto do botão (aparece só quando há link)
+        <input
+          name="ctaLabel"
+          type="text"
+          maxLength={40}
+          defaultValue={banner?.ctaLabel ?? ""}
+          placeholder="Saiba mais"
           className={inputCls}
         />
       </label>
@@ -443,6 +455,7 @@ export default async function AdminMonetizacaoPage() {
                         subtitle: b.subtitle,
                         imageUrl: b.imageUrl,
                         linkUrl: b.linkUrl,
+                        ctaLabel: b.ctaLabel,
                         bidAmount: Number(b.bidAmount),
                         sellerId: b.sellerId,
                       }}

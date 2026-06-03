@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { type BannerPlacement } from "@prisma/client";
-import { Megaphone } from "lucide-react";
+import { ArrowRight, Megaphone } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { getPageBanner } from "@/lib/banners";
@@ -22,6 +22,9 @@ export async function PageBanner({
   const b = await getPageBanner(placement);
   if (!b) return null;
 
+  // Botão CTA só quando há link de destino (senão não há para onde ir).
+  const cta = b.linkUrl ? (b.ctaLabel?.trim() || "Saiba mais") : null;
+
   const inner = (
     <div className="relative overflow-hidden rounded-2xl border bg-gradient-to-br from-brand to-teal text-white">
       {b.imageUrl ? (
@@ -31,12 +34,16 @@ export async function PageBanner({
           fill
           unoptimized
           sizes="(max-width: 768px) 100vw, 1100px"
-          className="object-cover opacity-90 transition-transform duration-300 group-hover:scale-[1.02]"
+          className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
         />
       ) : null}
+      {/* Escurece só a esquerda: texto legível, a imagem à direita fica visível. */}
+      {b.imageUrl ? (
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/45 to-transparent" />
+      ) : null}
       <div
-        className={`relative flex flex-col justify-center gap-1.5 p-6 ${
-          b.imageUrl ? "min-h-[180px] bg-black/35" : "min-h-[140px]"
+        className={`relative flex min-h-[170px] flex-col justify-center gap-2 p-6 ${
+          b.imageUrl ? "max-w-[62%] sm:max-w-[55%]" : "max-w-2xl"
         }`}
       >
         <Badge
@@ -46,9 +53,17 @@ export async function PageBanner({
           <Megaphone className="size-3" />
           Anúncio
         </Badge>
-        <h3 className="font-display text-xl font-bold sm:text-2xl">{b.title}</h3>
+        <h3 className="font-display text-xl font-bold leading-tight sm:text-2xl">
+          {b.title}
+        </h3>
         {b.subtitle ? (
-          <p className="max-w-2xl text-sm text-white/90">{b.subtitle}</p>
+          <p className="text-sm text-white/90">{b.subtitle}</p>
+        ) : null}
+        {cta ? (
+          <span className="mt-1 inline-flex w-fit items-center gap-1 rounded-full bg-white px-4 py-1.5 text-sm font-semibold text-brand shadow-sm transition-colors group-hover:bg-white/90">
+            {cta}
+            <ArrowRight className="size-4" />
+          </span>
         ) : null}
       </div>
     </div>

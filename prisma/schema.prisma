@@ -449,6 +449,7 @@ model Banner {
   subtitle  String?
   imageUrl  String?
   linkUrl   String
+  ctaLabel  String? // texto do botão (ex.: "Saiba mais"); null = padrão
   bidAmount Decimal         @db.Decimal(10, 2) @default(0)
   status    AdStatus        @default(PENDING)
   startsAt  DateTime?

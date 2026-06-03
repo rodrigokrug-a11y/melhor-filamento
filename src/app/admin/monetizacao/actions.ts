@@ -135,6 +135,7 @@ function bannerDataFromForm(formData: FormData) {
   if (!title) return null; // link é opcional: vazio = banner não clicável
   const subtitle = String(formData.get("subtitle") ?? "").trim();
   const imageUrl = String(formData.get("imageUrl") ?? "").trim();
+  const ctaLabel = String(formData.get("ctaLabel") ?? "").trim();
   const sellerId = String(formData.get("sellerId") ?? "").trim();
   return {
     placement,
@@ -146,6 +147,7 @@ function bannerDataFromForm(formData: FormData) {
         ? imageUrl
         : null,
     linkUrl: isValidHttpUrl(linkUrl) ? linkUrl : "",
+    ctaLabel: ctaLabel || null,
     bidAmount: (parseBid(formData.get("bid")) ?? 0).toFixed(2),
     sellerId: sellerId || null,
   };
