@@ -6,6 +6,7 @@ import { ArrowLeft, Boxes, FlaskConical, Plus, Printer } from "lucide-react";
 import { PageBanner } from "@/components/banners";
 import { OfferComparison } from "@/components/offer-table";
 import { PriceHistoryChart } from "@/components/price-history-chart";
+import { PriceVerdict } from "@/components/price-verdict";
 import { ProductImage } from "@/components/product-image";
 import { RegionNotice } from "@/components/region-notice";
 import { ReviewForm } from "@/components/review-form";
@@ -167,6 +168,11 @@ export default async function ProdutoPage({ params }: { params: Params }) {
               </span>
             </p>
           ) : null}
+          <PriceVerdict
+            bestPrice={product.bestPrice}
+            history={priceHistory}
+            months={6}
+          />
         </div>
       </div>
 
