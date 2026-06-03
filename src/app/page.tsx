@@ -3,15 +3,19 @@ import Link from "next/link";
 import {
   ArrowRight,
   BadgeCheck,
+  BookOpen,
   Boxes,
   FlaskConical,
   Lightbulb,
   MapPin,
   Megaphone,
+  Printer,
+  Scale,
   Search,
   Sparkles,
   Trophy,
   Truck,
+  Wrench,
 } from "lucide-react";
 
 import { PageBanner } from "@/components/banners";
@@ -19,7 +23,6 @@ import { BrandLogo } from "@/components/brand-logo";
 import { ProductCard } from "@/components/product-card";
 import { Reveal } from "@/components/reveal";
 import { Stars } from "@/components/stars";
-import { buttonVariants } from "@/components/ui/button";
 import { getBrandsOverview, getCatalog } from "@/lib/catalog";
 import {
   type BrandSummary,
@@ -29,7 +32,6 @@ import {
 } from "@/lib/catalog-types";
 import { getRanking } from "@/lib/reviews";
 import { getMaterialsOverview } from "@/lib/tips";
-import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -57,20 +59,7 @@ export default async function HomePage() {
 
       <div className="mx-auto max-w-6xl space-y-16 px-4 py-14">
         <Reveal>
-          <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <CategoryCard
-              href="/filamentos"
-              icon={<Boxes />}
-              title="Filamentos"
-              desc="PLA, PETG, ABS, TPU, ASA e mais."
-            />
-            <CategoryCard
-              href="/resinas"
-              icon={<FlaskConical />}
-              title="Resinas"
-              desc="Standard, Tough e laváveis em água."
-            />
-          </section>
+          <FeatureBlocks />
         </Reveal>
 
         <Reveal>
@@ -131,34 +120,23 @@ function Hero() {
         className="pointer-events-none absolute inset-0 -z-10 opacity-50 [background-image:radial-gradient(var(--border)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:linear-gradient(to_bottom,black,transparent_75%)]"
       />
 
-      <div className="mx-auto max-w-4xl px-4 py-20 text-center duration-700 animate-in fade-in slide-in-from-bottom-4 sm:py-24">
+      <div className="mx-auto max-w-4xl px-4 py-12 text-center duration-700 animate-in fade-in slide-in-from-bottom-4 sm:py-16">
         <span className="inline-flex items-center gap-1.5 rounded-full border bg-background/70 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur">
           <Sparkles className="size-3.5 text-brand" />
           Comparador de impressão 3D · Brasil
         </span>
-        <h1 className="mx-auto mt-5 max-w-3xl text-balance font-display text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+        <h1 className="mx-auto mt-4 max-w-3xl text-balance font-display text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
           O melhor preço em{" "}
           <span className="bg-gradient-to-r from-brand to-[#ff8a4c] bg-clip-text text-transparent">
             filamento e resina 3D
           </span>{" "}
           do Brasil
         </h1>
-        <p className="mx-auto mt-5 max-w-2xl text-pretty text-muted-foreground sm:text-lg">
-          Compare ofertas de várias lojas em um só lugar, com o frete estimado
-          para o seu CEP. Pague menos no total e imprima com mais sucesso.
+        <p className="mx-auto mt-4 max-w-2xl text-pretty text-muted-foreground sm:text-lg">
+          Compare ofertas de várias lojas com o frete pro seu CEP — e use as
+          ferramentas do site (inclusive IA) pra imprimir com mais sucesso.
         </p>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Link href="/filamentos" className={cn(buttonVariants({ size: "lg" }))}>
-            Ver filamentos <ArrowRight />
-          </Link>
-          <Link
-            href="/comparar"
-            className={cn(buttonVariants({ size: "lg", variant: "outline" }))}
-          >
-            Comparar preços
-          </Link>
-        </div>
-        <p className="mt-5 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+        <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
           <MapPin className="size-3.5 text-brand" />
           Informe seu CEP no topo para ranquear pelo custo total com frete.
         </p>
@@ -235,30 +213,83 @@ function BrandsSection({ brands }: { brands: BrandSummary[] }) {
   );
 }
 
-function CategoryCard({
+function FeatureBlocks() {
+  return (
+    <section className="space-y-4">
+      <div className="grid gap-4 sm:grid-cols-2">
+        {/* IA — destaque principal */}
+        <Link
+          href="/ia"
+          className="group relative flex flex-col overflow-hidden rounded-2xl border border-cyan-400/30 bg-gradient-to-br from-slate-900 to-[#06201f] p-6 text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-cyan-500/10"
+        >
+          <span className="inline-flex w-fit items-center gap-1.5 rounded-full border border-cyan-400/30 bg-cyan-400/10 px-2.5 py-0.5 text-xs font-medium text-cyan-300">
+            <Sparkles className="size-3.5" /> Novo · Ferramentas de IA
+          </span>
+          <h3 className="mt-3 font-display text-xl font-bold">
+            Assistente e diagnóstico por foto
+          </h3>
+          <p className="mt-1.5 flex-1 text-sm text-slate-300">
+            Tire dúvidas de impressão com a IA e mande a foto de uma peça com
+            problema pra descobrir a causa e como resolver.
+          </p>
+          <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-cyan-300">
+            Explorar a IA
+            <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+          </span>
+        </Link>
+
+        {/* Comparar preços — destaque */}
+        <Link
+          href="/comparar"
+          className="group relative flex flex-col overflow-hidden rounded-2xl bg-gradient-to-br from-brand to-teal p-6 text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg"
+        >
+          <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-0.5 text-xs font-medium">
+            <Scale className="size-3.5" /> Comparador de preços
+          </span>
+          <h3 className="mt-3 font-display text-xl font-bold">
+            Compare filamentos e resinas lado a lado
+          </h3>
+          <p className="mt-1.5 flex-1 text-sm text-white/90">
+            Ofertas de várias lojas num lugar só, já com o frete estimado pro
+            seu CEP. Pague menos no total.
+          </p>
+          <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold">
+            Comparar agora
+            <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+          </span>
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        <MiniBlock href="/filamentos" icon={<Boxes />} label="Filamentos" />
+        <MiniBlock href="/resinas" icon={<FlaskConical />} label="Resinas" />
+        <MiniBlock href="/impressoras" icon={<Printer />} label="Impressoras" />
+        <MiniBlock href="/ferramentas" icon={<Wrench />} label="Ferramentas" />
+        <MiniBlock href="/ranking" icon={<Trophy />} label="Ranking" />
+        <MiniBlock href="/receitas" icon={<BookOpen />} label="Receitas" />
+      </div>
+    </section>
+  );
+}
+
+function MiniBlock({
   href,
   icon,
-  title,
-  desc,
+  label,
 }: {
   href: string;
   icon: React.ReactNode;
-  title: string;
-  desc: string;
+  label: string;
 }) {
   return (
     <Link
       href={href}
-      className="group relative flex items-center gap-4 overflow-hidden rounded-2xl border bg-card p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-lg"
+      className="group flex flex-col items-center gap-2 rounded-2xl border bg-card p-4 text-center shadow-sm transition-all hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-md"
     >
-      <span className="flex size-14 items-center justify-center rounded-2xl bg-brand-soft text-brand transition-transform group-hover:scale-105 [&_svg]:size-7">
+      <span className="flex size-10 items-center justify-center rounded-xl bg-brand-soft text-brand transition-transform group-hover:scale-105 [&_svg]:size-5">
         {icon}
       </span>
-      <span className="flex-1">
-        <span className="block font-display text-lg font-semibold">{title}</span>
-        <span className="block text-sm text-muted-foreground">{desc}</span>
-      </span>
-      <ArrowRight className="size-5 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-brand" />
+      <span className="text-sm font-medium">{label}</span>
     </Link>
   );
 }
