@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Lightbulb, X } from "lucide-react";
+import { ArrowRight, Boxes, FlaskConical, Lightbulb, Printer, X } from "lucide-react";
 
 import { OfferLink } from "@/components/offer-link";
+import { ProductImage } from "@/components/product-image";
 import { RegionNotice } from "@/components/region-notice";
 import { Badge } from "@/components/ui/badge";
 import { useRegion } from "@/components/use-region";
@@ -269,9 +270,28 @@ export function CompareView({
                     <div className="flex items-start justify-between gap-1">
                       <Link
                         href={`/produto/${p.slug}`}
-                        className="break-words font-semibold leading-tight hover:underline"
+                        className="group min-w-0 flex-1"
                       >
-                        {p.name}
+                        <span className="relative mb-2 flex h-24 w-24 items-center justify-center overflow-hidden rounded-md border bg-white sm:h-28 sm:w-28">
+                          <ProductImage
+                            src={p.imageUrl}
+                            alt={p.name}
+                            sizes="120px"
+                            className="object-contain p-1"
+                            fallback={
+                              p.kind === "PRINTER" ? (
+                                <Printer className="size-8 text-brand/40" />
+                              ) : p.kind === "RESIN" ? (
+                                <FlaskConical className="size-8 text-brand/40" />
+                              ) : (
+                                <Boxes className="size-8 text-brand/40" />
+                              )
+                            }
+                          />
+                        </span>
+                        <span className="block break-words font-semibold leading-tight group-hover:underline">
+                          {p.name}
+                        </span>
                       </Link>
                       <button
                         type="button"
