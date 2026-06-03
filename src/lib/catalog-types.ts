@@ -27,13 +27,14 @@ export const PRINTER_SPEC_FIELDS: { key: string; label: string }[] = [
   { key: "peso", label: "Peso" },
 ];
 
-export type CatalogSort = "preco-asc" | "preco-desc" | "nome";
+export type CatalogSort = "preco-asc" | "preco-desc" | "preco-kg" | "nome";
 
 export type CatalogFilters = {
-  material?: string;
-  marca?: string;
-  cor?: string;
+  materials?: string[];
+  marcas?: string[];
+  cores?: string[];
   tech?: string;
+  faixa?: string; // id da faixa de preço selecionada
   sort?: CatalogSort;
 };
 
@@ -158,12 +159,21 @@ export type ProductListItem = {
   offers: OfferShippingLite[];
 };
 
+export type PriceBand = {
+  id: string;
+  label: string;
+  min: number;
+  max: number | null;
+  count: number;
+};
+
 export type CatalogResult = {
   products: ProductListItem[];
   materials: FacetOption[];
   brands: FacetOption[];
   colors: FacetOption[];
   techs: FacetOption[];
+  priceBands: PriceBand[];
 };
 
 export type BrandProfile = {

@@ -12,6 +12,7 @@ import {
   type NearbyStore,
   type OfferShippingLite,
   type OfferView,
+  type PriceBand,
   type ProductDetail,
   type ProductKind,
   type ProductListItem,
@@ -164,6 +165,12 @@ function sortProducts(
     case "nome":
       sorted.sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
       break;
+    case "preco-kg": {
+      const perKg = (p: ProductListItem) =>
+        p.netWeightG > 0 ? p.bestPrice / (p.netWeightG / 1000) : Infinity;
+      sorted.sort((a, b) => perKg(a) - perKg(b));
+      break;
+    }
     case "preco-asc":
     default:
       sorted.sort((a, b) => a.bestPrice - b.bestPrice);
@@ -316,6 +323,34 @@ export const getDeals = cache(
   },
 );
 
+function roundStep(v: number): number {
+  const step = v < 200 ? 10 : v < 1000 ? 50 : 100;
+  return Math.max(step, Math.round(v / step) * step);
+}
+
+/** Três faixas de preço por tercis (só com produtos suficientes). */
+function computePriceBands(prices: number[]): PriceBand[] {
+  if (prices.length < 6) return [];
+  const sorted = [...prices].sort((a, b) => a - b);
+  const q = (f: number) =>
+    sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * f))];
+  const lo = roundStep(q(1 / 3));
+  let hi = roundStep(q(2 / 3));
+  if (hi <= lo) hi = lo + (lo < 200 ? 20 : 100);
+  const bands = [
+    { id: "b1", label: `Até R$ ${lo}`, min: 0, max: lo as number | null },
+    { id: "b2", label: `R$ ${lo} – ${hi}`, min: lo, max: hi as number | null },
+    { id: "b3", label: `Acima de R$ ${hi}`, min: hi, max: null },
+  ];
+  return bands
+    .map((b) => ({
+      ...b,
+      count: prices.filter((p) => p >= b.min && (b.max == null || p < b.max))
+        .length,
+    }))
+    .filter((b) => b.count > 0);
+}
+
 function buildFacets(
   items: { value: string; label: string }[],
 ): FacetOption[] {
@@ -406,18 +441,33 @@ export const getCatalog = cache(
         .map((p) => ({ value: p.tech as string, label: p.tech as string })),
     );
 
+    const priceBands = computePriceBands(all.map((p) => p.bestPrice));
+
     let products = all;
-    if (filters.material) {
-      products = products.filter((p) => p.material === filters.material);
+    if (filters.materials?.length) {
+      const set = new Set(filters.materials);
+      products = products.filter((p) => set.has(p.material));
     }
-    if (filters.marca) {
-      products = products.filter((p) => p.brandSlug === filters.marca);
+    if (filters.marcas?.length) {
+      const set = new Set(filters.marcas);
+      products = products.filter((p) => set.has(p.brandSlug));
     }
-    if (filters.cor) {
-      products = products.filter((p) => p.color === filters.cor);
+    if (filters.cores?.length) {
+      const set = new Set(filters.cores);
+      products = products.filter((p) => set.has(p.color));
     }
     if (filters.tech) {
       products = products.filter((p) => p.tech === filters.tech);
+    }
+    if (filters.faixa) {
+      const band = priceBands.find((b) => b.id === filters.faixa);
+      if (band) {
+        products = products.filter(
+          (p) =>
+            p.bestPrice >= band.min &&
+            (band.max == null || p.bestPrice < band.max),
+        );
+      }
     }
     products = sortProducts(products, filters.sort);
     // Destaque pago acima da ordenação base (maior lance primeiro).
@@ -428,7 +478,7 @@ export const getCatalog = cache(
       (a, b) => (b.sortOrder ?? 0) - (a.sortOrder ?? 0),
     );
 
-    return { products, materials, brands, colors, techs };
+    return { products, materials, brands, colors, techs, priceBands };
   },
 );
 
@@ -677,16 +727,28 @@ type RawSearchParams = Record<string, string | string[] | undefined>;
 export function parseCatalogFilters(sp: RawSearchParams): CatalogFilters {
   const first = (v: string | string[] | undefined) =>
     Array.isArray(v) ? v[0] : v;
+  const list = (v: string | string[] | undefined) => {
+    const raw = Array.isArray(v) ? v.join(",") : (v ?? "");
+    const arr = raw
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    return arr.length ? arr : undefined;
+  };
   const sortRaw = first(sp.sort);
   const sort: CatalogSort | undefined =
-    sortRaw === "preco-desc" || sortRaw === "nome" || sortRaw === "preco-asc"
+    sortRaw === "preco-desc" ||
+    sortRaw === "nome" ||
+    sortRaw === "preco-asc" ||
+    sortRaw === "preco-kg"
       ? sortRaw
       : undefined;
   return {
-    material: first(sp.material),
-    marca: first(sp.marca),
-    cor: first(sp.cor),
-    tech: first(sp.tech),
+    materials: list(sp.material),
+    marcas: list(sp.marca),
+    cores: list(sp.cor),
+    tech: first(sp.tech) || undefined,
+    faixa: first(sp.faixa) || undefined,
     sort,
   };
 }
