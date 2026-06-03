@@ -132,7 +132,7 @@ function bannerDataFromForm(formData: FormData) {
   if (!BANNER_PLACEMENTS.includes(placement)) return null;
   const title = String(formData.get("title") ?? "").trim();
   const linkUrl = String(formData.get("linkUrl") ?? "").trim();
-  if (!title || !isValidHttpUrl(linkUrl)) return null;
+  if (!title) return null; // link é opcional: vazio = banner não clicável
   const subtitle = String(formData.get("subtitle") ?? "").trim();
   const imageUrl = String(formData.get("imageUrl") ?? "").trim();
   const sellerId = String(formData.get("sellerId") ?? "").trim();
@@ -145,7 +145,7 @@ function bannerDataFromForm(formData: FormData) {
       (isValidHttpUrl(imageUrl) || imageUrl.startsWith("/api/uploads/"))
         ? imageUrl
         : null,
-    linkUrl,
+    linkUrl: isValidHttpUrl(linkUrl) ? linkUrl : "",
     bidAmount: (parseBid(formData.get("bid")) ?? 0).toFixed(2),
     sellerId: sellerId || null,
   };

@@ -194,13 +194,12 @@ function BannerFields({
         <BannerImageField defaultValue={banner?.imageUrl} />
       </div>
       <label className={`${fieldCls} sm:col-span-2`}>
-        Link de destino
+        Link de destino (opcional — em branco = banner não clicável)
         <input
           name="linkUrl"
           type="url"
-          required
           defaultValue={banner?.linkUrl ?? ""}
-          placeholder="https://…"
+          placeholder="https://… (deixe vazio para não ter link)"
           className={inputCls}
         />
       </label>
@@ -400,14 +399,18 @@ export default async function AdminMonetizacaoPage() {
                       {PLACEMENT_LABELS[b.placement] ?? b.placement} ·{" "}
                       <strong>{formatBRL(Number(b.bidAmount))}/mês</strong>
                       {b.seller?.name ? ` · ${b.seller.name}` : ""} ·{" "}
-                      <a
-                        href={b.linkUrl}
-                        target="_blank"
-                        rel="noopener noreferrer nofollow"
-                        className="inline-flex items-center gap-0.5 text-teal hover:underline"
-                      >
-                        link <ExternalLink className="size-3" />
-                      </a>
+                      {b.linkUrl ? (
+                        <a
+                          href={b.linkUrl}
+                          target="_blank"
+                          rel="noopener noreferrer nofollow"
+                          className="inline-flex items-center gap-0.5 text-teal hover:underline"
+                        >
+                          link <ExternalLink className="size-3" />
+                        </a>
+                      ) : (
+                        <span className="text-muted-foreground">sem link</span>
+                      )}
                     </p>
                   </div>
                   <div className="flex shrink-0 flex-wrap items-center gap-1.5">
