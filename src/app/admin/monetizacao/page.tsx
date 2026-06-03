@@ -1,12 +1,22 @@
 import type { Metadata } from "next";
-import { Check, Megaphone, Square, X } from "lucide-react";
+import { ExternalLink, Megaphone, Pause, Play, Plus, Trash2 } from "lucide-react";
 
+import { ConfirmSubmitButton } from "@/components/confirm-submit-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/db";
 import { formatBRL } from "@/lib/utils";
 
-import { setBannerStatus, setBoostStatus } from "./actions";
+import {
+  createBanner,
+  createBoost,
+  deleteBanner,
+  deleteBoost,
+  setBannerStatus,
+  setBoostStatus,
+  updateBanner,
+  updateBoost,
+} from "./actions";
 
 export const metadata: Metadata = {
   title: "Monetização",
@@ -18,15 +28,20 @@ const PLACEMENT_LABELS: Record<string, string> = {
   TOP_RESIN: "Topo · Resinas",
   TOP_PRINTER: "Topo · Impressoras",
   HOME: "Banner · Home",
-  GLOBAL: "Banner · Global",
+  GLOBAL: "Faixa · Global",
 };
+
+const inputCls =
+  "h-9 min-w-0 rounded-md border border-input bg-background px-2.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+const fieldCls =
+  "flex flex-col gap-1 text-xs font-medium text-muted-foreground";
 
 function statusBadge(status: string) {
   if (status === "ACTIVE") return <Badge variant="success">ativo</Badge>;
-  if (status === "PENDING")
+  if (status === "PAUSED")
     return (
       <Badge variant="outline" className="text-amber-600">
-        pendente
+        pausado
       </Badge>
     );
   return (
@@ -35,12 +50,15 @@ function statusBadge(status: string) {
         ? "recusado"
         : status === "ENDED"
           ? "encerrado"
-          : status.toLowerCase()}
+          : status === "PENDING"
+            ? "pendente"
+            : status.toLowerCase()}
     </Badge>
   );
 }
 
-function ApproveReject({
+/** Botão Ativar (se não está ativo) ou Pausar (se está). */
+function ToggleStatus({
   idName,
   id,
   status,
@@ -51,45 +69,142 @@ function ApproveReject({
   status: string;
   action: (fd: FormData) => Promise<void>;
 }) {
+  const next = status === "ACTIVE" ? "PAUSED" : "ACTIVE";
   return (
-    <div className="flex shrink-0 flex-wrap items-center gap-1.5">
-      {statusBadge(status)}
-      {status !== "ACTIVE" ? (
-        <form action={action}>
-          <input type="hidden" name={idName} value={id} />
-          <input type="hidden" name="status" value="ACTIVE" />
-          <Button size="sm" type="submit">
-            <Check />
-            Aprovar
-          </Button>
-        </form>
-      ) : null}
-      {status === "ACTIVE" ? (
-        <form action={action}>
-          <input type="hidden" name={idName} value={id} />
-          <input type="hidden" name="status" value="ENDED" />
-          <Button size="sm" variant="outline" type="submit">
-            <Square />
-            Encerrar
-          </Button>
-        </form>
-      ) : null}
-      {status === "PENDING" ? (
-        <form action={action}>
-          <input type="hidden" name={idName} value={id} />
-          <input type="hidden" name="status" value="REJECTED" />
-          <Button size="sm" variant="outline" type="submit">
-            <X />
-            Recusar
-          </Button>
-        </form>
-      ) : null}
+    <form action={action}>
+      <input type="hidden" name={idName} value={id} />
+      <input type="hidden" name="status" value={next} />
+      <Button size="sm" variant="outline" type="submit">
+        {status === "ACTIVE" ? <Pause /> : <Play />}
+        {status === "ACTIVE" ? "Pausar" : "Ativar"}
+      </Button>
+    </form>
+  );
+}
+
+function DeleteButton({
+  idName,
+  id,
+  action,
+  label,
+}: {
+  idName: string;
+  id: string;
+  action: (fd: FormData) => Promise<void>;
+  label: string;
+}) {
+  return (
+    <form action={action}>
+      <input type="hidden" name={idName} value={id} />
+      <ConfirmSubmitButton confirmText={label} variant="destructive">
+        <Trash2 />
+        Excluir
+      </ConfirmSubmitButton>
+    </form>
+  );
+}
+
+function BannerFields({
+  banner,
+  sellers,
+}: {
+  banner?: {
+    placement: string;
+    title: string;
+    subtitle: string | null;
+    imageUrl: string | null;
+    linkUrl: string;
+    bidAmount: number;
+    sellerId: string | null;
+  };
+  sellers: { id: string; name: string }[];
+}) {
+  return (
+    <div className="grid gap-3 sm:grid-cols-2">
+      <label className={fieldCls}>
+        Posição
+        <select
+          name="placement"
+          required
+          defaultValue={banner?.placement ?? "HOME"}
+          className={inputCls}
+        >
+          <option value="HOME">Banner · Home (grande)</option>
+          <option value="GLOBAL">Faixa · Global (todas as páginas)</option>
+        </select>
+      </label>
+      <label className={fieldCls}>
+        Lance (R$/mês)
+        <input
+          name="bid"
+          inputMode="decimal"
+          defaultValue={banner ? String(banner.bidAmount) : ""}
+          placeholder="0,00"
+          className={inputCls}
+        />
+      </label>
+      <label className={`${fieldCls} sm:col-span-2`}>
+        Título
+        <input
+          name="title"
+          required
+          maxLength={120}
+          defaultValue={banner?.title ?? ""}
+          placeholder="Ex.: Filamentos PLA com 20% OFF na Loja X"
+          className={inputCls}
+        />
+      </label>
+      <label className={`${fieldCls} sm:col-span-2`}>
+        Subtítulo (opcional)
+        <input
+          name="subtitle"
+          maxLength={160}
+          defaultValue={banner?.subtitle ?? ""}
+          className={inputCls}
+        />
+      </label>
+      <label className={`${fieldCls} sm:col-span-2`}>
+        URL da imagem (opcional)
+        <input
+          name="imageUrl"
+          type="url"
+          defaultValue={banner?.imageUrl ?? ""}
+          placeholder="https://…"
+          className={inputCls}
+        />
+      </label>
+      <label className={`${fieldCls} sm:col-span-2`}>
+        Link de destino
+        <input
+          name="linkUrl"
+          type="url"
+          required
+          defaultValue={banner?.linkUrl ?? ""}
+          placeholder="https://…"
+          className={inputCls}
+        />
+      </label>
+      <label className={`${fieldCls} sm:col-span-2`}>
+        Loja (opcional)
+        <select
+          name="sellerId"
+          defaultValue={banner?.sellerId ?? ""}
+          className={inputCls}
+        >
+          <option value="">— Nenhuma (anúncio do próprio site) —</option>
+          {sellers.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.name}
+            </option>
+          ))}
+        </select>
+      </label>
     </div>
   );
 }
 
 export default async function AdminMonetizacaoPage() {
-  const [boosts, banners] = await Promise.all([
+  const [boosts, banners, sellers] = await Promise.all([
     prisma.boost.findMany({
       include: { seller: { select: { name: true } } },
       orderBy: [{ status: "asc" }, { bidAmount: "desc" }],
@@ -98,88 +213,220 @@ export default async function AdminMonetizacaoPage() {
       include: { seller: { select: { name: true } } },
       orderBy: [{ status: "asc" }, { bidAmount: "desc" }],
     }),
+    prisma.seller.findMany({
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    }),
   ]);
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-12">
+      {/* ───────── Lances de destaque ───────── */}
       <section>
         <h2 className="flex items-center gap-2 text-lg font-semibold">
           <Megaphone className="size-5 text-brand" />
-          Lances de destaque (leilão)
+          Lances de destaque (topo da listagem)
         </h2>
-        <p className="mb-3 mt-1 text-sm text-muted-foreground">
-          Aprove para ativar o destaque (a loja sobe ao topo da listagem). O
-          maior lance ativo por categoria vence.
+        <p className="mb-4 mt-1 text-sm text-muted-foreground">
+          Coloque uma loja no <strong>topo</strong> de Filamentos, Resinas ou
+          Impressoras, com selo “Patrocinado”. O maior lance ativo por categoria
+          vence. Você gere tudo aqui — a loja não dá lances.
         </p>
+
+        <form
+          action={createBoost}
+          className="flex flex-wrap items-end gap-3 rounded-xl border bg-muted/30 p-4"
+        >
+          <label className={fieldCls}>
+            Loja
+            <select
+              name="sellerId"
+              required
+              defaultValue=""
+              className={`${inputCls} min-w-[180px]`}
+            >
+              <option value="" disabled>
+                Selecione…
+              </option>
+              {sellers.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className={fieldCls}>
+            Categoria
+            <select name="placement" required className={inputCls}>
+              <option value="TOP_FILAMENT">Topo · Filamentos</option>
+              <option value="TOP_RESIN">Topo · Resinas</option>
+              <option value="TOP_PRINTER">Topo · Impressoras</option>
+            </select>
+          </label>
+          <label className={fieldCls}>
+            Lance (R$/mês)
+            <input
+              name="bid"
+              inputMode="decimal"
+              required
+              placeholder="0,00"
+              className={`${inputCls} w-28`}
+            />
+          </label>
+          <Button type="submit">
+            <Plus />
+            Criar lance
+          </Button>
+        </form>
+
         {boosts.length === 0 ? (
-          <div className="rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground">
-            Nenhum lance ainda.
+          <div className="mt-3 rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground">
+            Nenhum lance ainda. Crie um acima.
           </div>
         ) : (
-          <ul className="divide-y rounded-xl border">
+          <ul className="mt-3 divide-y rounded-xl border">
             {boosts.map((b) => (
-              <li
-                key={b.id}
-                className="flex flex-wrap items-center justify-between gap-3 p-4"
-              >
-                <div className="min-w-0">
-                  <p className="font-medium">{b.seller.name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {PLACEMENT_LABELS[b.placement] ?? b.placement} ·{" "}
-                    <strong>{formatBRL(Number(b.bidAmount))}/mês</strong>
-                  </p>
+              <li key={b.id} className="space-y-3 p-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="font-medium">{b.seller.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {PLACEMENT_LABELS[b.placement] ?? b.placement} ·{" "}
+                      <strong>{formatBRL(Number(b.bidAmount))}/mês</strong>
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 flex-wrap items-center gap-1.5">
+                    {statusBadge(b.status)}
+                    <ToggleStatus
+                      idName="boostId"
+                      id={b.id}
+                      status={b.status}
+                      action={setBoostStatus}
+                    />
+                    <DeleteButton
+                      idName="boostId"
+                      id={b.id}
+                      action={deleteBoost}
+                      label={`Excluir o lance de ${b.seller.name}?`}
+                    />
+                  </div>
                 </div>
-                <ApproveReject
-                  idName="boostId"
-                  id={b.id}
-                  status={b.status}
-                  action={setBoostStatus}
-                />
+                <details className="group">
+                  <summary className="cursor-pointer text-xs font-medium text-teal hover:underline">
+                    Editar lance
+                  </summary>
+                  <form
+                    action={updateBoost}
+                    className="mt-2 flex items-end gap-2"
+                  >
+                    <input type="hidden" name="boostId" value={b.id} />
+                    <label className={fieldCls}>
+                      Lance (R$/mês)
+                      <input
+                        name="bid"
+                        inputMode="decimal"
+                        defaultValue={String(Number(b.bidAmount))}
+                        className={`${inputCls} w-28`}
+                      />
+                    </label>
+                    <Button size="sm" type="submit">
+                      Salvar
+                    </Button>
+                  </form>
+                </details>
               </li>
             ))}
           </ul>
         )}
       </section>
 
+      {/* ───────── Banners ───────── */}
       <section>
         <h2 className="text-lg font-semibold">Banners</h2>
-        <p className="mb-3 mt-1 text-sm text-muted-foreground">
-          Aprove para exibir. O maior lance ativo por posição (home/global) é
-          mostrado.
+        <p className="mb-4 mt-1 text-sm text-muted-foreground">
+          Crie banners para a <strong>home</strong> (grande) ou para{" "}
+          <strong>todas as páginas</strong> (faixa). O de maior lance ativo por
+          posição é exibido. Você gere tudo aqui.
         </p>
+
+        <details className="rounded-xl border bg-muted/30 p-4">
+          <summary className="flex cursor-pointer items-center gap-2 text-sm font-semibold">
+            <Plus className="size-4" />
+            Novo banner
+          </summary>
+          <form action={createBanner} className="mt-4 space-y-3">
+            <BannerFields sellers={sellers} />
+            <Button type="submit">
+              <Plus />
+              Criar banner
+            </Button>
+          </form>
+        </details>
+
         {banners.length === 0 ? (
-          <div className="rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground">
-            Nenhum banner ainda.
+          <div className="mt-3 rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground">
+            Nenhum banner ainda. Crie um acima.
           </div>
         ) : (
-          <ul className="divide-y rounded-xl border">
+          <ul className="mt-3 divide-y rounded-xl border">
             {banners.map((b) => (
-              <li
-                key={b.id}
-                className="flex flex-wrap items-center justify-between gap-3 p-4"
-              >
-                <div className="min-w-0">
-                  <p className="font-medium">{b.title}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {b.seller?.name ?? "—"} ·{" "}
-                    {PLACEMENT_LABELS[b.placement] ?? b.placement} ·{" "}
-                    <strong>{formatBRL(Number(b.bidAmount))}/mês</strong> ·{" "}
-                    <a
-                      href={b.linkUrl}
-                      target="_blank"
-                      rel="noopener noreferrer nofollow"
-                      className="text-teal hover:underline"
-                    >
-                      link
-                    </a>
-                  </p>
+              <li key={b.id} className="space-y-3 p-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="font-medium">{b.title}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {PLACEMENT_LABELS[b.placement] ?? b.placement} ·{" "}
+                      <strong>{formatBRL(Number(b.bidAmount))}/mês</strong>
+                      {b.seller?.name ? ` · ${b.seller.name}` : ""} ·{" "}
+                      <a
+                        href={b.linkUrl}
+                        target="_blank"
+                        rel="noopener noreferrer nofollow"
+                        className="inline-flex items-center gap-0.5 text-teal hover:underline"
+                      >
+                        link <ExternalLink className="size-3" />
+                      </a>
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 flex-wrap items-center gap-1.5">
+                    {statusBadge(b.status)}
+                    <ToggleStatus
+                      idName="bannerId"
+                      id={b.id}
+                      status={b.status}
+                      action={setBannerStatus}
+                    />
+                    <DeleteButton
+                      idName="bannerId"
+                      id={b.id}
+                      action={deleteBanner}
+                      label={`Excluir o banner “${b.title}”?`}
+                    />
+                  </div>
                 </div>
-                <ApproveReject
-                  idName="bannerId"
-                  id={b.id}
-                  status={b.status}
-                  action={setBannerStatus}
-                />
+                <details className="group">
+                  <summary className="cursor-pointer text-xs font-medium text-teal hover:underline">
+                    Editar banner
+                  </summary>
+                  <form action={updateBanner} className="mt-3 space-y-3">
+                    <input type="hidden" name="bannerId" value={b.id} />
+                    <BannerFields
+                      sellers={sellers}
+                      banner={{
+                        placement: b.placement,
+                        title: b.title,
+                        subtitle: b.subtitle,
+                        imageUrl: b.imageUrl,
+                        linkUrl: b.linkUrl,
+                        bidAmount: Number(b.bidAmount),
+                        sellerId: b.sellerId,
+                      }}
+                    />
+                    <Button size="sm" type="submit">
+                      Salvar alterações
+                    </Button>
+                  </form>
+                </details>
               </li>
             ))}
           </ul>
