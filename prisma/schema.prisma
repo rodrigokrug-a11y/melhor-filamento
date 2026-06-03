@@ -438,6 +438,23 @@ model Upload {
   createdAt DateTime @default(now())
 }
 
+// Mensagem enviada pelo formulário "Entre em contato". Guardada sempre (mesmo
+// sem SMTP) e notificada por e-mail ao admin. Anexo opcional via Upload.
+model ContactMessage {
+  id             String   @id @default(cuid())
+  name           String
+  email          String
+  subject        String?
+  message        String
+  attachmentId   String? // Upload.id (bytes no banco)
+  attachmentName String?
+  emailed        Boolean  @default(false) // conseguiu enviar por e-mail?
+  handled        Boolean  @default(false) // admin marcou como resolvido
+  createdAt      DateTime @default(now())
+
+  @@index([handled, createdAt])
+}
+
 // Banner pago: a loja envia imagem/link/texto e dá um lance; o maior lance
 // ACTIVE por placement é exibido.
 model Banner {

@@ -3,11 +3,19 @@
 // - Sem SMTP (dev): imprime no console em vez de enviar — nunca quebra o fluxo.
 // As credenciais vêm SEMPRE do ambiente; nada é hardcoded.
 
+type MailAttachment = {
+  filename: string;
+  content: Buffer;
+  contentType?: string;
+};
+
 type MailInput = {
   to: string | string[];
   subject: string;
   html: string;
   text?: string;
+  replyTo?: string;
+  attachments?: MailAttachment[];
 };
 
 const SITE_URL =
@@ -62,8 +70,11 @@ export async function sendMail(input: MailInput): Promise<void> {
   const text = input.text ?? stripHtml(input.html);
   if (!server) {
     const to = Array.isArray(input.to) ? input.to.join(", ") : input.to;
+    const att = input.attachments?.length
+      ? ` (+${input.attachments.length} anexo(s))`
+      : "";
     console.log(
-      `\n[mail] (SMTP não configurado) Para: ${to}\nAssunto: ${input.subject}\n${text}\n`,
+      `\n[mail] (SMTP não configurado) Para: ${to}${att}\nAssunto: ${input.subject}\n${text}\n`,
     );
     return;
   }
@@ -72,9 +83,11 @@ export async function sendMail(input: MailInput): Promise<void> {
   await transport.sendMail({
     from: emailFrom(),
     to: input.to,
+    replyTo: input.replyTo,
     subject: input.subject,
     text,
     html: input.html,
+    attachments: input.attachments,
   });
 }
 

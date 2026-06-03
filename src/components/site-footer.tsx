@@ -71,6 +71,12 @@ export function SiteFooter() {
           <p>© {year} Melhor Filamento. Comparador de preços para impressão 3D.</p>
           <nav className="flex flex-wrap items-center gap-x-4 gap-y-1">
             <Link
+              href="/contato"
+              className="transition-colors hover:text-foreground"
+            >
+              Contato
+            </Link>
+            <Link
               href="/privacidade"
               className="transition-colors hover:text-foreground"
             >
