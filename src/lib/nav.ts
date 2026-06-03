@@ -8,4 +8,5 @@ export const MAIN_NAV: { href: string; label: string }[] = [
   { href: "/marcas", label: "Marcas" },
   { href: "/ranking", label: "Ranking" },
   { href: "/dicas", label: "Dicas" },
+  { href: "/contato", label: "Contato" },
 ];
