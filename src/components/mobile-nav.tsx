@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Menu, Plus, Search, Sparkles, X } from "lucide-react";
 
 import { Logo } from "@/components/logo";
-import { MAIN_NAV } from "@/lib/nav";
+import { MAIN_NAV, isGroup } from "@/lib/nav";
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
@@ -66,28 +66,50 @@ export function MobileNav() {
                 </Link>
 
                 <nav className="flex flex-col gap-0.5">
-                  {MAIN_NAV.map((item) =>
-                    item.accent ? (
+                  {MAIN_NAV.map((entry) => {
+                    if (isGroup(entry)) {
+                      return (
+                        <div key={entry.label} className="mt-1">
+                          <p className="px-3 pb-0.5 pt-2 font-mono text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
+                            {entry.label}
+                          </p>
+                          {entry.items.map((it) => (
+                            <Link
+                              key={it.href}
+                              href={it.href}
+                              onClick={() => setOpen(false)}
+                              className="block rounded-lg px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+                            >
+                              {it.label}
+                            </Link>
+                          ))}
+                        </div>
+                      );
+                    }
+                    if (entry.accent) {
+                      return (
+                        <Link
+                          key={entry.href}
+                          href={entry.href}
+                          onClick={() => setOpen(false)}
+                          className="grad-brand mt-2 flex items-center gap-1.5 rounded-lg px-3 py-2.5 text-sm font-semibold text-white"
+                        >
+                          <Sparkles className="size-4" />
+                          {entry.label} — ferramentas de IA
+                        </Link>
+                      );
+                    }
+                    return (
                       <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={() => setOpen(false)}
-                        className="grad-brand mt-1 flex items-center gap-1.5 rounded-lg px-3 py-2.5 text-sm font-semibold text-white"
-                      >
-                        <Sparkles className="size-4" />
-                        {item.label} — ferramentas de IA
-                      </Link>
-                    ) : (
-                      <Link
-                        key={item.href}
-                        href={item.href}
+                        key={entry.href}
+                        href={entry.href}
                         onClick={() => setOpen(false)}
                         className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-accent"
                       >
-                        {item.label}
+                        {entry.label}
                       </Link>
-                    ),
-                  )}
+                    );
+                  })}
                 </nav>
 
                 <Link

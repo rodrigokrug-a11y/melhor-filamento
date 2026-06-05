@@ -1,13 +1,13 @@
 import Link from "next/link";
-import { Plus, Search, Sparkles } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 
 import { AuthNav } from "@/components/auth-nav";
 import { CepSelector } from "@/components/cep-selector";
 import { FavoritesNavLink } from "@/components/favorites-nav-link";
 import { Logo } from "@/components/logo";
+import { MainNav } from "@/components/main-nav";
 import { MobileNav } from "@/components/mobile-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { MAIN_NAV } from "@/lib/nav";
 
 export function SiteHeader() {
   return (
@@ -25,28 +25,7 @@ export function SiteHeader() {
         </Link>
 
         <div className="flex items-center gap-1.5">
-          <nav className="mr-1 hidden items-center gap-0.5 text-sm font-medium xl:flex">
-            {MAIN_NAV.map((item) =>
-              item.accent ? (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="grad-brand ml-1 inline-flex items-center gap-1 rounded-full px-3 py-1.5 font-semibold text-white shadow-sm transition-opacity hover:opacity-90"
-                >
-                  <Sparkles className="size-3.5" />
-                  {item.label}
-                </Link>
-              ) : (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-                >
-                  {item.label}
-                </Link>
-              ),
-            )}
-          </nav>
+          <MainNav />
           <Link
             href="/cadastrar-oferta"
             className="mr-1 hidden items-center gap-1.5 rounded-full border border-brand/30 bg-brand-soft px-3 py-1.5 text-sm font-medium text-brand transition-colors hover:bg-brand/15 xl:inline-flex"
