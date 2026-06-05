@@ -43,6 +43,10 @@ export const metadata: Metadata = {
   openGraph: { url: "/" },
 };
 
+// ISR: revalida a home periodicamente (anúncios e preços atualizam sem
+// redeploy). O admin também chama revalidatePath("/") ao salvar banners.
+export const revalidate = 600;
+
 export default async function HomePage() {
   const [filamentos, resinas, brands, ranking, materials, heroAd] =
     await Promise.all([
