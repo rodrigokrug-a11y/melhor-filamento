@@ -3,10 +3,59 @@ import { type BannerPlacement } from "@prisma/client";
 import { ArrowRight, Megaphone } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { getPageBanner } from "@/lib/banners";
+import { type ActiveBanner, getPageBanner } from "@/lib/banners";
 
 function proxied(url: string) {
   return `/api/img?url=${encodeURIComponent(url)}`;
+}
+
+/**
+ * Anúncio do "display" do hero (home): imagem que preenche a área visual,
+ * com selo "Anúncio" e clique direto para o anunciante (nova aba). Sem
+ * link, apenas exibe. O admin escolhe via posição HERO em /admin/monetizacao.
+ * Tamanho ideal da imagem: ~800×600 (proporção 4:3).
+ */
+export function HeroAd({ banner }: { banner: ActiveBanner }) {
+  const img = banner.imageUrl
+    ? banner.imageUrl.startsWith("/")
+      ? banner.imageUrl
+      : proxied(banner.imageUrl)
+    : null;
+
+  const inner = (
+    <div className="relative h-full w-full overflow-hidden rounded-[28px] border bg-card shadow-lg">
+      {img ? (
+        <Image
+          src={img}
+          alt={banner.title}
+          fill
+          unoptimized
+          sizes="(max-width: 768px) 100vw, 560px"
+          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+        />
+      ) : (
+        <div className="grad-mesh absolute inset-0" />
+      )}
+      <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-black/55 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white backdrop-blur">
+        <Megaphone className="size-3" />
+        Anúncio
+      </span>
+    </div>
+  );
+
+  if (!banner.linkUrl) {
+    return <div className="aspect-[4/3]">{inner}</div>;
+  }
+  return (
+    <a
+      href={banner.linkUrl}
+      target="_blank"
+      rel="noopener noreferrer sponsored"
+      className="group block aspect-[4/3]"
+    >
+      {inner}
+    </a>
+  );
 }
 
 /**

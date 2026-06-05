@@ -419,6 +419,7 @@ model Boost {
 
 enum BannerPlacement {
   HOME // página inicial
+  HERO // display do hero (home) — anúncio na área visual à direita
   FILAMENTOS // listagem de filamentos
   RESINAS // listagem de resinas
   IMPRESSORAS // listagem de impressoras

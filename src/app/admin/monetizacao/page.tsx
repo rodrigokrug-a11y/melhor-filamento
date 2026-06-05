@@ -29,6 +29,7 @@ const PLACEMENT_LABELS: Record<string, string> = {
   TOP_RESIN: "Topo · Resinas",
   TOP_PRINTER: "Topo · Impressoras",
   HOME: "Banner · Página inicial",
+  HERO: "Display do hero · Página inicial",
   FILAMENTOS: "Banner · Filamentos",
   RESINAS: "Banner · Resinas",
   IMPRESSORAS: "Banner · Impressoras",
@@ -43,6 +44,7 @@ const PLACEMENT_LABELS: Record<string, string> = {
 // Posições de banner por página, na ordem do menu (GLOBAL por último, é o fallback).
 const BANNER_PLACEMENT_OPTIONS: { value: string; label: string }[] = [
   { value: "HOME", label: "Página inicial" },
+  { value: "HERO", label: "Display do hero (home)" },
   { value: "FILAMENTOS", label: "Filamentos" },
   { value: "RESINAS", label: "Resinas" },
   { value: "IMPRESSORAS", label: "Impressoras" },

@@ -18,7 +18,7 @@ import {
   Wrench,
 } from "lucide-react";
 
-import { PageBanner } from "@/components/banners";
+import { HeroAd, PageBanner } from "@/components/banners";
 import { BrandLogo } from "@/components/brand-logo";
 import { CatStrip } from "@/components/cat-strip";
 import { ProductCard } from "@/components/product-card";
@@ -34,6 +34,7 @@ import {
   type ProductListItem,
 } from "@/lib/catalog-types";
 import { getRanking } from "@/lib/reviews";
+import { type ActiveBanner, getActiveBanner } from "@/lib/banners";
 import { getMaterialsOverview } from "@/lib/tips";
 import { formatBRL } from "@/lib/utils";
 
@@ -43,13 +44,15 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const [filamentos, resinas, brands, ranking, materials] = await Promise.all([
-    getCatalog("FILAMENT", { sort: "preco-asc" }),
-    getCatalog("RESIN", { sort: "preco-asc" }),
-    getBrandsOverview(),
-    getRanking(),
-    getMaterialsOverview(),
-  ]);
+  const [filamentos, resinas, brands, ranking, materials, heroAd] =
+    await Promise.all([
+      getCatalog("FILAMENT", { sort: "preco-asc" }),
+      getCatalog("RESIN", { sort: "preco-asc" }),
+      getBrandsOverview(),
+      getRanking(),
+      getMaterialsOverview(),
+      getActiveBanner("HERO"),
+    ]);
   const featuredBrands = brands.filter((b) => b.productCount > 0).slice(0, 8);
   const topRanking = ranking.slice(0, 3);
   const topMaterials = materials.slice(0, 6);
@@ -60,7 +63,7 @@ export default async function HomePage() {
         <PageBanner placement="HOME" />
       </div>
       <CatStrip />
-      <Hero cheapest={filamentos.products[0]} />
+      <Hero cheapest={filamentos.products[0]} ad={heroAd} />
       <TrustBar />
 
       <div className="mx-auto max-w-6xl space-y-16 px-4 py-14">
@@ -106,7 +109,13 @@ export default async function HomePage() {
   );
 }
 
-function Hero({ cheapest }: { cheapest?: ProductListItem }) {
+function Hero({
+  cheapest,
+  ad,
+}: {
+  cheapest?: ProductListItem;
+  ad?: ActiveBanner | null;
+}) {
   const perKg =
     cheapest && cheapest.netWeightG > 0
       ? cheapest.bestPrice / (cheapest.netWeightG / 1000)
@@ -176,9 +185,12 @@ function Hero({ cheapest }: { cheapest?: ProductListItem }) {
           </p>
         </div>
 
-        {/* Visual (mesh) com card de preço real */}
+        {/* Display: anúncio (admin) ou visual mesh com card de preço real */}
         <div className="hidden md:block">
-          <div className="grad-mesh relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-[28px] shadow-lg">
+          {ad ? (
+            <HeroAd banner={ad} />
+          ) : (
+            <div className="grad-mesh relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-[28px] shadow-lg">
             <div
               aria-hidden
               className="size-[62%] rounded-full [background:repeating-radial-gradient(circle,rgba(255,255,255,0.08)_0_6px,transparent_6px_12px)]"
@@ -201,10 +213,11 @@ function Hero({ cheapest }: { cheapest?: ProductListItem }) {
                 ) : null}
               </Link>
             ) : null}
-            <div className="absolute bottom-5 left-5">
-              <Badge variant="best">★ Melhor compra</Badge>
+              <div className="absolute bottom-5 left-5">
+                <Badge variant="best">★ Melhor compra</Badge>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </section>
