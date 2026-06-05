@@ -46,7 +46,7 @@ export const metadata: Metadata = {
 
 // ISR: revalida a home periodicamente (anúncios e preços atualizam sem
 // redeploy). O admin também chama revalidatePath("/") ao salvar banners.
-export const revalidate = 600;
+export const revalidate = 300;
 
 export default async function HomePage() {
   const [filamentos, resinas, brands, ranking, materials, heroAd] =
