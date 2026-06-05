@@ -99,8 +99,32 @@ mostra o preço por kg prontinho, pra você não cair nessa. 💡
 
 ---
 
+## 07 — Oferta com produto real (`pecas-extra/07-oferta-produto.png` · story: `07-oferta-produto-story.png`)
+
+**Legenda:**
+🔥 Oferta do dia: Filamento PETG Preto (National 3D) por **R$ 98,91** — de
+R$ 139,90 (**−29%**).
+
+R$ 98,91/kg, com o frete já calculado pro seu CEP. A gente acompanha o histórico
+de preço, então é desconto de verdade. 👇
+
+👉 melhorfilamento.com.br/ofertas
+
+**Hashtags:**
+#oferta #petg #impressao3d #filamento #promocao #impressao3dbrasil #national3d
+
+> ⚠️ Preço e desconto são **reais**, capturados do site. Preço de oferta muda —
+> confira no link antes de postar. Para gerar uma peça com a oferta do momento,
+> rode `python3 marketing/gen-oferta.py` (ele baixa os dados atuais).
+
+---
+
 ### Observações
+- **Stories (1080×1920):** versões verticais das 6 peças em
+  `marketing/pecas-stories/` — usam as **mesmas legendas** acima.
+- **Logo oficial transparente** (PNG + SVG) em `marketing/logo/` — claro, escuro e
+  símbolo. Use esses, não os antigos `public/img/logo-*.png` (têm fundo chapado).
 - Trocar o link final pela página específica quando fizer sentido (ex.: linkar
   direto um material em alta).
 - Em Stories: usar a peça como fundo e adicionar o sticker de link.
-- Pode rodar 02, 03 e 06 também como anúncio (já são "diretas ao ponto").
+- Pode rodar 02, 03, 06 e 07 também como anúncio (já são "diretas ao ponto").

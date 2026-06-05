@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="512" height="512" fill="none" role="img" aria-label="Melhor Filamento">
+  <defs>
+    <linearGradient id="mf-spool" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#16ABA6"/>
+      <stop offset="1" stop-color="#54B62E"/>
+    </linearGradient>
+  </defs>
+  <!-- corpo do carretel -->
+  <path d="M3.6 6.2V15.4c0 1.6 3.76 2.9 8.4 2.9s8.4-1.3 8.4-2.9V6.2" fill="url(#mf-spool)"/>
+  <!-- topo do carretel -->
+  <ellipse cx="12" cy="6.2" rx="8.4" ry="2.9" fill="#0E7E7B"/>
+  <!-- furo central -->
+  <ellipse cx="12" cy="6.2" rx="2.2" ry="0.78" fill="#ffffff" opacity="0.6"/>
+  <!-- enrolamentos -->
+  <path d="M3.7 10.1c1 1.3 4.4 2.2 8.3 2.2s7.3-.9 8.3-2.2" stroke="#ffffff" stroke-opacity="0.28" stroke-width="0.9"/>
+  <path d="M3.7 12.9c1 1.3 4.4 2.2 8.3 2.2s7.3-.9 8.3-2.2" stroke="#ffffff" stroke-opacity="0.28" stroke-width="0.9"/>
+  <!-- lupa (lente transparente) -->
+  <circle cx="21.4" cy="21" r="6.2" stroke="#0E7E7B" stroke-width="2"/>
+  <path d="M26.1 25.7 29.3 28.9" stroke="#0E7E7B" stroke-width="2.6" stroke-linecap="round"/>
+  <!-- check verde -->
+  <path d="M18.3 21.1 20.6 23.3 24.7 19" stroke="#54B62E" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
