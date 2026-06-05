@@ -22,11 +22,12 @@ import { HeroAd, PageBanner } from "@/components/banners";
 import { BrandLogo } from "@/components/brand-logo";
 import { CatStrip } from "@/components/cat-strip";
 import { ProductCard } from "@/components/product-card";
+import { ProductImage } from "@/components/product-image";
 import { Reveal } from "@/components/reveal";
 import { SearchBox } from "@/components/search-box";
 import { Stars } from "@/components/stars";
 import { Badge } from "@/components/ui/badge";
-import { getBrandsOverview, getCatalog } from "@/lib/catalog";
+import { getBrandsOverview, getCatalog, getProductCardById } from "@/lib/catalog";
 import {
   type BrandSummary,
   MATERIAL_INFO,
@@ -60,6 +61,10 @@ export default async function HomePage() {
   const featuredBrands = brands.filter((b) => b.productCount > 0).slice(0, 8);
   const topRanking = ranking.slice(0, 3);
   const topMaterials = materials.slice(0, 6);
+  // Display do hero: produto escolhido pelo admin (se houver) tem prioridade.
+  const featuredProduct = heroAd?.productId
+    ? await getProductCardById(heroAd.productId)
+    : null;
 
   return (
     <>
@@ -67,7 +72,11 @@ export default async function HomePage() {
         <PageBanner placement="HOME" />
       </div>
       <CatStrip />
-      <Hero cheapest={filamentos.products[0]} ad={heroAd} />
+      <Hero
+        cheapest={filamentos.products[0]}
+        ad={heroAd}
+        featured={featuredProduct}
+      />
       <TrustBar />
 
       <div className="mx-auto max-w-6xl space-y-16 px-4 py-14">
@@ -116,9 +125,11 @@ export default async function HomePage() {
 function Hero({
   cheapest,
   ad,
+  featured,
 }: {
   cheapest?: ProductListItem;
   ad?: ActiveBanner | null;
+  featured?: ProductListItem | null;
 }) {
   const perKg =
     cheapest && cheapest.netWeightG > 0
@@ -189,10 +200,12 @@ function Hero({
           </p>
         </div>
 
-        {/* Display: anúncio (admin) ou visual mesh com card de preço real */}
+        {/* Display: imagem-anúncio > produto destacado (admin) > visual padrão */}
         <div className="hidden md:block">
-          {ad ? (
+          {ad && ad.imageUrl ? (
             <HeroAd banner={ad} />
+          ) : featured ? (
+            <HeroProduct product={featured} />
           ) : (
             <div className="grad-mesh relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-[28px] shadow-lg">
             <div
@@ -225,6 +238,51 @@ function Hero({
         </div>
       </div>
     </section>
+  );
+}
+
+// Display do hero quando o admin escolhe um produto: imagem + preço + link.
+function HeroProduct({ product }: { product: ProductListItem }) {
+  const perKg =
+    product.kind !== "PRINTER" && product.netWeightG > 0
+      ? product.bestPrice / (product.netWeightG / 1000)
+      : null;
+  return (
+    <Link href={`/produto/${product.slug}`} className="group block aspect-[4/3]">
+      <div className="relative h-full w-full overflow-hidden rounded-[28px] border bg-card shadow-lg">
+        <ProductImage
+          src={product.imageUrl}
+          alt={product.name}
+          sizes="(max-width: 768px) 100vw, 560px"
+          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          fallback={
+            <div className="grad-mesh absolute inset-0 flex items-center justify-center">
+              <Boxes className="size-16 text-white/40" />
+            </div>
+          }
+        />
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/40 to-transparent p-5 pt-12 text-white">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-wide text-white/80">
+            {product.brandName}
+          </p>
+          <p className="line-clamp-1 font-display text-base font-bold">
+            {product.name}
+          </p>
+          <p className="mt-0.5 font-display text-2xl font-bold tnum">
+            {formatBRL(product.bestPrice)}
+            {perKg != null ? (
+              <span className="ml-2 font-mono text-xs font-normal text-white/80">
+                {formatBRL(perKg)}/kg
+              </span>
+            ) : null}
+          </p>
+        </div>
+        <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-black/55 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white backdrop-blur">
+          <Megaphone className="size-3" />
+          Anúncio
+        </span>
+      </div>
+    </Link>
   );
 }
 

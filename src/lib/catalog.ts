@@ -287,6 +287,31 @@ export async function getProductsBySlugs(
     .filter((x): x is ProductListItem => x !== null);
 }
 
+/** Um produto (com oferta ativa) por id — usado no destaque do hero. */
+export const getProductCardById = cache(
+  async (id: string): Promise<ProductListItem | null> => {
+    if (!id) return null;
+    const p = await prisma.product.findFirst({
+      where: { id, offers: { some: ACTIVE_OFFER_WHERE } },
+      include: PRODUCT_WITH_OFFERS,
+    });
+    return p ? buildListItem(p) : null;
+  },
+);
+
+/** Lista enxuta de produtos (id + rótulo) para o seletor do admin. */
+export const getProductPicklist = cache(
+  async (): Promise<{ id: string; label: string }[]> => {
+    const rows = await prisma.product.findMany({
+      where: { offers: { some: ACTIVE_OFFER_WHERE } },
+      select: { id: true, name: true, brand: { select: { name: true } } },
+      orderBy: [{ brand: { name: "asc" } }, { name: "asc" }],
+      take: 1500,
+    });
+    return rows.map((r) => ({ id: r.id, label: `${r.brand.name} · ${r.name}` }));
+  },
+);
+
 /**
  * Ofertas do dia: produtos com cupom OU com queda de preço frente ao pico
  * recente (até 45 dias de histórico). `discountPct` reflete a maior economia.

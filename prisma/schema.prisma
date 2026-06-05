@@ -113,6 +113,7 @@ model Product {
   reviews    Review[]
   tips       Tip[]
   priceAlerts PriceAlert[]
+  banners    Banner[]
   createdAt  DateTime    @default(now())
 
   @@index([kind])
@@ -503,6 +504,8 @@ model Banner {
   id         String            @id @default(cuid())
   sellerId   String?
   seller     Seller?           @relation(fields: [sellerId], references: [id])
+  productId  String? // se definido, o display monta o anúncio a partir do produto
+  product    Product?          @relation(fields: [productId], references: [id])
   placements BannerPlacement[] // páginas onde o banner aparece (uma ou várias)
   title      String
   subtitle   String?

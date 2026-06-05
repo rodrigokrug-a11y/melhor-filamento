@@ -5,6 +5,7 @@ import { BannerImageField } from "@/components/banner-image-field";
 import { ConfirmSubmitButton } from "@/components/confirm-submit-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { getProductPicklist } from "@/lib/catalog";
 import { prisma } from "@/lib/db";
 import { formatBRL } from "@/lib/utils";
 
@@ -132,6 +133,7 @@ function DeleteButton({
 function BannerFields({
   banner,
   sellers,
+  products,
   taken,
 }: {
   banner?: {
@@ -143,8 +145,10 @@ function BannerFields({
     ctaLabel: string | null;
     bidAmount: number;
     sellerId: string | null;
+    productId: string | null;
   };
   sellers: { id: string; name: string }[];
+  products: { id: string; label: string }[];
   taken: Record<string, string>; // página → título do banner ativo que já a usa
 }) {
   return (
@@ -183,6 +187,26 @@ function BannerFields({
           })}
         </div>
       </div>
+      <label className={`${fieldCls} sm:col-span-2`}>
+        Destacar um produto (display do hero) — opcional
+        <select
+          name="productId"
+          defaultValue={banner?.productId ?? ""}
+          className={inputCls}
+        >
+          <option value="">— Nenhum (usar imagem/título acima) —</option>
+          {products.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.label}
+            </option>
+          ))}
+        </select>
+        <span className="text-xs text-muted-foreground">
+          Se escolher um produto, o anúncio do hero é montado automaticamente
+          (imagem, nome, preço e link do produto) — não precisa de imagem nem
+          link. Use junto da posição “Display do hero”.
+        </span>
+      </label>
       <label className={fieldCls}>
         Lance (R$/mês)
         <input
@@ -194,10 +218,9 @@ function BannerFields({
         />
       </label>
       <label className={`${fieldCls} sm:col-span-2`}>
-        Título
+        Título (não precisa se escolher um produto acima)
         <input
           name="title"
-          required
           maxLength={120}
           defaultValue={banner?.title ?? ""}
           placeholder="Ex.: Filamentos PLA com 20% OFF na Loja X"
@@ -258,7 +281,7 @@ function BannerFields({
 }
 
 export default async function AdminMonetizacaoPage() {
-  const [boosts, banners, sellers] = await Promise.all([
+  const [boosts, banners, sellers, products] = await Promise.all([
     prisma.boost.findMany({
       include: { seller: { select: { name: true } } },
       orderBy: [{ status: "asc" }, { bidAmount: "desc" }],
@@ -271,6 +294,7 @@ export default async function AdminMonetizacaoPage() {
       select: { id: true, name: true },
       orderBy: { name: "asc" },
     }),
+    getProductPicklist(),
   ]);
 
   // Página → título do banner ATIVO que já a ocupa (para desabilitar no seletor).
@@ -422,7 +446,11 @@ export default async function AdminMonetizacaoPage() {
             Novo banner
           </summary>
           <form action={createBanner} className="mt-4 space-y-3">
-            <BannerFields sellers={sellers} taken={takenMap()} />
+            <BannerFields
+              sellers={sellers}
+              products={products}
+              taken={takenMap()}
+            />
             <Button type="submit">
               <Plus />
               Criar banner
@@ -486,6 +514,7 @@ export default async function AdminMonetizacaoPage() {
                     <input type="hidden" name="bannerId" value={b.id} />
                     <BannerFields
                       sellers={sellers}
+                      products={products}
                       taken={takenMap(b.id)}
                       banner={{
                         placements: b.placements,
@@ -496,6 +525,7 @@ export default async function AdminMonetizacaoPage() {
                         ctaLabel: b.ctaLabel,
                         bidAmount: Number(b.bidAmount),
                         sellerId: b.sellerId,
+                        productId: b.productId,
                       }}
                     />
                     <Button size="sm" type="submit">

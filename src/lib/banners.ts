@@ -10,6 +10,7 @@ export type ActiveBanner = {
   imageUrl: string | null;
   linkUrl: string;
   ctaLabel: string | null;
+  productId: string | null;
 };
 
 /** Banner ativo de maior lance para a posição EXATA (ou null). */
@@ -25,6 +26,7 @@ export const getActiveBanner = cache(
         imageUrl: true,
         linkUrl: true,
         ctaLabel: true,
+        productId: true,
       },
     });
   },

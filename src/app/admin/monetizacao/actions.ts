@@ -136,8 +136,9 @@ function bannerDataFromForm(formData: FormData) {
     );
   const title = String(formData.get("title") ?? "").trim();
   const linkUrl = String(formData.get("linkUrl") ?? "").trim();
-  // precisa de título e de ao menos 1 página; link é opcional (vazio = não clicável)
-  if (!title || placements.length === 0) return null;
+  const productId = String(formData.get("productId") ?? "").trim() || null;
+  // precisa de página + (título OU produto). Com produto, título/link são automáticos.
+  if ((!title && !productId) || placements.length === 0) return null;
   const subtitle = String(formData.get("subtitle") ?? "").trim();
   const imageUrl = String(formData.get("imageUrl") ?? "").trim();
   const ctaLabel = String(formData.get("ctaLabel") ?? "").trim();
@@ -155,14 +156,37 @@ function bannerDataFromForm(formData: FormData) {
     ctaLabel: ctaLabel || null,
     bidAmount: (parseBid(formData.get("bid")) ?? 0).toFixed(2),
     sellerId: sellerId || null,
+    productId,
+  };
+}
+
+/**
+ * Quando um produto é escolhido, o display monta o anúncio a partir dele:
+ * título = nome do produto, link = página do produto, imagem = a do produto.
+ */
+async function resolveProduct<T extends { productId: string | null; title: string }>(
+  data: T,
+): Promise<T & { linkUrl?: string; imageUrl?: string | null }> {
+  if (!data.productId) return data;
+  const p = await prisma.product.findUnique({
+    where: { id: data.productId },
+    select: { name: true, slug: true },
+  });
+  if (!p) return { ...data, productId: null };
+  return {
+    ...data,
+    title: data.title || p.name,
+    linkUrl: `/produto/${p.slug}`,
+    imageUrl: null,
   };
 }
 
 /** Admin cria um banner, já ATIVO. */
 export async function createBanner(formData: FormData): Promise<void> {
   await requireAdmin();
-  const data = bannerDataFromForm(formData);
-  if (!data) return;
+  const parsed = bannerDataFromForm(formData);
+  if (!parsed) return;
+  const data = await resolveProduct(parsed);
   await prisma.banner.create({
     data: { ...data, status: "ACTIVE", startsAt: new Date() },
   });
@@ -173,8 +197,9 @@ export async function createBanner(formData: FormData): Promise<void> {
 export async function updateBanner(formData: FormData): Promise<void> {
   await requireAdmin();
   const id = String(formData.get("bannerId") ?? "");
-  const data = bannerDataFromForm(formData);
-  if (!id || !data) return;
+  const parsed = bannerDataFromForm(formData);
+  if (!id || !parsed) return;
+  const data = await resolveProduct(parsed);
   await prisma.banner.update({ where: { id }, data });
   revalidateListings();
 }
