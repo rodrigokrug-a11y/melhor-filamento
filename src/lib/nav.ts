@@ -1,8 +1,18 @@
 // Navegação principal — compartilhada entre header (desktop, com dropdowns) e
 // menu mobile (lista agrupada). `accent` destaca o item (ex.: IA).
 
-export type NavLink = { href: string; label: string; accent?: boolean };
-export type NavGroup = { label: string; href: string; items: NavLink[] };
+export type NavLink = {
+  href: string;
+  label: string;
+  accent?: boolean;
+  desc?: string;
+};
+export type NavGroup = {
+  label: string;
+  href: string;
+  accent?: boolean;
+  items: NavLink[];
+};
 export type NavEntry = NavLink | NavGroup;
 
 export function isGroup(e: NavEntry): e is NavGroup {
@@ -33,5 +43,26 @@ export const MAIN_NAV: NavEntry[] = [
     ],
   },
   { href: "/dicas", label: "Dicas" },
-  { href: "/ia", label: "IA", accent: true },
+  {
+    label: "IA",
+    href: "/ia",
+    accent: true,
+    items: [
+      {
+        href: "/ferramentas/assistente",
+        label: "Assistente de impressão",
+        desc: "Tire dúvidas com a IA na hora",
+      },
+      {
+        href: "/ferramentas/diagnostico",
+        label: "Diagnóstico por foto",
+        desc: "Mande a foto de uma peça com problema",
+      },
+      {
+        href: "/ia",
+        label: "Tudo sobre a IA",
+        desc: "Conheça as ferramentas de IA",
+      },
+    ],
+  },
 ];

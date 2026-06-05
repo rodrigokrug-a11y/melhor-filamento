@@ -67,6 +67,32 @@ export function MobileNav() {
 
                 <nav className="flex flex-col gap-0.5">
                   {MAIN_NAV.map((entry) => {
+                    if (isGroup(entry) && entry.accent) {
+                      return (
+                        <div key={entry.label} className="mt-2">
+                          <Link
+                            href={entry.href}
+                            onClick={() => setOpen(false)}
+                            className="grad-brand flex items-center gap-1.5 rounded-lg px-3 py-2.5 text-sm font-semibold text-white"
+                          >
+                            <Sparkles className="size-4" />
+                            {entry.label} — ferramentas de IA
+                          </Link>
+                          {entry.items
+                            .filter((it) => it.href !== entry.href)
+                            .map((it) => (
+                              <Link
+                                key={it.href}
+                                href={it.href}
+                                onClick={() => setOpen(false)}
+                                className="block rounded-lg py-2.5 pl-9 pr-3 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+                              >
+                                {it.label}
+                              </Link>
+                            ))}
+                        </div>
+                      );
+                    }
                     if (isGroup(entry)) {
                       return (
                         <div key={entry.label} className="mt-1">
