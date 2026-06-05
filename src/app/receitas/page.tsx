@@ -14,11 +14,11 @@ const description =
   "Perfis de fatiador que funcionam, enviados pela comunidade: temperatura do bico e da mesa, velocidade, retração e dicas por material e impressora.";
 
 export const metadata: Metadata = {
-  title: "Receitas de impressão 3D (perfis de fatiador)",
+  title: "Configurações de impressão 3D (perfis de fatiador)",
   description,
   alternates: { canonical: "/receitas" },
   openGraph: {
-    title: "Receitas de impressão 3D",
+    title: "Configurações de impressão 3D",
     description,
     url: "/receitas",
     type: "website",
@@ -62,7 +62,7 @@ export default async function ReceitasPage({
       <PageHeader
         icon={BookOpen}
         eyebrow="Comunidade"
-        title="Receitas de impressão"
+        title="Configurações de impressão"
         subtitle="Perfis de fatiador que funcionam, enviados pela comunidade — temperatura, velocidade, retração e dicas por material e impressora."
       />
 

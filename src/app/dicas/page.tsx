@@ -61,7 +61,7 @@ export default async function DicasPage() {
             <BookOpen className="size-5" />
           </span>
           <div className="min-w-0">
-            <p className="font-semibold">Receitas</p>
+            <p className="font-semibold">Configurações de impressão</p>
             <p className="text-sm text-muted-foreground">
               Perfis de fatiador da comunidade, por material.
             </p>

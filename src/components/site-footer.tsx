@@ -20,7 +20,7 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
       { href: "/ferramentas", label: "Ferramentas" },
       { href: "/ia", label: "Assistente IA" },
       { href: "/ranking", label: "Ranking" },
-      { href: "/receitas", label: "Receitas" },
+      { href: "/receitas", label: "Configurações de impressão" },
     ],
   },
   {
