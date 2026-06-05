@@ -28,7 +28,7 @@ export function SiteHeader() {
           <MainNav />
           <Link
             href="/cadastrar-oferta"
-            className="mr-1 hidden items-center gap-1.5 rounded-full border border-brand/30 bg-brand-soft px-3 py-1.5 text-sm font-medium text-brand transition-colors hover:bg-brand/15 xl:inline-flex"
+            className="mr-1 hidden h-9 items-center gap-1.5 whitespace-nowrap rounded-full border-[1.5px] border-input px-4 text-sm font-semibold text-teal transition-colors hover:border-brand hover:bg-brand-soft hover:text-teal xl:inline-flex"
           >
             <Plus className="size-4" />
             Cadastrar oferta
