@@ -5,7 +5,7 @@ import { ContactForm } from "@/components/contact-form";
 import { PageHeader } from "@/components/page-header";
 
 const contactEmail =
-  process.env.CONTACT_EMAIL ?? "contato@melhorfilamento.com.br";
+  process.env.CONTACT_EMAIL ?? "contact@beadev.ai";
 
 const description =
   "Fale com a equipe do Melhor Filamento: dúvidas, sugestões, correções, anúncios ou parcerias. Envie sua mensagem e anexe imagem ou documento.";

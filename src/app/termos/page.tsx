@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 const UPDATED = "31 de maio de 2026";
-const CONTACT = process.env.CONTACT_EMAIL ?? "contato@melhorfilamento.com.br";
+const CONTACT = process.env.CONTACT_EMAIL ?? "contact@beadev.ai";
 
 function Section({
   title,

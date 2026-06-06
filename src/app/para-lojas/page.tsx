@@ -14,7 +14,7 @@ import {
 
 import { PageHeader } from "@/components/page-header";
 
-const contactEmail = process.env.CONTACT_EMAIL ?? "contato@melhorfilamento.com.br";
+const contactEmail = process.env.CONTACT_EMAIL ?? "contact@beadev.ai";
 
 const description =
   "Coloque sua loja de impressão 3D na frente de quem está decidindo a compra. Selo de loja verificada, destaque nas listagens e banner — plano Loja Parceira com mensalidade fixa.";
