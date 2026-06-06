@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { Logo } from "@/components/logo";
+import { NewsletterSignup } from "@/components/newsletter-signup";
 
 const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
   {
@@ -39,6 +40,18 @@ export function SiteFooter() {
     <footer className="mt-12 bg-navy text-[#9fc0bc]">
       <div aria-hidden className="grad-brand h-[3px] w-full" />
       <div className="mx-auto max-w-6xl px-4 py-12">
+        <div className="mb-10 flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="max-w-md">
+            <h3 className="font-display text-lg font-semibold text-white">
+              Receba as melhores ofertas no e-mail
+            </h3>
+            <p className="mt-1 text-sm text-[#9fc0bc]">
+              Quedas de preço e ofertas de filamento e resina, direto pra você.
+            </p>
+          </div>
+          <NewsletterSignup />
+        </div>
+
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
           <div className="max-w-xs">
             <Link href="/" className="flex items-center gap-2">
