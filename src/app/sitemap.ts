@@ -10,10 +10,7 @@ export const revalidate = 3600;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteUrl();
   const now = new Date();
-  const [slugs, brandSlugs] = await Promise.all([
-    getAllProductSlugs(),
-    getAllBrandSlugs(),
-  ]);
+  const [slugs, brandSlugs] = await Promise.all([getAllProductSlugs(), getAllBrandSlugs()]);
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${base}/`, lastModified: now, changeFrequency: "daily", priority: 1 },
@@ -84,6 +81,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.5,
     },
     {
+      url: `${base}/para-lojas`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
+    {
       url: `${base}/ferramentas`,
       lastModified: now,
       changeFrequency: "weekly",
@@ -98,23 +101,37 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // Páginas internas de cada ferramenta (exclui as que apontam pra fora).
-  const toolRoutes: MetadataRoute.Sitemap = TOOLS.filter(
-    (t) => t.available && !t.externalUrl,
-  ).map((t) => ({
-    url: `${base}/ferramentas/${t.slug}`,
-    lastModified: now,
-    changeFrequency: "monthly",
-    priority: 0.6,
-  }));
-
-  const materialRoutes: MetadataRoute.Sitemap = FILAMENT_MATERIALS.map(
-    (material) => ({
-      url: `${base}/dica/${material}`,
+  const toolRoutes: MetadataRoute.Sitemap = TOOLS.filter((t) => t.available && !t.externalUrl).map(
+    (t) => ({
+      url: `${base}/ferramentas/${t.slug}`,
       lastModified: now,
-      changeFrequency: "weekly",
+      changeFrequency: "monthly",
       priority: 0.6,
     }),
   );
+
+  const materialRoutes: MetadataRoute.Sitemap = FILAMENT_MATERIALS.map((material) => ({
+    url: `${base}/dica/${material}`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.6,
+  }));
+
+  // Landings de intenção de compra: /melhor-[material] (ranking de preços).
+  const melhorRoutes: MetadataRoute.Sitemap = [
+    ...FILAMENT_MATERIALS.map((m) => ({
+      url: `${base}/melhor/${m.toLowerCase()}`,
+      lastModified: now,
+      changeFrequency: "daily" as const,
+      priority: 0.8,
+    })),
+    {
+      url: `${base}/melhor/resina`,
+      lastModified: now,
+      changeFrequency: "daily" as const,
+      priority: 0.8,
+    },
+  ];
 
   const productRoutes: MetadataRoute.Sitemap = slugs.map((slug) => ({
     url: `${base}/produto/${slug}`,
@@ -134,6 +151,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...staticRoutes,
     ...toolRoutes,
     ...materialRoutes,
+    ...melhorRoutes,
     ...productRoutes,
     ...brandRoutes,
   ];

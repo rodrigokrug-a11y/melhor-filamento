@@ -1,6 +1,7 @@
 import { cookies, headers } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 
+import { applyAffiliate } from "@/lib/affiliate";
 import { prisma } from "@/lib/db";
 import { REGION_COOKIE, parseRegion } from "@/lib/region";
 
@@ -22,11 +23,7 @@ export async function GET(
   });
 
   // Oferta inexistente, não aprovada ou esgotada → não vaza link; volta à home.
-  if (
-    !offer ||
-    offer.status !== "APPROVED" ||
-    offer.stockStatus === "OUT_OF_STOCK"
-  ) {
+  if (!offer || offer.status !== "APPROVED" || offer.stockStatus === "OUT_OF_STOCK") {
     return NextResponse.redirect(home, 302);
   }
 
@@ -61,6 +58,8 @@ export async function GET(
   target.searchParams.set("utm_source", "melhorfilamento");
   target.searchParams.set("utm_medium", "lead");
   target.searchParams.set("utm_campaign", offer.seller.slug);
+  // Monetização por afiliado: reescreve o link da loja se houver regra cadastrada.
+  applyAffiliate(target);
 
   const response = NextResponse.redirect(target, 302);
   if (isNewSession) {

@@ -29,6 +29,7 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
     links: [
       { href: "/entrar", label: "Entrar" },
       { href: "/cadastrar-oferta", label: "Anunciar oferta" },
+      { href: "/para-lojas", label: "Para lojas" },
       { href: "/contato", label: "Contato" },
     ],
   },
@@ -62,12 +63,11 @@ export function SiteFooter() {
               </span>
             </Link>
             <p className="mt-3 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[#7fa9a4]">
-              Compare. Descubra.{" "}
-              <span className="text-[var(--green-400)]">Compre melhor.</span>
+              Compare. Descubra. <span className="text-[var(--green-400)]">Compre melhor.</span>
             </p>
             <p className="mt-4 text-sm text-[#9fc0bc]">
-              O melhor custo em filamentos, resinas e impressoras 3D no Brasil —
-              com frete estimado para o seu CEP.
+              O melhor custo em filamentos, resinas e impressoras 3D no Brasil — com frete estimado
+              para o seu CEP.
             </p>
           </div>
 
@@ -93,22 +93,15 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-10 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-[#7fa9a4] sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © {year} Melhor Filamento. Comparador de preços para impressão 3D.
-          </p>
+          <p>© {year} Melhor Filamento. Comparador de preços para impressão 3D.</p>
           <nav className="flex flex-wrap items-center gap-x-4 gap-y-1">
-            <Link
-              href="/privacidade"
-              className="transition-colors hover:text-white"
-            >
+            <Link href="/privacidade" className="transition-colors hover:text-white">
               Privacidade
             </Link>
             <Link href="/termos" className="transition-colors hover:text-white">
               Termos
             </Link>
-            <span className="text-[#5f7b78]">
-              Feito para a comunidade maker 🇧🇷
-            </span>
+            <span className="text-[#5f7b78]">Feito para a comunidade maker 🇧🇷</span>
           </nav>
         </div>
       </div>
