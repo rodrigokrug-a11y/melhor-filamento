@@ -6,6 +6,7 @@ import { CookieConsent } from "@/components/cookie-consent";
 import { Providers } from "@/components/providers";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { siteJsonLd } from "@/lib/seo";
 
 // Manrope: UI / texto · Sora: títulos (combina com o wordmark) · Space Mono: dados/preços
 const manrope = Manrope({
@@ -57,6 +58,22 @@ export const metadata: Metadata = {
     title: "Melhor Filamento",
     description: siteDescription,
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  // Verificação do Google Search Console: defina GOOGLE_SITE_VERIFICATION no
+  // .env do servidor (o código que o GSC fornece no método "tag HTML").
+  verification: process.env.GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+    : undefined,
 };
 
 export default function RootLayout({
@@ -72,6 +89,10 @@ export default function RootLayout({
     >
       <body className="flex min-h-full flex-col">
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: siteJsonLd() }}
+        />
         <a
           href="#conteudo"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-background focus:px-3 focus:py-2 focus:text-sm focus:shadow"

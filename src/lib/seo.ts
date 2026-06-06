@@ -5,6 +5,51 @@ export function siteUrl(): string {
 }
 
 /**
+ * JSON-LD do site (sitewide): Organization + WebSite com SearchAction.
+ * Ajuda o Google a entender a marca e pode habilitar a caixa de busca nos
+ * resultados (sitelinks searchbox). Já sanitizado contra XSS.
+ */
+export function siteJsonLd(): string {
+  const base = siteUrl();
+  const data = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${base}/#organization`,
+        name: "Melhor Filamento",
+        url: base,
+        logo: {
+          "@type": "ImageObject",
+          url: `${base}/logo.png`,
+          width: 1024,
+          height: 1024,
+        },
+        description:
+          "Comparador de preços de filamentos, resinas e impressoras 3D no Brasil.",
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${base}/#website`,
+        name: "Melhor Filamento",
+        url: base,
+        inLanguage: "pt-BR",
+        publisher: { "@id": `${base}/#organization` },
+        potentialAction: {
+          "@type": "SearchAction",
+          target: {
+            "@type": "EntryPoint",
+            urlTemplate: `${base}/busca?q={search_term_string}`,
+          },
+          "query-input": "required name=search_term_string",
+        },
+      },
+    ],
+  };
+  return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
+/**
  * JSON-LD (schema.org) do produto: Product + AggregateOffer + Offers.
  * Já serializado e sanitizado contra XSS (escapa `<`).
  */
