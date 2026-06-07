@@ -26,7 +26,17 @@ export function siteJsonLd(): string {
           height: 1024,
         },
         description:
-          "Comparador de preços de filamentos, resinas e impressoras 3D no Brasil.",
+          "Comparador de preços de filamentos, resinas e impressoras 3D no Brasil. Ranking por custo total para o seu CEP (preço + frete), comparação por preço/kg, histórico de ofertas, ferramentas e IA.",
+        slogan: "Compare. Descubra. Compre melhor.",
+        email: "contact@beadev.ai",
+        areaServed: { "@type": "Country", name: "Brasil" },
+        contactPoint: {
+          "@type": "ContactPoint",
+          contactType: "atendimento ao cliente",
+          email: "contact@beadev.ai",
+          availableLanguage: ["Portuguese"],
+        },
+        sameAs: ["https://www.instagram.com/melhorfilamento3d/"],
       },
       {
         "@type": "WebSite",
