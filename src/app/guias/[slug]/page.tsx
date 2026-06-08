@@ -46,9 +46,15 @@ export default async function GuiaPage({ params }: { params: Promise<{ slug: str
   const guia = getGuia(slug);
   if (!guia) notFound();
 
+  const materiais = guia.materiais ?? [];
+  const temMateriais = materiais.length > 0;
   const toc = [
-    { id: "tabela", label: "Tabela comparativa" },
-    { id: "materiais", label: "Os filamentos, um por um" },
+    ...(temMateriais
+      ? [
+          { id: "tabela", label: "Tabela comparativa" },
+          { id: "materiais", label: "Os filamentos, um por um" },
+        ]
+      : []),
     ...guia.secoes.map((s) => ({ id: s.id, label: s.titulo })),
     { id: "faq", label: "Perguntas frequentes" },
   ];
@@ -109,31 +115,38 @@ export default async function GuiaPage({ params }: { params: Promise<{ slug: str
         </ol>
       </nav>
 
-      {/* Tabela comparativa */}
-      <section id="tabela" className="mt-10 scroll-mt-24">
-        <h2 className="mb-1 font-display text-2xl font-bold tracking-tight">Tabela comparativa</h2>
-        <p className="mb-4 text-sm text-muted-foreground">
-          Um resumo de cada filamento. Clique no nome para pular direto para os detalhes.
-        </p>
-        <GuiaTabela materiais={guia.materiais} />
-        <p className="mt-2 text-xs text-muted-foreground">
-          Preço relativo no Brasil: <span className="font-mono font-bold text-offer">$</span> mais
-          barato · <span className="font-mono font-bold text-offer">$$$</span> mais caro.
-          Temperaturas são faixas típicas — confira sempre a embalagem do fabricante.
-        </p>
-      </section>
+      {temMateriais ? (
+        <>
+          {/* Tabela comparativa */}
+          <section id="tabela" className="mt-10 scroll-mt-24">
+            <h2 className="mb-1 font-display text-2xl font-bold tracking-tight">
+              Tabela comparativa
+            </h2>
+            <p className="mb-4 text-sm text-muted-foreground">
+              Um resumo de cada filamento. Clique no nome para pular direto para os detalhes.
+            </p>
+            <GuiaTabela materiais={materiais} />
+            <p className="mt-2 text-xs text-muted-foreground">
+              Preço relativo no Brasil:{" "}
+              <span className="font-mono font-bold text-offer">$</span> mais barato ·{" "}
+              <span className="font-mono font-bold text-offer">$$$</span> mais caro. Temperaturas são
+              faixas típicas — confira sempre a embalagem do fabricante.
+            </p>
+          </section>
 
-      {/* Materiais, um a um */}
-      <section id="materiais" className="mt-10 scroll-mt-24">
-        <h2 className="mb-4 font-display text-2xl font-bold tracking-tight">
-          Os filamentos, um por um
-        </h2>
-        <div className="space-y-4">
-          {guia.materiais.map((m) => (
-            <GuiaMaterialCard key={m.key} m={m} />
-          ))}
-        </div>
-      </section>
+          {/* Materiais, um a um */}
+          <section id="materiais" className="mt-10 scroll-mt-24">
+            <h2 className="mb-4 font-display text-2xl font-bold tracking-tight">
+              Os filamentos, um por um
+            </h2>
+            <div className="space-y-4">
+              {materiais.map((m) => (
+                <GuiaMaterialCard key={m.key} m={m} />
+              ))}
+            </div>
+          </section>
+        </>
+      ) : null}
 
       {/* Seções editoriais */}
       {guia.secoes.map((s) => (

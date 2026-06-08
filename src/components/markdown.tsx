@@ -40,13 +40,14 @@ function renderInline(text: string, keyPrefix: string): ReactNode[] {
         </code>,
       );
     } else if (m[4] !== undefined) {
+      const href = m[5];
+      const internal = href.startsWith("/") || href.startsWith("#");
       nodes.push(
         <a
           key={key}
-          href={m[5]}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-medium underline underline-offset-2"
+          href={href}
+          {...(internal ? {} : { target: "_blank", rel: "noopener noreferrer" })}
+          className="font-medium text-brand underline underline-offset-2 hover:text-teal"
         >
           {m[4]}
         </a>,
@@ -113,6 +114,64 @@ export function Markdown({
         </p>,
       );
       i++;
+      continue;
+    }
+
+    // Tabela estilo pipe (GFM): cabeçalho + linha separadora "| --- | --- |".
+    const sep = lines[i + 1] ?? "";
+    const isSep =
+      sep.includes("|") && sep.includes("-") && /^[\s|:-]+$/.test(sep.trim());
+    if (trimmed.includes("|") && isSep) {
+      flushPara();
+      const splitRow = (ln: string): string[] => {
+        let s = ln.trim();
+        if (s.startsWith("|")) s = s.slice(1);
+        if (s.endsWith("|")) s = s.slice(0, -1);
+        return s.split("|").map((c) => c.trim());
+      };
+      const header = splitRow(lines[i]);
+      i += 2; // pula cabeçalho + separador
+      const rows: string[][] = [];
+      while (i < lines.length && lines[i].includes("|") && lines[i].trim() !== "") {
+        rows.push(splitRow(lines[i]));
+        i++;
+      }
+      const id = key++;
+      blocks.push(
+        <div
+          key={`tbl-${id}`}
+          className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0"
+        >
+          <table className="w-full min-w-[480px] border-separate border-spacing-0">
+            <thead>
+              <tr>
+                {header.map((h, hi) => (
+                  <th
+                    key={hi}
+                    className="border-b bg-muted/40 px-3 py-2 text-left font-mono text-[11px] font-bold uppercase tracking-wide text-muted-foreground first:rounded-l-lg last:rounded-r-lg"
+                  >
+                    {renderInline(h, `th${id}-${hi}`)}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r, ri) => (
+                <tr key={ri}>
+                  {header.map((_, ci) => (
+                    <td
+                      key={ci}
+                      className="border-b px-3 py-2.5 align-top text-muted-foreground [&:first-child]:font-medium [&:first-child]:text-foreground"
+                    >
+                      {renderInline(r[ci] ?? "", `td${id}-${ri}-${ci}`)}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>,
+      );
       continue;
     }
 

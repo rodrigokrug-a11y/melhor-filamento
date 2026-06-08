@@ -4,6 +4,8 @@
 // Para adicionar um guia novo: crie outro objeto em GUIAS com um `slug` único.
 // As páginas /guias e /guias/[slug] e o sitemap leem tudo daqui.
 
+import guiasGerados from "./guias-conteudo.json";
+
 export type GuiaMaterial = {
   /** Chave do material. Quando `catalogo` é true e a chave existe em
    *  FILAMENT_MATERIALS, vira link para /filamentos, /melhor e /dica. */
@@ -50,7 +52,8 @@ export type Guia = {
   atualizadoLabel: string; // ex.: "Junho de 2026"
   leituraMin: number;
   intro: string; // markdown
-  materiais: GuiaMaterial[];
+  /** Tabela + cards de material (estilo "tipos de filamento"). Opcional. */
+  materiais?: GuiaMaterial[];
   secoes: GuiaSecao[];
   faq: GuiaFaq[];
 };
@@ -495,7 +498,10 @@ Além do preço do filamento, o custo de uma peça inclui **energia**, **desgast
   ],
 };
 
-export const GUIAS: Guia[] = [guiaFilamentos];
+export const GUIAS: Guia[] = [
+  guiaFilamentos,
+  ...(guiasGerados as unknown as Guia[]),
+];
 
 export function getGuias(): Guia[] {
   return GUIAS;
