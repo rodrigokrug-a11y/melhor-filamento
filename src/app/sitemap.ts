@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 
 import { getAllBrandSlugs, getAllProductSlugs } from "@/lib/catalog";
 import { FILAMENT_MATERIALS } from "@/lib/catalog-types";
+import { getGuiaSlugs } from "@/lib/guias";
 import { siteUrl } from "@/lib/seo";
 import { TOOLS } from "@/lib/tools";
 
@@ -64,6 +65,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: `${base}/dicas`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    {
+      url: `${base}/guias`,
       lastModified: now,
       changeFrequency: "weekly",
       priority: 0.7,
@@ -133,6 +140,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
+  const guiaRoutes: MetadataRoute.Sitemap = getGuiaSlugs().map((slug) => ({
+    url: `${base}/guias/${slug}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
+
   const productRoutes: MetadataRoute.Sitemap = slugs.map((slug) => ({
     url: `${base}/produto/${slug}`,
     lastModified: now,
@@ -152,6 +166,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...toolRoutes,
     ...materialRoutes,
     ...melhorRoutes,
+    ...guiaRoutes,
     ...productRoutes,
     ...brandRoutes,
   ];

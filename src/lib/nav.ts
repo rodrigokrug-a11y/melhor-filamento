@@ -1,4 +1,5 @@
 import {
+  BookOpen,
   Bot,
   Boxes,
   Flame,
@@ -104,6 +105,7 @@ export const MAIN_NAV: NavEntry[] = [
     label: "Comunidade",
     href: "/dicas",
     items: [
+      { href: "/guias", label: "Guias", icon: BookOpen },
       { href: "/dicas", label: "Dicas e tutoriais", icon: Lightbulb },
       {
         href: "/receitas",

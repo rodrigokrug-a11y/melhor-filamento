@@ -37,6 +37,27 @@ export default async function DicasPage() {
         subtitle="Guias práticos e dicas da comunidade para imprimir cada material com sucesso. Escolha um filamento para ver o tutorial e as dicas."
       />
 
+      <Link
+        href="/guias/tipos-de-filamento"
+        className="group mb-4 flex items-center gap-3 overflow-hidden rounded-2xl border border-brand/25 bg-brand-soft p-4 transition-all hover:-translate-y-0.5 hover:shadow-md sm:p-5"
+      >
+        <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-brand text-white">
+          <BookOpen className="size-5" />
+        </span>
+        <div className="min-w-0">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-teal">
+            Guia completo
+          </p>
+          <p className="font-display text-base font-semibold sm:text-lg">
+            Tipos de filamento para impressão 3D
+          </p>
+          <p className="text-sm text-muted-foreground">
+            PLA, PETG, ABS, ASA, TPU, Nylon e mais — qual usar em cada caso.
+          </p>
+        </div>
+        <ArrowRight className="ml-auto size-5 shrink-0 text-brand transition-transform group-hover:translate-x-0.5" />
+      </Link>
+
       <div className="mb-6 grid gap-3 sm:grid-cols-2">
         <Link
           href="/ferramentas"

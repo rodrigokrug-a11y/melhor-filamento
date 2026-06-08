@@ -1,4 +1,5 @@
 import type { ProductDetail } from "@/lib/catalog-types";
+import type { Guia } from "@/lib/guias";
 
 export function siteUrl(): string {
   return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -57,6 +58,56 @@ export function siteJsonLd(): string {
     ],
   };
   return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
+/**
+ * JSON-LD de um Guia editorial: Article + BreadcrumbList + FAQPage (quando há
+ * perguntas). Ajuda o Google a entender o conteúdo e habilita rich results de
+ * FAQ e breadcrumb. Já serializado e sanitizado contra XSS.
+ */
+export function guiaJsonLd(guia: Guia): string {
+  const base = siteUrl();
+  const url = `${base}/guias/${guia.slug}`;
+
+  const graph: Record<string, unknown>[] = [
+    {
+      "@type": "Article",
+      "@id": `${url}#article`,
+      headline: guia.titulo,
+      description: guia.descricao,
+      inLanguage: "pt-BR",
+      datePublished: guia.atualizadoEm,
+      dateModified: guia.atualizadoEm,
+      mainEntityOfPage: url,
+      author: { "@id": `${base}/#organization` },
+      publisher: { "@id": `${base}/#organization` },
+      image: `${base}/logo.png`,
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Início", item: base },
+        { "@type": "ListItem", position: 2, name: "Guias", item: `${base}/guias` },
+        { "@type": "ListItem", position: 3, name: guia.titulo, item: url },
+      ],
+    },
+  ];
+
+  if (guia.faq.length > 0) {
+    graph.push({
+      "@type": "FAQPage",
+      mainEntity: guia.faq.map((f) => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
+      })),
+    });
+  }
+
+  return JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(
+    /</g,
+    "\\u003c",
+  );
 }
 
 /**
