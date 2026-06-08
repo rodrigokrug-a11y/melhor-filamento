@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, BookOpen, Clock } from "lucide-react";
 
@@ -36,18 +37,28 @@ export default function GuiasPage() {
           <Link
             key={g.slug}
             href={`/guias/${g.slug}`}
-            className="group flex flex-col rounded-2xl border bg-card p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-lg"
+            className="group flex flex-col overflow-hidden rounded-2xl border bg-card shadow-sm transition-all hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-lg"
           >
-            <div className="flex items-start justify-between gap-2">
-              <h2 className="font-display text-lg font-semibold">{g.titulo}</h2>
-              <ArrowRight className="mt-1 size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-brand" />
-            </div>
-            <p className="mt-1 line-clamp-3 text-sm text-muted-foreground">{g.resumo}</p>
-            <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-              <span className="inline-flex items-center gap-1">
-                <Clock className="size-3.5" /> {g.leituraMin} min de leitura
-              </span>
-              <span className="ml-auto">Atualizado em {g.atualizadoLabel.toLowerCase()}</span>
+            <Image
+              src={`/guias/${g.slug}/opengraph-image`}
+              alt=""
+              width={1200}
+              height={630}
+              unoptimized
+              className="aspect-[1200/630] w-full border-b object-cover"
+            />
+            <div className="flex flex-1 flex-col p-5">
+              <div className="flex items-start justify-between gap-2">
+                <h2 className="font-display text-lg font-semibold">{g.titulo}</h2>
+                <ArrowRight className="mt-1 size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-brand" />
+              </div>
+              <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{g.resumo}</p>
+              <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                <span className="inline-flex items-center gap-1">
+                  <Clock className="size-3.5" /> {g.leituraMin} min de leitura
+                </span>
+                <span className="ml-auto">Atualizado em {g.atualizadoLabel.toLowerCase()}</span>
+              </div>
             </div>
           </Link>
         ))}

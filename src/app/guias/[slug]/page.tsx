@@ -1,4 +1,6 @@
+import { Fragment } from "react";
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, Boxes, Clock, Flame, Lightbulb, RefreshCw, Wrench } from "lucide-react";
@@ -7,6 +9,7 @@ import { GuiaMaterialCard } from "@/components/guia-material-card";
 import { GuiaTabela } from "@/components/guia-tabela";
 import { Markdown } from "@/components/markdown";
 import { getGuia, getGuiaSlugs } from "@/lib/guias";
+import { guiaDestaque } from "@/lib/guias-visual";
 import { guiaJsonLd } from "@/lib/seo";
 
 export function generateStaticParams() {
@@ -73,6 +76,16 @@ export default async function GuiaPage({ params }: { params: Promise<{ slug: str
         </Link>{" "}
         / <span className="text-foreground">{guia.titulo}</span>
       </nav>
+
+      <Image
+        src={`/guias/${guia.slug}/opengraph-image`}
+        alt=""
+        width={1200}
+        height={630}
+        unoptimized
+        priority
+        className="mb-6 h-auto w-full rounded-2xl border"
+      />
 
       <header>
         <p className="mb-2 font-mono text-xs font-bold uppercase tracking-[0.18em] text-teal">
@@ -148,15 +161,27 @@ export default async function GuiaPage({ params }: { params: Promise<{ slug: str
         </>
       ) : null}
 
-      {/* Seções editoriais */}
-      {guia.secoes.map((s) => (
-        <section key={s.id} id={s.id} className="mt-10 scroll-mt-24">
-          <h2 className="mb-3 font-display text-2xl font-bold tracking-tight">{s.titulo}</h2>
-          <Markdown
-            content={s.corpo}
-            className="space-y-3 text-[15px] leading-relaxed text-muted-foreground [&_strong]:text-foreground"
-          />
-        </section>
+      {/* Seções editoriais (com um banner ilustrado no meio) */}
+      {guia.secoes.map((s, idx) => (
+        <Fragment key={s.id}>
+          <section id={s.id} className="mt-10 scroll-mt-24">
+            <h2 className="mb-3 font-display text-2xl font-bold tracking-tight">{s.titulo}</h2>
+            <Markdown
+              content={s.corpo}
+              className="space-y-3 text-[15px] leading-relaxed text-muted-foreground [&_strong]:text-foreground"
+            />
+          </section>
+          {idx === 1 ? (
+            <Image
+              src={`/guias/${guia.slug}/imagem`}
+              alt={guiaDestaque(guia.slug)}
+              width={1200}
+              height={420}
+              unoptimized
+              className="mt-10 h-auto w-full rounded-2xl"
+            />
+          ) : null}
+        </Fragment>
       ))}
 
       {/* FAQ */}
