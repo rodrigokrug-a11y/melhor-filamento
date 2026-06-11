@@ -79,7 +79,7 @@ export default async function HomePage() {
       />
       <TrustBar />
 
-      <div className="mx-auto max-w-6xl space-y-16 px-4 py-14">
+      <div className="mx-auto max-w-6xl space-y-10 px-4 py-10 sm:space-y-16 sm:py-14">
         <Reveal>
           <FeatureBlocks />
         </Reveal>
@@ -617,8 +617,8 @@ function DicasTeaser({
 
 function CtaBand() {
   return (
-    <section className="mx-auto max-w-6xl px-4 pb-16">
-      <div className="grad-dark relative overflow-hidden rounded-3xl px-6 py-12 text-center text-white sm:px-12">
+    <section className="mx-auto max-w-6xl px-4 pb-12 sm:pb-16">
+      <div className="grad-dark relative overflow-hidden rounded-3xl px-6 py-10 text-center text-white sm:px-12 sm:py-12">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 opacity-20 [background-image:radial-gradient(white_1px,transparent_1px)] [background-size:20px_20px]"

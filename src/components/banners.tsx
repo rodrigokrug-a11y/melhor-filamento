@@ -88,11 +88,11 @@ export async function PageBanner({
       ) : null}
       {/* Escurece só a esquerda: texto legível, a imagem à direita fica visível. */}
       {b.imageUrl ? (
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/45 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/20 sm:to-transparent" />
       ) : null}
       <div
-        className={`relative flex min-h-[170px] flex-col justify-center gap-2 p-6 ${
-          b.imageUrl ? "max-w-[62%] sm:max-w-[55%]" : "max-w-2xl"
+        className={`relative flex min-h-[170px] flex-col justify-center gap-2 p-5 sm:p-6 ${
+          b.imageUrl ? "max-w-full sm:max-w-[55%]" : "max-w-2xl"
         }`}
       >
         <Badge

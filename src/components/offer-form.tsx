@@ -106,7 +106,7 @@ export function OfferForm({
             ref={urlRef}
             required
             placeholder="https://loja.com.br/produto/..."
-            className={inputClass}
+            className={`${inputClass} min-w-0`}
           />
           <Button
             type="button"

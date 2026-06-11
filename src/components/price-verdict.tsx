@@ -111,7 +111,7 @@ export function PriceVerdict({
         />
       </div>
 
-      <div className="mt-1.5 flex justify-between font-mono text-[11px] text-muted-foreground tnum">
+      <div className="mt-1.5 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 font-mono text-[11px] text-muted-foreground tnum">
         <span>menor {formatBRL(min)}</span>
         <span>típico {formatBRL(typical)}</span>
         <span>maior {formatBRL(max)}</span>

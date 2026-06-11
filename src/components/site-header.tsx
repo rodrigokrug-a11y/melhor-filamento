@@ -16,10 +16,10 @@ export function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
         <Link
           href="/"
-          className="flex items-center gap-2 transition-opacity hover:opacity-90"
+          className="flex min-w-0 items-center gap-2 transition-opacity hover:opacity-90"
         >
-          <Logo className="size-8" />
-          <span className="font-display text-lg font-bold tracking-tight">
+          <Logo className="size-8 shrink-0" />
+          <span className="hidden truncate font-display text-lg font-bold tracking-tight sm:inline-block">
             Melhor<span className="text-brand">Filamento</span>
           </span>
         </Link>
