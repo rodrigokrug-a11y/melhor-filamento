@@ -3,10 +3,14 @@
 import { MapPin } from "lucide-react";
 
 import { useRegion } from "@/components/use-region";
+import { CEP_ENABLED } from "@/lib/region";
 import { REGION_LABELS } from "@/lib/shipping";
 
 export function RegionNotice() {
   const { region } = useRegion();
+
+  // Esquema de CEP/frete desligado: nada de aviso de frete.
+  if (!CEP_ENABLED) return null;
 
   const place =
     region &&

@@ -9,7 +9,7 @@ import { getCatalog, parseCatalogFilters } from "@/lib/catalog";
 import { catalogJsonLd } from "@/lib/seo";
 
 const description =
-  "Compare preços de filamentos para impressão 3D (PLA, PETG, ABS, TPU, ASA) entre várias lojas do Brasil. Ordene pelo custo total com frete para o seu CEP.";
+  "Compare preços de filamentos para impressão 3D (PLA, PETG, ABS, TPU, ASA) entre várias lojas do Brasil e ache o mais barato — por preço e por quilo.";
 
 export const metadata: Metadata = {
   title: "Filamentos 3D: comparar preços",
@@ -55,16 +55,16 @@ export default async function FilamentosPage({
         icon={Boxes}
         eyebrow="Catálogo"
         title="Filamentos para impressão 3D"
-        subtitle="Compare preços de filamentos 3D entre lojas. Informe seu CEP para ranquear pelo custo total com frete."
+        subtitle="Compare preços de filamentos 3D entre várias lojas do Brasil e ache o mais barato — por preço e por quilo."
       />
         <p className="mb-6 max-w-3xl text-sm leading-relaxed text-muted-foreground">
           No Melhor Filamento você compara o preço de filamentos para impressão
           3D — <strong>PLA, PETG, ABS, ASA, TPU</strong> e mais — entre várias
-          lojas do Brasil em um só lugar. Informe seu CEP e ordenamos pelo{" "}
-          <strong>custo total</strong> (preço + frete), não só pela etiqueta.
-          Veja o <strong>preço por quilo</strong>, o histórico de variação e as
-          melhores ofertas do dia para escolher o filamento certo sem pagar a
-          mais.
+          lojas do Brasil em um só lugar. Ordenamos pelo{" "}
+          <strong>menor preço</strong> e normalizamos por{" "}
+          <strong>preço por quilo</strong>, para você comparar de forma justa.
+          Veja também o histórico de variação e as melhores ofertas do dia para
+          escolher o filamento certo sem pagar a mais.
         </p>
         <CatalogView basePath="/filamentos" result={result} filters={filters} />
       </div>

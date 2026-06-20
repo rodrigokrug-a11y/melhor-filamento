@@ -85,7 +85,7 @@ export default function Image() {
               marginTop: 26,
             }}
           >
-            Compare ofertas de várias lojas com frete para o seu CEP.
+            Compare o preço de várias lojas e compre pelo melhor preço.
           </div>
           <div
             style={{

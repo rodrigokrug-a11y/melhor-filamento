@@ -3,6 +3,7 @@ import { Plus, Search } from "lucide-react";
 
 import { AuthNav } from "@/components/auth-nav";
 import { CepSelector } from "@/components/cep-selector";
+import { CEP_ENABLED } from "@/lib/region";
 import { FavoritesNavLink } from "@/components/favorites-nav-link";
 import { Logo } from "@/components/logo";
 import { MainNav } from "@/components/main-nav";
@@ -16,10 +17,10 @@ export function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
         <Link
           href="/"
-          className="flex min-w-0 items-center gap-2 transition-opacity hover:opacity-90"
+          className="flex shrink-0 items-center gap-2 transition-opacity hover:opacity-90"
         >
           <Logo className="size-8 shrink-0" />
-          <span className="hidden truncate font-display text-lg font-bold tracking-tight sm:inline-block">
+          <span className="hidden whitespace-nowrap font-display text-lg font-bold tracking-tight sm:inline-block">
             Melhor<span className="text-brand">Filamento</span>
           </span>
         </Link>
@@ -41,7 +42,7 @@ export function SiteHeader() {
             <Search className="size-5" />
           </Link>
           <FavoritesNavLink />
-          <CepSelector />
+          {CEP_ENABLED ? <CepSelector /> : null}
           <ThemeToggle />
           <div className="hidden sm:block">
             <AuthNav />

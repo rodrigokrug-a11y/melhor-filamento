@@ -44,8 +44,8 @@ const PORQUE = [
   },
   {
     Icon: BarChart3,
-    title: "Custo total por região",
-    text: "O usuário vê preço + frete pro CEP dele. Sua loja compete onde realmente importa pra fechar a venda.",
+    title: "Comparação justa por preço",
+    text: "O usuário vê o preço real e o preço por kg, lado a lado. Sua loja compete onde realmente importa pra fechar a venda.",
   },
 ];
 

@@ -36,7 +36,7 @@ const themeScript = `(function(){try{var t=localStorage.getItem('theme');var d=t
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 const siteDescription =
-  "Compare preços de filamentos e resinas para impressão 3D no Brasil, com frete estimado para o seu CEP. Encontre a oferta mais barata por região.";
+  "Compare preços de filamentos e resinas para impressão 3D no Brasil entre várias lojas. Encontre a oferta mais barata por preço e por quilo.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

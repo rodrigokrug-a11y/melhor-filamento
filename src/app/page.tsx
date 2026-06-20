@@ -13,6 +13,7 @@ import {
   Scale,
   Search,
   Sparkles,
+  Tag,
   Trophy,
   Truck,
   Wrench,
@@ -23,6 +24,7 @@ import { BrandLogo } from "@/components/brand-logo";
 import { CatStrip } from "@/components/cat-strip";
 import { ProductCard } from "@/components/product-card";
 import { ProductImage } from "@/components/product-image";
+import { HeroCarousel } from "@/components/hero-carousel";
 import { Reveal } from "@/components/reveal";
 import { SearchBox } from "@/components/search-box";
 import { Stars } from "@/components/stars";
@@ -65,6 +67,11 @@ export default async function HomePage() {
   const featuredProduct = heroAd?.productId
     ? await getProductCardById(heroAd.productId)
     : null;
+  // Ofertas que rolam no hero: mistura os filamentos e resinas mais baratos.
+  const heroDeals = [
+    ...filamentos.products.slice(0, 4),
+    ...resinas.products.slice(0, 2),
+  ];
 
   return (
     <>
@@ -72,11 +79,7 @@ export default async function HomePage() {
         <PageBanner placement="HOME" />
       </div>
       <CatStrip />
-      <Hero
-        cheapest={filamentos.products[0]}
-        ad={heroAd}
-        featured={featuredProduct}
-      />
+      <Hero deals={heroDeals} ad={heroAd} featured={featuredProduct} />
       <TrustBar />
 
       <div className="mx-auto max-w-6xl space-y-10 px-4 py-10 sm:space-y-16 sm:py-14">
@@ -123,18 +126,14 @@ export default async function HomePage() {
 }
 
 function Hero({
-  cheapest,
+  deals,
   ad,
   featured,
 }: {
-  cheapest?: ProductListItem;
+  deals?: ProductListItem[];
   ad?: ActiveBanner | null;
   featured?: ProductListItem | null;
 }) {
-  const perKg =
-    cheapest && cheapest.netWeightG > 0
-      ? cheapest.bestPrice / (cheapest.netWeightG / 1000)
-      : null;
   return (
     <section className="relative overflow-hidden border-b">
       <div
@@ -168,8 +167,8 @@ function Hero({
             do Brasil
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-pretty text-muted-foreground sm:text-lg lg:mx-0">
-            Compare ofertas de várias lojas com o frete pro seu CEP — e use as
-            ferramentas do site (inclusive IA) pra imprimir com mais sucesso.
+            Compare o preço de várias lojas num lugar só — e use as ferramentas
+            do site (inclusive IA) pra imprimir com mais sucesso.
           </p>
           <div className="mx-auto mt-6 max-w-xl text-left lg:mx-0">
             <SearchBox
@@ -195,8 +194,8 @@ function Hero({
             ))}
           </div>
           <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-muted-foreground lg:justify-start">
-            <MapPin className="size-3.5 text-brand" />
-            Informe seu CEP no topo para ranquear pelo custo total com frete.
+            <Scale className="size-3.5 text-brand" />
+            Preços de várias lojas comparados por valor e por preço/kg.
           </p>
         </div>
 
@@ -206,30 +205,14 @@ function Hero({
             <HeroAd banner={ad} />
           ) : featured ? (
             <HeroProduct product={featured} />
+          ) : deals && deals.length > 0 ? (
+            <HeroCarousel products={deals} />
           ) : (
             <div className="grad-mesh relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-[28px] shadow-lg">
-            <div
-              aria-hidden
-              className="size-[62%] rounded-full [background:repeating-radial-gradient(circle,rgba(255,255,255,0.08)_0_6px,transparent_6px_12px)]"
-            />
-            {cheapest ? (
-              <Link
-                href={`/produto/${cheapest.slug}`}
-                className="absolute right-5 top-5 rounded-2xl bg-card p-3 shadow-lg transition-transform hover:-translate-y-0.5"
-              >
-                <p className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground">
-                  Melhor preço
-                </p>
-                <p className="font-display text-xl font-bold tnum">
-                  {formatBRL(cheapest.bestPrice)}
-                </p>
-                {perKg != null ? (
-                  <p className="font-mono text-[10px] font-bold text-accent-text">
-                    {formatBRL(perKg)}/kg
-                  </p>
-                ) : null}
-              </Link>
-            ) : null}
+              <div
+                aria-hidden
+                className="size-[62%] rounded-full [background:repeating-radial-gradient(circle,rgba(255,255,255,0.08)_0_6px,transparent_6px_12px)]"
+              />
               <div className="absolute bottom-5 left-5">
                 <Badge variant="best">★ Melhor compra</Badge>
               </div>
@@ -288,9 +271,9 @@ function HeroProduct({ product }: { product: ProductListItem }) {
 
 function TrustBar() {
   const items = [
-    { icon: <Scale />, text: "Compare preço por kg e custo total" },
-    { icon: <Truck />, text: "Frete estimado pro seu CEP" },
-    { icon: <BadgeCheck />, text: "Ofertas de várias lojas do Brasil" },
+    { icon: <Scale />, text: "Compare preço e preço por kg" },
+    { icon: <Tag />, text: "Ofertas e cupons de várias lojas" },
+    { icon: <BadgeCheck />, text: "Lojas do Brasil" },
     { icon: <MapPin />, text: "100% nacional" },
   ];
   return (
@@ -318,9 +301,9 @@ function HowItWorks() {
       desc: "Filtre por material e marca e ache o filamento ou resina ideal.",
     },
     {
-      icon: <MapPin />,
-      title: "Informe seu CEP",
-      desc: "Calculamos o frete por região e ordenamos pelo custo total.",
+      icon: <Scale />,
+      title: "Compare os preços",
+      desc: "Veja o valor de cada loja e o preço por kg, lado a lado.",
     },
     {
       icon: <Truck />,
@@ -415,8 +398,8 @@ function FeatureBlocks() {
             Compare filamentos e resinas lado a lado
           </h3>
           <p className="mt-1.5 flex-1 text-sm text-white/90">
-            Ofertas de várias lojas num lugar só, já com o frete estimado pro
-            seu CEP. Pague menos no total.
+            Ofertas de várias lojas num lugar só, com preço por kg e cupons.
+            Pague menos.
           </p>
           <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold">
             Comparar agora
@@ -629,7 +612,7 @@ function CtaBand() {
             Pronto para pagar menos na sua próxima impressão?
           </h2>
           <p className="mx-auto mt-2 max-w-lg text-[#bcd3d0]">
-            Compare preços com frete por CEP e veja as ofertas de lojas
+            Compare os preços de várias lojas e veja as ofertas de lojas
             verificadas.
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">

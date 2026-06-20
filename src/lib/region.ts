@@ -2,6 +2,14 @@ import { type Region, deriveRegion } from "@/lib/shipping";
 
 export const REGION_COOKIE = "mf_region";
 
+/**
+ * Liga/desliga o esquema de CEP/frete na interface. DESLIGADO enquanto a
+ * plataforma não tem dados confiáveis de frete: o comparador passa a ranquear
+ * por MENOR PREÇO e o seletor de CEP, avisos e rótulos de frete somem. Toda a
+ * lógica de frete continua no código — basta voltar para `true` para religar.
+ */
+export const CEP_ENABLED = false;
+
 export type RegionData = {
   uf: string;
   region: Region;

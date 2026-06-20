@@ -71,7 +71,7 @@ export async function generateMetadata({
   const cfg = resolve(material);
   if (!cfg) return {};
   const title = `Melhor ${cfg.label} do Brasil: preços e ranking ${YEAR}`;
-  const description = `Ranking das ofertas mais baratas de ${cfg.label} no Brasil${cfg.unit === "kg" ? ", por preço/kg" : ""} — preço real de várias lojas, com frete estimado para o seu CEP.`;
+  const description = `Ranking das ofertas mais baratas de ${cfg.label} no Brasil${cfg.unit === "kg" ? ", por preço/kg" : ""} — preço real de várias lojas brasileiras.`;
   // canonical sempre em minúsculas: /melhor/PLA e /melhor/pla resolvem 200,
   // mas só a forma minúscula (do generateStaticParams) deve ser indexada.
   const canon = `/melhor/${material.toLowerCase()}`;
@@ -114,7 +114,7 @@ export default async function MelhorPage({ params }: { params: Promise<{ materia
       : []),
     {
       q: `Onde comprar ${cfg.label} barato no Brasil?`,
-      a: `Compare aqui o preço de ${cfg.label} de várias lojas brasileiras${cfg.unit === "kg" ? ", já normalizado por preço/kg" : ""}, com o frete estimado para o seu CEP — e clique direto na oferta mais barata.`,
+      a: `Compare aqui o preço de ${cfg.label} de várias lojas brasileiras${cfg.unit === "kg" ? ", já normalizado por preço/kg" : ""} — e clique direto na oferta mais barata.`,
     },
   ];
 
@@ -164,7 +164,7 @@ export default async function MelhorPage({ params }: { params: Promise<{ materia
         {info ? `${info.description} ` : ""}
         Abaixo está o ranking das ofertas mais baratas de {cfg.label}
         {cfg.unit === "kg" ? ", ordenado por preço por quilo" : ", por preço"} — com o preço real de
-        várias lojas e o frete estimado para o seu CEP.
+        várias lojas brasileiras.
         {cheapest ? ` Hoje, o mais barato sai por ${unitPrice(cheapest)}.` : ""}
       </p>
 
@@ -235,8 +235,7 @@ export default async function MelhorPage({ params }: { params: Promise<{ materia
         )}
         <p className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
           <Truck className="size-3.5 text-teal" />
-          Informe seu CEP no topo do site para ordenar pelo custo total com frete. Ranking por preço
-          real — atualizado automaticamente.
+          Ranking por preço real de várias lojas — atualizado automaticamente.
         </p>
       </section>
 

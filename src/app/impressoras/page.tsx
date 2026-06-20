@@ -9,7 +9,7 @@ import { getCatalog, parseCatalogFilters } from "@/lib/catalog";
 import { catalogJsonLd } from "@/lib/seo";
 
 const description =
-  "Compare preços de impressoras 3D (FDM e resina) entre lojas do Brasil — por marca, tecnologia e custo total com frete para o seu CEP.";
+  "Compare preços de impressoras 3D (FDM e resina) entre várias lojas do Brasil — por marca, tecnologia e preço.";
 
 export const metadata: Metadata = {
   title: "Impressoras 3D: comparar preços",
@@ -53,14 +53,14 @@ export default async function ImpressorasPage({
           icon={Printer}
           eyebrow="Catálogo"
           title="Impressoras 3D"
-          subtitle="Compare impressoras 3D (FDM e resina) entre lojas. Informe seu CEP para ranquear pelo custo total com frete."
+          subtitle="Compare impressoras 3D (FDM e resina) entre várias lojas do Brasil e ache a mais barata."
         />
         <p className="mb-6 max-w-3xl text-sm leading-relaxed text-muted-foreground">
           Compare preços de <strong>impressoras 3D</strong> no Brasil — modelos{" "}
           <strong>FDM</strong> (filamento) e de <strong>resina</strong> (LCD/MSLA)
-          — por marca, tecnologia e tamanho de mesa. Informe seu CEP e ordenamos
-          pelo <strong>custo total</strong> (preço + frete) para você achar a
-          impressora certa para começar ou evoluir, sem pagar a mais.
+          — por marca, tecnologia e tamanho de mesa. Ordenamos pelo{" "}
+          <strong>menor preço</strong> para você achar a impressora certa para
+          começar ou evoluir, sem pagar a mais.
         </p>
         <CatalogView basePath="/impressoras" result={result} filters={filters} />
       </div>

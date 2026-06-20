@@ -15,6 +15,7 @@ import {
   Trophy,
 } from "lucide-react";
 
+import { CEP_ENABLED } from "@/lib/region";
 import { getTool } from "@/lib/tools";
 
 // Navegação principal — header (desktop, com dropdowns/mega-menu) e menu mobile.
@@ -59,7 +60,10 @@ export const MAIN_NAV: NavEntry[] = [
       { href: "/impressoras", label: "Impressoras", icon: Printer },
       { href: "/marcas", label: "Marcas", icon: Store },
       { href: "/ofertas", label: "Ofertas do dia", icon: Flame },
-      { href: "/perto", label: "Lojas perto de você", icon: MapPin },
+      // /perto depende de CEP; só aparece com o esquema de CEP ligado.
+      ...(CEP_ENABLED
+        ? [{ href: "/perto", label: "Lojas perto de você", icon: MapPin }]
+        : []),
     ],
   },
   { href: "/comparar", label: "Comparar" },

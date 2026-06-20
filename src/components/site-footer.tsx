@@ -79,8 +79,8 @@ export function SiteFooter() {
               Compare. Descubra. <span className="text-[var(--green-400)]">Compre melhor.</span>
             </p>
             <p className="mt-4 text-sm text-[#9fc0bc]">
-              O melhor custo em filamentos, resinas e impressoras 3D no Brasil — com frete estimado
-              para o seu CEP.
+              O melhor preço em filamentos, resinas e impressoras 3D no Brasil —
+              comparado entre várias lojas.
             </p>
           </div>
 

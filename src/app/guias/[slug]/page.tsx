@@ -201,8 +201,8 @@ export default async function GuiaPage({ params }: { params: Promise<{ slug: str
       <section className="mt-12 rounded-2xl bg-brand-soft p-6">
         <h2 className="font-display text-xl font-semibold">Pronto para comprar?</h2>
         <p className="mt-1 max-w-xl text-sm text-muted-foreground">
-          Agora que você sabe qual filamento usar, compare o preço real de várias lojas — já por
-          preço/kg e com o frete estimado para o seu CEP.
+          Agora que você sabe qual filamento usar, compare o preço real de várias
+          lojas — já normalizado por preço/kg.
         </p>
         <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
           {RELACIONADOS.map(({ href, label, Icon }) => (
