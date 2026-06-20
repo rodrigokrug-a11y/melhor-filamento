@@ -10,12 +10,12 @@ import { getBrandsOverview } from "@/lib/catalog";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Marcas",
+  title: "Marcas de filamento e resina 3D",
   description:
-    "Conheça as marcas de filamentos e resinas para impressão 3D e compare preços entre lojas.",
+    "Conheça as marcas de filamentos e resinas para impressão 3D e compare preços entre lojas do Brasil.",
   alternates: { canonical: "/marcas" },
   openGraph: {
-    title: "Marcas",
+    title: "Marcas de filamento e resina 3D",
     description:
       "Conheça as marcas de filamentos e resinas 3D e compare preços entre lojas.",
     url: "/marcas",

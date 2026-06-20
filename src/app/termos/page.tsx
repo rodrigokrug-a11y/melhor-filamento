@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Termos de Uso",
   description:
     "Regras de uso do Melhor Filamento — comparador de preços de filamentos e resinas 3D.",
+  alternates: { canonical: "/termos" },
 };
 
 const UPDATED = "31 de maio de 2026";

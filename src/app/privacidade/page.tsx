@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Política de Privacidade",
   description:
     "Como o Melhor Filamento coleta, usa e protege seus dados pessoais, conforme a LGPD.",
+  alternates: { canonical: "/privacidade" },
 };
 
 const UPDATED = "31 de maio de 2026";

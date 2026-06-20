@@ -12,6 +12,7 @@ import {
   materialLabel,
 } from "@/lib/catalog-types";
 import { getTipsByMaterial } from "@/lib/tips";
+import { breadcrumbJsonLd, siteUrl } from "@/lib/seo";
 
 // ISR: páginas de material revalidam a cada hora.
 export const revalidate = 3600;
@@ -61,9 +62,42 @@ export default async function DicaPage({ params }: { params: Params }) {
   const info = MATERIAL_INFO[material];
   const tips = await getTipsByMaterial(material);
 
+  const base = siteUrl();
+  const path = `/dica/${material}`;
+  const articleJsonLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: `Como imprimir ${label}: configurações e dicas`,
+    description: info
+      ? `${info.description} Bico ${info.nozzle}, mesa ${info.bed}.`
+      : `Configurações e dicas de impressão 3D para ${label}.`,
+    about: `Impressão 3D com ${label}`,
+    inLanguage: "pt-BR",
+    mainEntityOfPage: `${base}${path}`,
+    publisher: {
+      "@type": "Organization",
+      name: "Melhor Filamento",
+      url: base,
+    },
+  }).replace(/</g, "\\u003c");
+
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
       <PageBanner placement="DICAS" />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: articleJsonLd }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: breadcrumbJsonLd([
+            { name: "Início", path: "/" },
+            { name: "Dicas e tutoriais", path: "/dicas" },
+            { name: label, path },
+          ]),
+        }}
+      />
       <Link
         href="/dicas"
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"

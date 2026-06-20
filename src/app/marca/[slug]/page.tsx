@@ -19,7 +19,7 @@ import { ReviewList } from "@/components/review-list";
 import { Badge } from "@/components/ui/badge";
 import { getAllBrandSlugs, getBrandWithProducts } from "@/lib/catalog";
 import { getBrandReviews } from "@/lib/reviews";
-import { siteUrl } from "@/lib/seo";
+import { breadcrumbJsonLd, siteUrl } from "@/lib/seo";
 
 export const revalidate = 3600;
 
@@ -41,11 +41,12 @@ export async function generateMetadata({
 
   const description = `Veja os produtos da marca ${brand.name} e compare preços entre lojas do Brasil.`;
   const path = `/marca/${slug}`;
+  const title = `${brand.name} — filamentos e resinas 3D: preços`;
   return {
-    title: brand.name,
+    title,
     description,
     alternates: { canonical: path },
-    openGraph: { title: brand.name, description, url: path, type: "website" },
+    openGraph: { title, description, url: path, type: "website" },
   };
 }
 
@@ -65,13 +66,22 @@ export default async function MarcaPage({ params }: { params: Params }) {
       profile.website ||
       profile.foundedYear,
   );
-  const jsonLd = {
+  const jsonLd: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "Brand",
     name: brand.name,
     url: `${siteUrl()}/marca/${brand.slug}`,
     ...(brand.logoUrl ? { logo: brand.logoUrl } : {}),
   };
+  if (reviewData.summary.average != null && reviewData.summary.count > 0) {
+    jsonLd.aggregateRating = {
+      "@type": "AggregateRating",
+      ratingValue: reviewData.summary.average.toFixed(1),
+      reviewCount: reviewData.summary.count,
+      bestRating: 5,
+      worstRating: 1,
+    };
+  }
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
@@ -80,6 +90,16 @@ export default async function MarcaPage({ params }: { params: Params }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: breadcrumbJsonLd([
+            { name: "Início", path: "/" },
+            { name: "Marcas", path: "/marcas" },
+            { name: brand.name, path: `/marca/${brand.slug}` },
+          ]),
         }}
       />
       <Link

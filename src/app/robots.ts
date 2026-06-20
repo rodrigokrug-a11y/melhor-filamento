@@ -15,6 +15,13 @@ export default function robots(): MetadataRoute.Robots {
         "/entrar",
         "/go/",
         "/api/",
+        // Parâmetros de filtro/ordenação secundários: evitam crawl-trap de
+        // combinações de facetas (as listagens já canonicalizam p/ a URL limpa).
+        "/*sort=",
+        "/*cor=",
+        "/*tech=",
+        "/*faixa=",
+        "/*marca=",
       ],
     },
     sitemap: `${base}/sitemap.xml`,

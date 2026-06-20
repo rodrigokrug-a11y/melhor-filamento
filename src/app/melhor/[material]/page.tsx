@@ -72,11 +72,14 @@ export async function generateMetadata({
   if (!cfg) return {};
   const title = `Melhor ${cfg.label} do Brasil: preços e ranking ${YEAR}`;
   const description = `Ranking das ofertas mais baratas de ${cfg.label} no Brasil${cfg.unit === "kg" ? ", por preço/kg" : ""} — preço real de várias lojas, com frete estimado para o seu CEP.`;
+  // canonical sempre em minúsculas: /melhor/PLA e /melhor/pla resolvem 200,
+  // mas só a forma minúscula (do generateStaticParams) deve ser indexada.
+  const canon = `/melhor/${material.toLowerCase()}`;
   return {
     title,
     description,
-    alternates: { canonical: `/melhor/${material}` },
-    openGraph: { title, description, url: `/melhor/${material}`, type: "website" },
+    alternates: { canonical: canon },
+    openGraph: { title, description, url: canon, type: "website" },
   };
 }
 

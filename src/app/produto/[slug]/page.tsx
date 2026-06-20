@@ -21,7 +21,7 @@ import {
   getProductDetail,
 } from "@/lib/catalog";
 import { getProductReviews } from "@/lib/reviews";
-import { productJsonLd } from "@/lib/seo";
+import { breadcrumbJsonLd, productJsonLd } from "@/lib/seo";
 import { formatBRL } from "@/lib/utils";
 
 // ISR: páginas de produto revalidam a cada hora.
@@ -91,7 +91,18 @@ export default async function ProdutoPage({ params }: { params: Params }) {
       <PageBanner placement="PRODUTO" />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: productJsonLd(product) }}
+        dangerouslySetInnerHTML={{ __html: productJsonLd(product, reviewData.summary) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: breadcrumbJsonLd([
+            { name: "Início", path: "/" },
+            { name: kindLabel, path: kindHref },
+            { name: product.brandName, path: `/marca/${product.brandSlug}` },
+            { name: product.name, path: `/produto/${product.slug}` },
+          ]),
+        }}
       />
       <Link
         href={kindHref}
@@ -105,7 +116,7 @@ export default async function ProdutoPage({ params }: { params: Params }) {
         <div className="relative aspect-square overflow-hidden rounded-2xl border">
           <ProductImage
             src={product.imageUrl}
-            alt={product.name}
+            alt={`${product.name} — ${badgeLabel} ${product.brandName} para impressão 3D`}
             sizes="(max-width: 768px) 100vw, 40vw"
             className="object-cover"
             fallback={

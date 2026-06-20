@@ -16,11 +16,24 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
     ],
   },
   {
-    title: "Ferramentas",
+    title: "Mais baratos",
     links: [
+      { href: "/melhor/pla", label: "Melhor PLA" },
+      { href: "/melhor/petg", label: "Melhor PETG" },
+      { href: "/melhor/abs", label: "Melhor ABS" },
+      { href: "/melhor/tpu", label: "Melhor TPU" },
+      { href: "/melhor/asa", label: "Melhor ASA" },
+      { href: "/melhor/resina", label: "Melhor resina" },
+    ],
+  },
+  {
+    title: "Conteúdo",
+    links: [
+      { href: "/guias", label: "Guias" },
+      { href: "/dicas", label: "Dicas e tutoriais" },
       { href: "/ferramentas", label: "Ferramentas" },
-      { href: "/ia", label: "Assistente IA" },
       { href: "/ranking", label: "Ranking" },
+      { href: "/ia", label: "Assistente IA" },
       { href: "/receitas", label: "Configurações de impressão" },
     ],
   },
@@ -53,7 +66,7 @@ export function SiteFooter() {
           <NewsletterSignup />
         </div>
 
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr]">
           <div className="max-w-xs">
             <Link href="/" className="flex items-center gap-2">
               <Logo className="size-8" />

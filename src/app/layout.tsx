@@ -41,8 +41,7 @@ const siteDescription =
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default:
-      "Melhor Filamento — Comparador de preços de filamentos e resinas 3D",
+    default: "Filamento e resina 3D mais barato — Melhor Filamento",
     template: "%s | Melhor Filamento",
   },
   description: siteDescription,
@@ -50,13 +49,12 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     siteName: "Melhor Filamento",
-    title:
-      "Melhor Filamento — Comparador de preços de filamentos e resinas 3D",
+    title: "Filamento e resina 3D mais barato — Melhor Filamento",
     description: siteDescription,
   },
   twitter: {
+    // Sem title fixo: o Next deriva do openGraph.title específico de cada página.
     card: "summary_large_image",
-    title: "Melhor Filamento",
     description: siteDescription,
   },
   robots: {
