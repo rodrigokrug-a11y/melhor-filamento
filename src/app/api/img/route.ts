@@ -10,14 +10,45 @@ const BROWSER_UA =
 
 /** Bloqueia hosts privados/loopback/link-local (proteção SSRF). */
 function isBlockedHost(host: string): boolean {
-  const h = host.toLowerCase();
+  const h = host.toLowerCase().replace(/^\[|\]$/g, "");
   if (h === "localhost" || h.endsWith(".localhost")) return true;
   if (/^(127\.|10\.|0\.|169\.254\.|192\.168\.)/.test(h)) return true;
   if (/^172\.(1[6-9]|2\d|3[01])\./.test(h)) return true;
+  // IPv6 loopback/ULA/link-local + IPv4-mapado (::ffff:127.0.0.1 etc.)
   if (h === "::1" || h.startsWith("fc") || h.startsWith("fd") || h.startsWith("fe80")) {
     return true;
   }
+  if (h.includes("::ffff:") || h.includes("::127.")) return true;
+  // Só dígitos / hex = provável IP decimal/hex (ex.: 2130706433) — bloqueia.
+  if (/^\d+$/.test(h) || /^0x[0-9a-f]+$/.test(h)) return true;
   return false;
+}
+
+/** Fetch seguindo redirects manualmente, revalidando o host a cada hop
+ *  (impede bypass do bloqueio de SSRF via redirect para a rede interna). */
+async function fetchImageSafely(start: URL): Promise<Response | null> {
+  let url = start;
+  for (let hop = 0; hop < 4; hop++) {
+    if (url.protocol !== "https:" && url.protocol !== "http:") return null;
+    if (isBlockedHost(url.hostname)) return null;
+    const res = await fetch(url.toString(), {
+      // Sem Referer de propósito — contorna hotlink protection.
+      headers: {
+        "User-Agent": BROWSER_UA,
+        Accept: "image/avif,image/webp,image/*,*/*",
+      },
+      redirect: "manual",
+      signal: AbortSignal.timeout(12000),
+    });
+    if (res.status >= 300 && res.status < 400) {
+      const loc = res.headers.get("location");
+      if (!loc) return null;
+      url = new URL(loc, url); // resolve relativo + revalida no próximo laço
+      continue;
+    }
+    return res;
+  }
+  return null; // redirects demais
 }
 
 export async function GET(req: NextRequest) {
@@ -38,17 +69,11 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const upstream = await fetch(target.toString(), {
-      // Sem Referer de propósito — contorna hotlink protection.
-      headers: {
-        "User-Agent": BROWSER_UA,
-        Accept: "image/avif,image/webp,image/*,*/*",
-      },
-      redirect: "follow",
-      signal: AbortSignal.timeout(12000),
-    });
-    const ct = upstream.headers.get("content-type") ?? "";
-    if (!upstream.ok || !ct.startsWith("image/")) {
+    const upstream = await fetchImageSafely(target);
+    const ct = (upstream?.headers.get("content-type") ?? "").split(";")[0].trim();
+    // Allowlist de rasters — bloqueia image/svg+xml (pode conter <script> e
+    // executar JS na NOSSA origem) e qualquer content-type não-imagem.
+    if (!upstream || !upstream.ok || !/^image\/(png|jpe?g|webp|gif|avif)$/i.test(ct)) {
       return new Response("not an image", { status: 404 });
     }
     const body = await upstream.arrayBuffer();
@@ -56,6 +81,7 @@ export async function GET(req: NextRequest) {
       status: 200,
       headers: {
         "Content-Type": ct,
+        "X-Content-Type-Options": "nosniff",
         "Cache-Control": "public, max-age=2592000, s-maxage=2592000, immutable",
       },
     });

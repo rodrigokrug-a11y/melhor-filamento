@@ -107,16 +107,40 @@ export default function PrivacidadePage() {
           Quando você pede para ver/entrar em contato sobre uma oferta, seu nome
           e e-mail podem ser enviados à loja anunciante para que ela responda.
           Também usamos provedores que nos ajudam a operar (hospedagem, envio de
-          e-mail e geocodificação via ViaCEP e OpenStreetMap/Nominatim).{" "}
+          e-mail e geocodificação via ViaCEP e OpenStreetMap/Nominatim) e o{" "}
+          <strong>Google (Google Analytics e Google Ads)</strong> para medir o
+          uso do site, atribuir conversões e exibir anúncios (incluindo
+          remarketing). Esses recursos de medição e publicidade só são ativados{" "}
+          <strong>após o seu consentimento</strong> (Consent Mode).{" "}
           <strong>Nós não vendemos seus dados pessoais.</strong>
         </p>
       </Section>
 
       <Section title="6. Cookies e como controlá-los">
         <p>
-          Usamos cookies essenciais e de medição. Você pode bloquear ou apagar
-          cookies nas configurações do seu navegador; nesse caso, recursos como
-          a memória do seu CEP podem deixar de funcionar.
+          Usamos cookies <strong>essenciais</strong> (memória do seu CEP e do
+          consentimento) e, <strong>somente após o seu consentimento</strong>,
+          cookies de medição e publicidade do Google Analytics e Google Ads
+          (como <code>_ga</code>). Você pode recusar pelo banner de cookies do
+          site, bloquear/apagar cookies no navegador, instalar o{" "}
+          <a
+            href="https://tools.google.com/dlpage/gaoptout"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-brand underline"
+          >
+            complemento de opt-out do Google Analytics
+          </a>{" "}
+          e gerenciar anúncios em{" "}
+          <a
+            href="https://myadcenter.google.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-brand underline"
+          >
+            myadcenter.google.com
+          </a>
+          . Bloquear cookies pode desativar recursos como a memória do seu CEP.
         </p>
       </Section>
 

@@ -54,7 +54,16 @@ export async function GET(
     // Falha no tracking não pode impedir o redirecionamento do usuário.
   }
 
-  const target = new URL(offer.url);
+  // Defesa anti-phishing/open-redirect: só redireciona para http(s) válido.
+  let target: URL;
+  try {
+    target = new URL(offer.url);
+  } catch {
+    return NextResponse.redirect(home, 302);
+  }
+  if (target.protocol !== "https:" && target.protocol !== "http:") {
+    return NextResponse.redirect(home, 302);
+  }
   target.searchParams.set("utm_source", "melhorfilamento");
   target.searchParams.set("utm_medium", "lead");
   target.searchParams.set("utm_campaign", offer.seller.slug);

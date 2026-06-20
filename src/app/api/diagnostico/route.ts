@@ -1,6 +1,8 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse, type NextRequest } from "next/server";
 
+import { clientIp } from "@/lib/rate-limit";
+
 export const runtime = "nodejs";
 export const maxDuration = 90;
 
@@ -35,8 +37,7 @@ export async function POST(req: NextRequest) {
   if (!key) {
     return NextResponse.json({ error: "Diagnóstico indisponível." }, { status: 503 });
   }
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const ip = clientIp(req);
   if (rateLimited(ip)) {
     return NextResponse.json(
       { error: "Muitas análises em pouco tempo. Aguarde um instante." },

@@ -1,4 +1,5 @@
 import { isAllowedByRobots } from "@/lib/scrape/robots";
+import { assertPublicUrl } from "@/lib/ssrf";
 
 export const SCRAPER_USER_AGENT =
   "MelhorFilamentoBot/1.0 (+https://melhorfilamento.com.br/bot)";
@@ -57,6 +58,8 @@ export async function fetchPage(
   if (target.protocol !== "http:" && target.protocol !== "https:") {
     throw new Error("Use uma URL http(s).");
   }
+  // SSRF: bloqueia host interno e domínio que resolve para a rede interna.
+  await assertPublicUrl(target);
 
   if (!(await isAllowedByRobots(target, SCRAPER_USER_AGENT))) {
     throw new Error("Acesso bloqueado pelo robots.txt do site.");
@@ -66,15 +69,33 @@ export async function fetchPage(
   const timeout = setTimeout(() => controller.abort(), opts.timeoutMs ?? 12000);
   let res: Response;
   try {
-    res = await fetch(target, {
-      headers: {
-        "user-agent": SCRAPER_USER_AGENT,
-        accept: ACCEPT_HEADER[accept],
-      },
-      redirect: "follow",
-      signal: controller.signal,
-    });
-  } catch {
+    // Segue redirects manualmente, revalidando cada hop (anti-SSRF por redirect).
+    let current = target;
+    for (let hop = 0; ; hop++) {
+      res = await fetch(current, {
+        headers: {
+          "user-agent": SCRAPER_USER_AGENT,
+          accept: ACCEPT_HEADER[accept],
+        },
+        redirect: "manual",
+        signal: controller.signal,
+      });
+      if (res.status >= 300 && res.status < 400) {
+        const loc = res.headers.get("location");
+        if (!loc || hop >= 4) throw new Error("Redirecionamentos demais.");
+        current = new URL(loc, current);
+        await assertPublicUrl(current);
+        continue;
+      }
+      break;
+    }
+  } catch (e) {
+    if (
+      e instanceof Error &&
+      /interna|bloqueado|permitido|Redirecionamentos/.test(e.message)
+    ) {
+      throw e;
+    }
     throw new Error("Não foi possível acessar a página.");
   } finally {
     clearTimeout(timeout);

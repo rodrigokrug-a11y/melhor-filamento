@@ -2,17 +2,20 @@ import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 
 import { prisma } from "@/lib/db";
+import { clientIp, rateLimit, tooMany } from "@/lib/rate-limit";
 
 // Inscrição opt-in na newsletter de ofertas. Captação NÃO-bloqueante: não
 // libera/condiciona nenhum conteúdo, só registra quem quer receber ofertas.
 // Armazenada como Lead (sem oferta) para reaproveitar o painel de leads.
-const Schema = z.object({ email: z.string().trim().toLowerCase() });
+const Schema = z.object({ email: z.string().trim().toLowerCase().max(160) });
 
 function isEmail(value: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
 export async function POST(request: NextRequest) {
+  if (rateLimit(`news:${clientIp(request)}`, 10, 60_000)) return tooMany();
+
   let body: unknown;
   try {
     body = await request.json();

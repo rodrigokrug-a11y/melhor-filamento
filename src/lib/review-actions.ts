@@ -7,16 +7,17 @@ import { prisma } from "@/lib/db";
 type State = { error?: string; ok?: boolean };
 
 const ReviewSchema = z.object({
-  productId: z.string().optional(),
-  brandId: z.string().optional(),
+  productId: z.string().max(60).optional(),
+  brandId: z.string().max(60).optional(),
   rating: z.coerce.number().int().min(1).max(5),
-  title: z.string().trim().optional(),
+  title: z.string().trim().max(120).optional(),
   comment: z
     .string()
     .trim()
-    .min(5, "Escreva um comentário (mín. 5 caracteres)."),
-  authorName: z.string().trim().min(2, "Informe seu nome."),
-  authorEmail: z.string().trim().optional(),
+    .min(5, "Escreva um comentário (mín. 5 caracteres).")
+    .max(2000),
+  authorName: z.string().trim().min(2, "Informe seu nome.").max(60),
+  authorEmail: z.string().trim().max(160).optional(),
 });
 
 export async function submitReview(

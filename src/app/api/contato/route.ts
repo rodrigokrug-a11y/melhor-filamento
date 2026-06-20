@@ -7,6 +7,7 @@ import {
   mailerConfigured,
   sendMail,
 } from "@/lib/mailer";
+import { clientIp, rateLimit, tooMany } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -40,6 +41,8 @@ function escapeHtml(s: string): string {
 }
 
 export async function POST(req: NextRequest) {
+  if (rateLimit(`contato:${clientIp(req)}`, 5, 60_000)) return tooMany();
+
   let form: FormData;
   try {
     form = await req.formData();

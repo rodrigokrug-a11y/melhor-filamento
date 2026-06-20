@@ -5,6 +5,7 @@ import { z } from "zod";
 
 import { prisma } from "@/lib/db";
 import { emailLayout, sendMail } from "@/lib/mailer";
+import { clientIp, rateLimit, tooMany } from "@/lib/rate-limit";
 import { formatBRL } from "@/lib/utils";
 
 export const runtime = "nodejs";
@@ -13,9 +14,9 @@ const SITE =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://melhorfilamento.com.br";
 
 const Schema = z.object({
-  email: z.string().trim().toLowerCase(),
-  productId: z.string().min(1),
-  targetPrice: z.coerce.number().positive(),
+  email: z.string().trim().toLowerCase().max(160),
+  productId: z.string().min(1).max(60),
+  targetPrice: z.coerce.number().positive().max(1_000_000),
 });
 
 function isEmail(v: string): boolean {
@@ -32,6 +33,8 @@ function esc(s: string): string {
 }
 
 export async function POST(req: NextRequest) {
+  if (rateLimit(`alerta:ip:${clientIp(req)}`, 6, 60_000)) return tooMany();
+
   let body: unknown;
   try {
     body = await req.json();
@@ -43,6 +46,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Dados inválidos." }, { status: 400 });
   }
   const { email, productId, targetPrice } = parsed.data;
+
+  // Anti email-bomb: no máx. 3 alertas por endereço por hora (mandamos e-mail
+  // de confirmação pra esse endereço — não pode virar relay de spam).
+  if (rateLimit(`alerta:email:${email}`, 3, 3_600_000)) return tooMany();
 
   const product = await prisma.product.findUnique({
     where: { id: productId },

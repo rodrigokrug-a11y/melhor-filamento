@@ -1,11 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { z } from "zod";
 
 import { auth } from "@/auth";
 import { isAdminEmail } from "@/lib/admin-emails";
 import { prisma } from "@/lib/db";
+import { rateLimit } from "@/lib/rate-limit";
 import {
   loadProductIndex,
   matchProduct,
@@ -17,16 +19,19 @@ import { uniqueSellerSlug } from "@/lib/slug";
 type State = { error?: string; ok?: boolean; approved?: boolean };
 
 const OfferSchema = z.object({
-  productId: z.string().min(1, "Selecione um produto."),
-  storeName: z.string().trim().min(2, "Informe a loja da oferta."),
-  price: z.coerce.number().positive("Informe um preço válido (maior que zero)."),
-  url: z.string().trim().min(1, "Informe o link da oferta."),
+  productId: z.string().min(1, "Selecione um produto.").max(60),
+  storeName: z.string().trim().min(2, "Informe a loja da oferta.").max(80),
+  price: z
+    .coerce.number()
+    .positive("Informe um preço válido (maior que zero).")
+    .max(1_000_000),
+  url: z.string().trim().min(1, "Informe o link da oferta.").max(600),
   stockStatus: z.enum(["IN_STOCK", "OUT_OF_STOCK", "UNKNOWN"]),
-  couponCode: z.string().trim().optional().default(""),
-  couponType: z.string().trim().optional().default(""),
-  couponDiscount: z.string().trim().optional().default(""),
-  authorName: z.string().trim().min(2, "Informe seu nome."),
-  authorEmail: z.string().trim().optional().default(""),
+  couponCode: z.string().trim().max(60).optional().default(""),
+  couponType: z.string().trim().max(20).optional().default(""),
+  couponDiscount: z.string().trim().max(20).optional().default(""),
+  authorName: z.string().trim().min(2, "Informe seu nome.").max(60),
+  authorEmail: z.string().trim().max(160).optional().default(""),
 });
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -66,6 +71,19 @@ export async function createOffer(
 ): Promise<State> {
   const session = await auth();
   const isAdmin = isAdminEmail(session?.user?.email);
+
+  // Rate-limit anti-spam para submissões anônimas (cria Offer PENDING; o admin
+  // ainda modera). Admin logado não é limitado.
+  if (!isAdmin) {
+    const h = await headers();
+    const ip =
+      h.get("x-real-ip")?.trim() ||
+      h.get("x-forwarded-for")?.split(",").pop()?.trim() ||
+      "unknown";
+    if (rateLimit(`offer:${ip}`, 5, 300_000)) {
+      return { error: "Muitas tentativas. Aguarde alguns minutos e tente de novo." };
+    }
+  }
 
   const parsed = OfferSchema.safeParse({
     productId: formData.get("productId"),

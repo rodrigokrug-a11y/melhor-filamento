@@ -3,11 +3,12 @@ import { z } from "zod";
 
 import { prisma } from "@/lib/db";
 import { adminNotifyEmails, emailLayout, sendMail } from "@/lib/mailer";
+import { clientIp, rateLimit, tooMany } from "@/lib/rate-limit";
 
 const LeadSchema = z.object({
-  name: z.string().trim().min(2),
-  email: z.string().trim().toLowerCase(),
-  offerId: z.string().optional(),
+  name: z.string().trim().min(2).max(120),
+  email: z.string().trim().toLowerCase().max(160),
+  offerId: z.string().max(60).optional(),
 });
 
 function isEmail(value: string): boolean {
@@ -65,6 +66,8 @@ async function notifyNewLead(lead: {
 }
 
 export async function POST(request: NextRequest) {
+  if (rateLimit(`lead:${clientIp(request)}`, 8, 60_000)) return tooMany();
+
   let body: unknown;
   try {
     body = await request.json();

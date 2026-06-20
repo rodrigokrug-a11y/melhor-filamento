@@ -13,9 +13,9 @@ const TipSchema = z.object({
   nozzleTempC: z.coerce.number().int().positive().optional(),
   bedTempC: z.coerce.number().int().nonnegative().optional(),
   speedMms: z.coerce.number().int().positive().optional(),
-  notes: z.string().trim().min(5, "Escreva a dica (mín. 5 caracteres)."),
-  authorName: z.string().trim().min(2, "Informe seu nome."),
-  authorEmail: z.string().trim().optional(),
+  notes: z.string().trim().min(5, "Escreva a dica (mín. 5 caracteres).").max(2000),
+  authorName: z.string().trim().min(2, "Informe seu nome.").max(60),
+  authorEmail: z.string().trim().max(160).optional(),
 });
 
 export async function submitTip(

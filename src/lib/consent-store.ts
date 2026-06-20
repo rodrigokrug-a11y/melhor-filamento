@@ -43,7 +43,8 @@ export function subscribeConsent(callback: () => void): () => void {
 export function acceptConsent(): void {
   if (typeof document === "undefined") return;
   const maxAge = 60 * 60 * 24 * 180; // 180 dias
-  document.cookie = `${CONSENT_COOKIE}=1; path=/; max-age=${maxAge}; samesite=lax`;
+  const secure = location.protocol === "https:" ? "; secure" : "";
+  document.cookie = `${CONSENT_COOKIE}=1; path=/; max-age=${maxAge}; samesite=lax${secure}`;
   hasCache = false;
   for (const listener of listeners) listener();
 }
