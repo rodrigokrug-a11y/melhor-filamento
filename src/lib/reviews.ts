@@ -3,6 +3,12 @@ import { cache } from "react";
 import { type ProductKind } from "@/lib/catalog-types";
 import { prisma } from "@/lib/db";
 
+export type ReplyView = {
+  sellerName: string;
+  body: string;
+  createdAt: Date;
+};
+
 export type ReviewView = {
   id: string;
   authorName: string;
@@ -10,6 +16,7 @@ export type ReviewView = {
   title: string | null;
   comment: string;
   createdAt: Date;
+  replies: ReplyView[];
 };
 
 export type RatingSummary = { average: number | null; count: number };
@@ -25,6 +32,7 @@ function toView(r: {
   title: string | null;
   comment: string;
   createdAt: Date;
+  replies?: { body: string; createdAt: Date; seller: { name: string } }[];
 }): ReviewView {
   return {
     id: r.id,
@@ -33,6 +41,11 @@ function toView(r: {
     title: r.title,
     comment: r.comment,
     createdAt: r.createdAt,
+    replies: (r.replies ?? []).map((rep) => ({
+      sellerName: rep.seller.name,
+      body: rep.body,
+      createdAt: rep.createdAt,
+    })),
   };
 }
 
@@ -56,11 +69,36 @@ export const getProductReviews = cache(async (productId: string) => {
       where: { productId, status: "APPROVED" },
       orderBy: { createdAt: "desc" },
       take: 50,
+      include: {
+        replies: {
+          orderBy: { createdAt: "asc" },
+          select: {
+            body: true,
+            createdAt: true,
+            seller: { select: { name: true } },
+          },
+        },
+      },
     }),
     summaryFor({ productId }),
   ]);
   return { reviews: reviews.map(toView), summary };
 });
+
+/**
+ * Loja do usuário (Seller que ele é dono) SE ela vende este produto — habilita
+ * o dono a responder avaliações do produto. null se não se aplica.
+ */
+export async function getReplySellerForProduct(
+  userId: string | null,
+  productId: string,
+): Promise<{ id: string; name: string } | null> {
+  if (!userId) return null;
+  return prisma.seller.findFirst({
+    where: { ownerUserId: userId, offers: { some: { productId } } },
+    select: { id: true, name: true },
+  });
+}
 
 export const getBrandReviews = cache(async (brandId: string) => {
   const [reviews, summary] = await Promise.all([

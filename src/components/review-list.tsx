@@ -1,12 +1,17 @@
+import { Store } from "lucide-react";
+
+import { ReviewReplyForm } from "@/components/review-reply-form";
 import { Stars } from "@/components/stars";
 import type { RatingSummary, ReviewView } from "@/lib/reviews";
 
 export function ReviewList({
   summary,
   reviews,
+  canReply = false,
 }: {
   summary: RatingSummary;
   reviews: ReviewView[];
+  canReply?: boolean;
 }) {
   return (
     <div className="space-y-4">
@@ -17,8 +22,7 @@ export function ReviewList({
         <div>
           <Stars value={summary.average ?? 0} />
           <p className="text-xs text-muted-foreground">
-            {summary.count}{" "}
-            {summary.count === 1 ? "avaliação" : "avaliações"}
+            {summary.count} {summary.count === 1 ? "avaliação" : "avaliações"}
           </p>
         </div>
       </div>
@@ -40,6 +44,21 @@ export function ReviewList({
               <p className="mt-2 text-xs text-muted-foreground">
                 {r.createdAt.toLocaleDateString("pt-BR")}
               </p>
+
+              {r.replies.map((rep, i) => (
+                <div
+                  key={i}
+                  className="mt-3 rounded-lg border-l-2 border-brand bg-brand-soft/40 p-3"
+                >
+                  <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand">
+                    <Store className="size-3.5" />
+                    Resposta de {rep.sellerName}
+                  </p>
+                  <p className="mt-1 text-sm">{rep.body}</p>
+                </div>
+              ))}
+
+              {canReply ? <ReviewReplyForm reviewId={r.id} /> : null}
             </li>
           ))}
         </ul>

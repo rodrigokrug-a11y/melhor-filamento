@@ -20,7 +20,7 @@ import {
   getPriceHistory,
   getProductDetail,
 } from "@/lib/catalog";
-import { getProductReviews } from "@/lib/reviews";
+import { getProductReviews, getReplySellerForProduct } from "@/lib/reviews";
 import { CouponForm } from "@/components/coupon-form";
 import {
   getApprovedCouponsForProduct,
@@ -80,6 +80,8 @@ export default async function ProdutoPage({ params }: { params: Params }) {
     getSellersForProduct(product.id),
     getViewer(),
   ]);
+  // Dono de loja que vende este produto pode responder às avaliações.
+  const replySeller = await getReplySellerForProduct(viewer.id, product.id);
   const isPrinter = product.kind === "PRINTER";
   const kindHref = isPrinter
     ? "/impressoras"
@@ -317,6 +319,7 @@ export default async function ProdutoPage({ params }: { params: Params }) {
           <ReviewList
             summary={reviewData.summary}
             reviews={reviewData.reviews}
+            canReply={Boolean(replySeller)}
           />
           <ReviewForm productId={product.id} targetLabel={product.name} />
         </div>

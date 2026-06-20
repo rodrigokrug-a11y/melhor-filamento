@@ -150,6 +150,7 @@ model Seller {
   boosts        Boost[]
   banners       Banner[]
   coupons       Coupon[]
+  reviewReplies ReviewReply[]
   createdAt     DateTime       @default(now())
 }
 
@@ -241,6 +242,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   coupons       Coupon[]  @relation("UserCoupons")
+  reviewReplies ReviewReply[] @relation("UserReplies")
   createdAt     DateTime  @default(now())
 }
 
@@ -364,10 +366,28 @@ model Review {
   authorEmail String?
   status      ContentStatus @default(PENDING)
   createdAt   DateTime      @default(now())
+  replies     ReviewReply[]
 
   @@index([productId, status])
   @@index([brandId, status])
   @@index([status])
+}
+
+// Resposta de uma loja a uma avaliação (a loja que vende o produto responde).
+// Sem moderação: vem de dono de loja autenticado. Uma resposta por loja/avaliação.
+model ReviewReply {
+  id        String   @id @default(cuid())
+  reviewId  String
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  sellerId  String
+  seller    Seller   @relation(fields: [sellerId], references: [id])
+  authorId  String?
+  author    User?    @relation("UserReplies", fields: [authorId], references: [id])
+  body      String
+  createdAt DateTime @default(now())
+
+  @@unique([reviewId, sellerId])
+  @@index([reviewId])
 }
 
 // Cupom da comunidade: qualquer logado (CLIENTE+) compartilha um cupom de uma
