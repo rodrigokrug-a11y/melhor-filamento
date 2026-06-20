@@ -37,11 +37,19 @@ export function AuthNav() {
   }
 
   return (
-    <Link
-      href="/entrar"
-      className="rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
-    >
-      Entrar
-    </Link>
+    <div className="flex items-center gap-1">
+      <Link
+        href="/entrar"
+        className="rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+      >
+        Entrar
+      </Link>
+      <Link
+        href="/criar-conta"
+        className="rounded-full bg-brand px-3.5 py-2 text-sm font-semibold text-white transition-colors hover:bg-teal"
+      >
+        Criar conta
+      </Link>
+    </div>
   );
 }

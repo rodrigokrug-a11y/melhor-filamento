@@ -180,6 +180,13 @@ export function MobileNav() {
                 >
                   Entrar
                 </Link>
+                <Link
+                  href="/criar-conta"
+                  onClick={() => setOpen(false)}
+                  className="mt-2 rounded-lg bg-brand px-3 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-teal"
+                >
+                  Criar conta
+                </Link>
               </div>
             </div>,
             document.body,
