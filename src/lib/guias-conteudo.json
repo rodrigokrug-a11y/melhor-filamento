@@ -1156,5 +1156,212 @@
         "a": "Tire uma foto nítida da peça com o defeito e envie para o nosso diagnóstico por IA: ele compara com padrões conhecidos de falha e aponta a causa provável e o ajuste sugerido. Em paralelo, uma calibração básica (e-steps, fluxo, temperatura e retração) elimina boa parte dos erros recorrentes."
       }
     ]
+  },
+  {
+    "slug": "quanto-custa-filamento-pla-no-brasil",
+    "titulo": "Quanto custa 1 kg de filamento PLA no Brasil?",
+    "subtitulo": "Entenda o que faz o preço do PLA subir ou cair e como pagar menos comparando por preço por quilo.",
+    "descricao": "Quanto custa 1 kg de filamento PLA no Brasil? Veja o que muda o preço, por que comparar por preço por quilo e como economizar no frete.",
+    "resumo": "O que define o preço do PLA e como comparar por quilo para gastar menos.",
+    "leituraMin": 6,
+    "intro": "\"Quanto custa 1 kg de filamento PLA?\" é a primeira pergunta de quase todo mundo que começa na impressão 3D — e a resposta honesta é: **depende**. O PLA é o filamento mais barato e mais vendido do Brasil, mas o valor de um rolo varia bastante de loja para loja, de marca para marca e até de cor para cor. Cravar um número em reais aqui seria mentira: os preços mudam toda semana por causa de câmbio, promoção e estoque.\n\nO que dá pra fazer é entender **o que mexe no preço** e aprender a comparar do jeito certo. O truque que a maioria ignora é simples: nunca olhe só o preço do rolo. Olhe o **preço por quilo**. Um rolo de 500g \"baratinho\" pode sair muito mais caro por quilo do que um rolo de 1 kg, e é aí que muita gente perde dinheiro sem perceber.\n\nNeste guia a gente explica os fatores que pesam no preço, por que a conta por quilo é a única justa, como o frete muda tudo e onde achar o valor atualizado. Para ver quanto está custando o PLA agora, confira o ranking em [/melhor/pla](/melhor/pla) e a lista completa de ofertas em [/filamentos](/filamentos).",
+    "secoes": [
+      {
+        "id": "o-que-faz-o-preco-variar",
+        "titulo": "O que faz o preço do PLA variar",
+        "corpo": "O preço de um rolo de PLA não é aleatório — alguns fatores aparecem sempre. Conhecer eles ajuda a entender por que dois rolos \"iguais\" custam valores diferentes:\n\n- **Marca**: marcas premium importadas costumam custar mais; marcas nacionais e genéricas entram mais baratas.\n- **Qualidade e consistência**: filamento com boa tolerância de diâmetro (ex.: ±0,02 mm) e enrolamento bem feito tende a custar um pouco mais — e a dar menos dor de cabeça.\n- **Peso do rolo**: 250g, 500g, 750g e 1 kg são pesos comuns. Rolo menor parece barato, mas raramente é o melhor negócio por quilo.\n- **Cor e tipo especial**: cores básicas (preto, branco, cinza) são as mais em conta. PLA Silk, fosco, madeira, transparente, glow ou multicolor custam mais.\n\nPor isso o mesmo \"PLA 1 kg\" pode ter uma faixa de preço larga. Não existe um preço único certo — existe o melhor preço **para a especificação que você quer**."
+      },
+      {
+        "id": "preco-por-quilo",
+        "titulo": "Por que comparar por preço por quilo",
+        "corpo": "Essa é a regra que o [melhorfilamento](/filamentos) mais prega: compare sempre por **preço por quilo (R$/kg)**, não pelo preço do rolo. Um rolo de 500g a um preço \"camarada\" pode, na conta por quilo, sair mais caro do que um rolo cheio de 1 kg que parecia mais caro na vitrine.\n\nA conta é simples: pegue o preço do rolo e divida pelo peso em quilos. Veja como a mesma percepção engana:\n\n| Rolo | Preço (exemplo) | Preço por quilo |\n| --- | --- | --- |\n| 500g \"barato\" | X | 2X por kg |\n| 1 kg | 1,6X | 1,6X por kg |\n\nNo exemplo acima, o rolo que \"parecia\" mais caro é, na real, mais barato por quilo. Por isso o comparador normaliza tudo por quilo: assim você compara laranja com laranja. Veja o ranking já ordenado em [/melhor/pla](/melhor/pla)."
+      },
+      {
+        "id": "faixa-relativa",
+        "titulo": "A faixa de preço (sem cravar valor)",
+        "corpo": "Não dá pra cravar um número porque o PLA acompanha câmbio, frete e promoção — o que vale hoje pode mudar na semana que vem. Mas dá pra falar em **faixas relativas**, e elas ajudam a calibrar a expectativa:\n\n- **Entrada / genérico / cor básica**: a faixa mais barata por quilo. Bom para protótipos, peças de teste e quem está aprendendo.\n- **Intermediário / marca conhecida**: um pouco acima, com mais consistência de impressão. O ponto de equilíbrio para a maioria.\n- **Premium / especial (Silk, fosco, alta precisão)**: a faixa mais cara, justificada quando o acabamento importa.\n\nA dica é definir em qual faixa você se encaixa antes de comprar e só então comparar dentro dela. Para ver onde cada rolo cai hoje, sem chute, abra [/melhor/pla](/melhor/pla) e [/filamentos](/filamentos)."
+      },
+      {
+        "id": "frete",
+        "titulo": "O peso do frete na conta final",
+        "corpo": "Muita gente fecha a compra olhando só o preço do rolo e leva um susto no frete. Filamento é pesado (1 kg + embalagem + carretel), então o envio costuma pesar bastante no total — às vezes o frete sozinho passa do que você economizou escolhendo o rolo \"mais barato\".\n\nDuas coisas mudam o jogo aqui: a **sua localização** (quanto mais longe do centro de distribuição, mais caro tende a ser) e a **quantidade**. Comprar 2 ou 3 rolos de uma vez normalmente dilui o frete por quilo e pode liberar frete grátis. Por isso o que importa é o **custo total entregue no seu CEP**, não o preço da vitrine — é exatamente assim que o comparador calcula o ranking."
+      },
+      {
+        "id": "como-economizar",
+        "titulo": "Como pagar menos no PLA",
+        "corpo": "Dá pra economizar de verdade no PLA sem cair em pegadinha. Algumas táticas que funcionam:\n\n- **Compare várias lojas**: a diferença de preço por quilo entre lojas para o mesmo tipo de PLA costuma ser grande. Nunca compre na primeira que aparecer.\n- **Aproveite cupom e oferta do dia**: lojas giram promoção o tempo todo; vale conferir os destaques em [/ofertas](/ofertas).\n- **Compre em maior quantidade**: dilui o frete e às vezes libera frete grátis.\n- **Fique nas cores básicas**: preto, branco e cinza são quase sempre mais baratos que cores especiais.\n- **Confira a marca**: às vezes uma marca menos famosa entrega a mesma qualidade por menos — veja as opções em [/marcas](/marcas).\n\nO resumo de tudo: defina a faixa, compare por quilo, some o frete e feche na loja com o menor **custo total**. O ranking já faz esse trabalho pra você em [/melhor/pla](/melhor/pla)."
+      },
+      {
+        "id": "vale-a-pena-pla",
+        "titulo": "PLA vale a pena pelo preço?",
+        "corpo": "Pelo custo-benefício, o PLA é imbatível para a maioria das impressões do dia a dia: é o mais barato, o mais fácil de imprimir e dispensa câmara fechada. Para protótipos, peças decorativas, miniaturas e aprendizado, ele entrega muito por pouco.\n\nA ressalva é o uso: PLA amolece no calor e não gosta de sol nem de carro fechado. Se a peça vai pegar temperatura ou esforço, talvez compense subir para [PETG](/melhor/petg) ou [ABS](/melhor/abs) — que custam um pouco mais por quilo, mas resolvem onde o PLA falha. Para decidir entre eles, vale ler o comparativo em [/guias/pla-vs-petg-vs-abs](/guias/pla-vs-petg-vs-abs) e a [dica rápida de PLA](/dica/PLA)."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Quanto custa 1 kg de filamento PLA no Brasil?",
+        "a": "Varia bastante por marca, qualidade, cor e loja, e os preços mudam o tempo todo por causa de câmbio e promoção. Por isso não cravamos um valor fixo. O melhor é ver o preço atualizado e já ordenado por quilo em /melhor/pla."
+      },
+      {
+        "q": "Por que devo comparar por preço por quilo e não pelo preço do rolo?",
+        "a": "Porque rolos têm pesos diferentes (250g, 500g, 1 kg) e o preço do rolo engana. Um rolo de 500g \"barato\" pode sair mais caro por quilo que um de 1 kg. Dividir o preço pelo peso é a única forma justa de comparar."
+      },
+      {
+        "q": "O PLA é o filamento mais barato?",
+        "a": "Sim, na média o PLA é o filamento mais barato e mais vendido do Brasil. Cores básicas de marcas de entrada ficam na faixa mais econômica; versões especiais como Silk ou fosco custam mais."
+      },
+      {
+        "q": "O frete realmente pesa tanto assim?",
+        "a": "Pesa muito. Filamento é um produto pesado, então o frete pode comer boa parte da economia do rolo mais barato. Comprar mais de um rolo dilui o frete por quilo e às vezes libera frete grátis. Olhe sempre o custo total entregue no seu CEP."
+      },
+      {
+        "q": "Como faço para pagar menos no PLA?",
+        "a": "Compare várias lojas, fique de olho em cupons e na oferta do dia em /ofertas, prefira cores básicas e considere comprar em maior quantidade para diluir o frete. Depois é só fechar na loja com o menor custo total."
+      },
+      {
+        "q": "Vale a pena pagar mais por uma marca premium?",
+        "a": "Depende do uso. Para protótipos e aprendizado, um PLA de entrada resolve. Se você quer acabamento consistente e menos falhas de impressão, uma marca intermediária ou premium pode compensar. Compare as opções em /marcas."
+      }
+    ],
+    "atualizadoEm": "2026-06-20",
+    "atualizadoLabel": "Junho de 2026"
+  },
+  {
+    "slug": "onde-comprar-filamento-3d-barato",
+    "titulo": "Onde comprar filamento 3D barato no Brasil",
+    "subtitulo": "O segredo não é achar a loja mais barata, e sim comparar preço por quilo mais frete de forma justa entre todas elas.",
+    "descricao": "Onde comprar filamento 3D barato no Brasil: como comparar preço por quilo + frete entre lojas, tipos de loja, cupons e ofertas sem cair em pegadinha.",
+    "resumo": "Guia prático para comprar filamento 3D pelo melhor custo total no Brasil, sem cair na pegadinha do preço de etiqueta.",
+    "leituraMin": 7,
+    "intro": "Procurar **filamento 3D barato** parece simples: é só pegar o rolo de PLA mais em conta e fechar o carrinho, certo? Na prática, é aí que mora a pegadinha. O preço que aparece na etiqueta quase nunca é o preço que você realmente paga — frete, peso do rolo, cupons e até a quantidade de plástico dentro da bobina mudam totalmente a conta no final.\n\nA boa notícia é que dá para comprar bem gastando pouco, desde que você compare do jeito certo. Neste guia a gente mostra como olhar o **preço por quilo** (a métrica que realmente importa), como somar o frete para o seu CEP, os tipos de loja que existem no Brasil e onde cada um costuma valer mais a pena — sem puxar sardinha para ninguém.\n\nNo fim, você vai ver por que jogar tudo isso num [comparador](/comparar) resolve o problema em segundos, em vez de você abrir dez abas e fazer conta de cabeça. Bora?",
+    "secoes": [
+      {
+        "id": "o-erro-do-preco-de-etiqueta",
+        "titulo": "O erro de olhar só o preço de etiqueta",
+        "corpo": "O maior erro de quem caça filamento barato é comparar o **preço do rolo** entre lojas diferentes como se fossem a mesma coisa. Eles não são. Um rolo de 500 g por um valor X parece mais barato que um rolo de 1 kg, mas você está levando metade do plástico. Outro vende 1 kg, mas só conta o peso líquido do filamento; um terceiro embute o peso do carretel. A única forma de comparar maçã com maçã é o **preço por quilo**.\n\nE tem o frete, que muita gente esquece. Um rolo barato numa loja do outro lado do país pode chegar mais caro que um rolo \"mais caro\" de uma loja perto de você, depois que o Correios ou a transportadora entra na conta. Por isso a regra de ouro é simples: **custo total = preço por quilo + frete para o SEU CEP**. É exatamente isso que o [comparador](/comparar) calcula para você."
+      },
+      {
+        "id": "preco-por-quilo-mais-frete",
+        "titulo": "Como comparar de forma justa: preço por quilo + frete",
+        "corpo": "Para não errar, normalize tudo para a mesma base antes de decidir. O passo a passo é este:\n\n- Pegue o preço do anúncio e divida pelo peso real de filamento (em kg) → você tem o **preço por quilo**.\n- Some o **frete** para o seu CEP (e veja se há frete grátis acima de um valor).\n- Considere comprar mais de um rolo: muitas vezes o frete dilui e o preço por quilo despenca.\n- Confira o **prazo** e a reputação da loja — barato que não chega não é barato.\n\nVeja como a etiqueta engana:\n\n| O que você vê | O que importa de verdade |\n| --- | --- |\n| \"Rolo a partir de R$ X\" | Quanto é por quilo? |\n| Peso da embalagem | Peso real de filamento |\n| Preço sem frete | Custo total no seu CEP |\n| Loja \"mais barata\" | Loja com menor total entregue |\n\nNão vamos cravar valores aqui porque **preço de filamento muda toda semana** — promoções entram e saem o tempo todo. Veja sempre os números atualizados na vitrine de [filamentos](/filamentos)."
+      },
+      {
+        "id": "tipos-de-loja",
+        "titulo": "Tipos de loja: fábrica, revenda e marketplace",
+        "corpo": "No Brasil você compra filamento basicamente em três tipos de canal, e cada um tem seu jeito de ser barato — ou caro:\n\n- **Fábrica / fabricante nacional:** vende direto o que produz (geralmente PLA, PETG, ABS). Costuma ter bom preço por quilo em compras maiores e atendimento técnico, mas catálogo mais focado na própria marca.\n- **Revenda / loja especializada:** trabalha com várias marcas, importadas e nacionais. Bom para encontrar materiais específicos (TPU, ASA, nylon) e tirar dúvida, com preço intermediário.\n- **Marketplace:** muita oferta e cupom, frete às vezes competitivo, mas qualidade varia bastante entre vendedores — leia avaliações e confira marca e peso real.\n\nNão existe \"o tipo sempre mais barato\". Em PLA, uma fábrica pode ganhar; num material de nicho, a revenda; numa data promocional, o marketplace. Por isso o comparador não favorece nenhum: ele lista [todas as ofertas](/ofertas) lado a lado e deixa o **preço por quilo entregue** decidir."
+      },
+      {
+        "id": "cupons-e-ofertas",
+        "titulo": "Cupons, fretes grátis e datas de promoção",
+        "corpo": "Cupom e frete grátis são onde o filamento fica de verdade barato — mas também onde é fácil se enganar. Um cupom de 10% num rolo caro pode ainda sair acima de um rolo \"sem desconto\" de outra loja. Sempre aplique o desconto e **recalcule o preço por quilo final** antes de comemorar.\n\nAlgumas táticas que funcionam no Brasil:\n\n- Junte rolos para bater o **frete grátis** (costuma ter valor mínimo) — o custo por quilo cai junto.\n- Fique de olho em datas como Black Friday, aniversário de loja e queima de estoque de cores específicas.\n- Compare a oferta com cupom contra o **menor preço do dia** em outras lojas, não contra o preço cheio da mesma loja.\n\nA página de [ofertas](/ofertas) reúne o que está em promoção agora, e você ainda cruza com os rankings de melhor custo por tipo de material."
+      },
+      {
+        "id": "escolher-material-certo",
+        "titulo": "Barato de verdade é comprar o material certo",
+        "corpo": "Economia também é não comprar o filamento errado e ter que imprimir de novo. Antes de caçar o menor preço, confirme se o material combina com a peça: **PLA** para protótipos e decoração, **PETG** para peças funcionais que pegam um pouco de sol e esforço, **ABS/ASA** para resistência a calor, **TPU** para flexível.\n\nSe a dúvida é qual usar, vale ler o comparativo [PLA vs PETG vs ABS](/guias/pla-vs-petg-vs-abs) ou o panorama de [tipos de filamento](/guias/tipos-de-filamento) antes de fechar a compra. Depois é só ir direto ao ranking de melhor custo de cada material:\n\n- [Melhor PLA](/melhor/pla) e [Melhor PETG](/melhor/petg) para o dia a dia\n- [Melhor ABS](/melhor/abs) e [Melhor ASA](/melhor/asa) para resistência\n- [Melhor TPU](/melhor/tpu) para flexível\n\nAssim você paga barato no material que realmente resolve, em vez de barato no que vai virar lixo na bancada."
+      },
+      {
+        "id": "como-o-comparador-resolve",
+        "titulo": "Como o comparador faz a conta por você",
+        "corpo": "Fazer tudo isso na mão — abrir cada loja, achar o peso real, dividir pelo preço, somar o frete do seu CEP — é cansativo e fácil de errar. O [comparador](/comparar) automatiza exatamente esse trabalho: você informa o material (e o CEP) e ele ordena as ofertas pelo **menor custo total entregue**, já em preço por quilo.\n\nComo a gente não vende filamento nem é dono de loja, o ranking é neutro: fábrica, revenda e marketplace disputam na mesma régua. Você ainda navega por [marcas](/marcas) se confia em uma específica, ou começa pela vitrine de [filamentos](/filamentos) e deixa o preço falar. No fim, comprar barato deixa de ser sorte e vira método."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Qual é a forma certa de comparar preço de filamento entre lojas?",
+        "a": "Compare sempre o preço por quilo, não o preço do rolo. Divida o valor anunciado pelo peso real de filamento e some o frete para o seu CEP. O menor custo total entregue é o que importa — o comparador faz essa conta automaticamente."
+      },
+      {
+        "q": "Comprar de fábrica é sempre mais barato que marketplace?",
+        "a": "Nem sempre. Fábrica costuma ganhar em PLA e compras grandes, revenda em materiais de nicho e marketplace em datas promocionais com cupom. Não existe canal sempre mais barato — por isso vale comparar todas as ofertas lado a lado."
+      },
+      {
+        "q": "O frete realmente muda tanto assim na conta?",
+        "a": "Muda, e bastante. Um rolo barato longe de você pode chegar mais caro que um rolo \"mais caro\" perto, depois do frete. Junte rolos para diluir o frete ou bater o frete grátis, e sempre calcule o custo total para o seu CEP."
+      },
+      {
+        "q": "Por que vocês não mostram o preço exato em reais?",
+        "a": "Porque preço de filamento muda o tempo todo, com promoções entrando e saindo toda semana. Cravar um valor aqui ficaria desatualizado em dias. Por isso mandamos você ver o preço atual direto no comparador e nas páginas de ofertas."
+      },
+      {
+        "q": "Cupom de desconto garante o melhor preço?",
+        "a": "Não necessariamente. Um cupom num rolo caro pode ainda sair acima de um rolo sem desconto em outra loja. Aplique o cupom, recalcule o preço por quilo final e só então compare com o menor preço do dia nas outras lojas."
+      },
+      {
+        "q": "Qual filamento barato escolher para começar?",
+        "a": "Para a maioria começa-se com PLA, que é fácil de imprimir e costuma ter o menor custo por quilo. Se a peça precisa aguentar esforço ou sol, considere PETG. Veja os rankings /melhor/pla e /melhor/petg para achar o de melhor custo no momento."
+      }
+    ],
+    "atualizadoEm": "2026-06-20",
+    "atualizadoLabel": "Junho de 2026"
+  },
+  {
+    "slug": "melhor-filamento-para-ender-3",
+    "titulo": "Melhor filamento para Ender 3 (e impressoras parecidas)",
+    "subtitulo": "Quais materiais a Ender 3 imprime bem, o melhor pra começar e as configs de temperatura por filamento.",
+    "descricao": "Melhor filamento para Ender 3 no Brasil: PLA, PETG, ABS e TPU, facilidade, temperaturas e onde comprar barato comparando preço por quilo.",
+    "resumo": "O que a Ender 3 imprime bem, do PLA fácil ao TPU lento, com configs e dicas de compra.",
+    "leituraMin": 7,
+    "intro": "A Ender 3 (e as primas dela: Ender 3 V2, Pro, S1, e clones com mesa de 220x220 mm) é provavelmente a impressora 3D mais popular do Brasil — e justamente por isso a pergunta \"qual o **melhor filamento para Ender 3**?\" aparece o tempo todo. A resposta curta: **PLA** para começar e para a maioria das peças. Mas a Ender 3 dá conta de bem mais que isso, desde que você ajuste algumas configs e tenha expectativa realista de cada material.\n\nNeste guia a gente separa o que a Ender 3 imprime **fácil**, o que ela imprime **com cuidado** e o que exige **upgrade ou paciência**. Tem uma tabela rápida por material, as temperaturas básicas de bico e mesa, e o de sempre por aqui: como não pagar caro. Como filamento é item de consumo recorrente, o que pesa no bolso é o **preço por quilo** — e ele muda direto entre lojas.\n\nAntes de decidir, vale comparar as ofertas atualizadas no [comparador de filamentos](/filamentos) e ver o ranking de [melhor PLA](/melhor/pla), que é onde a maioria dos donos de Ender 3 começa.",
+    "secoes": [
+      {
+        "id": "o-que-a-ender-3-imprime",
+        "titulo": "O que a Ender 3 imprime (e o que exige cuidado)",
+        "corpo": "A Ender 3 vem de fábrica com **bico de latão**, **hotend até ~240 °C** e **mesa aquecida até ~110 °C**. Isso já cobre os materiais mais usados no dia a dia, mas cada um tem seu nível de dificuldade na máquina padrão.\n\n- **PLA** — fácil. É o material que a Ender 3 imprime melhor, com menos dor de cabeça. Imprime frio, gruda bem na mesa e não precisa de câmara fechada.\n- **PETG** — tranquilo, mas pede ajuste. Adere demais (cuidado pra não danificar a mesa), gosta de retração calibrada e velocidade um pouco menor.\n- **ABS/ASA** — dá pra imprimir, mas empena fácil. Pede mesa quente, ambiente sem corrente de ar e, idealmente, uma **câmara/enclosure** improvisada.\n- **TPU (flexível)** — funciona, mas tem que ir **devagar**. O extrusor Bowden da Ender 3 padrão não empurra flexível bem em velocidade alta.\n\nResumindo: PLA e PETG são o feijão com arroz da Ender 3. ABS e TPU são possíveis, mas entram na conta os ajustes e, às vezes, um upgrade."
+      },
+      {
+        "id": "melhor-pra-comecar-pla",
+        "titulo": "O melhor pra começar: PLA",
+        "corpo": "Se a Ender 3 é sua primeira impressora, **comece pelo PLA** e não pense duas vezes. Ele perdoa erro de calibração, imprime com mesa em temperatura baixa (ou até sem aquecimento, em alguns casos), quase não solta cheiro e dá ótimo acabamento. É o material ideal pra aprender bed leveling, primeira camada e fatiamento sem brigar com warping.\n\nPara peças decorativas, protótipos, miniaturas, suportes e a grande maioria dos projetos caseiros, o PLA resolve. As limitações dele aparecem só em casos específicos: peça que vai ficar dentro de carro no sol, ou que sofre esforço mecânico contínuo — aí você migra pra PETG ou ABS.\n\nNa hora de comprar, compare marca e **preço por quilo** no [ranking de melhor PLA](/melhor/pla) e confira as [dicas de impressão de PLA](/dica/PLA) para acertar de primeira."
+      },
+      {
+        "id": "tabela-por-material",
+        "titulo": "Tabela rápida por material",
+        "corpo": "Um resumo visual pra decidir rápido o que usar na Ender 3:\n\n| Material | Facilidade na Ender 3 | Melhor uso | Precisa de câmara? |\n| --- | --- | --- | --- |\n| PLA | Muito fácil | Protótipos, decoração, miniaturas, peças gerais | Não |\n| PETG | Fácil/médio | Peças funcionais, ao ar livre, resistência à água | Não (ajuda) |\n| ABS | Difícil | Peças resistentes a calor e impacto | Sim (recomendado) |\n| ASA | Difícil | Peças externas (resiste mais ao sol que ABS) | Sim (recomendado) |\n| TPU | Médio (lento) | Capinhas, peças flexíveis, amortecedores | Não |\n\nRegra prática: quanto mais pra baixo na tabela, mais ajuste e ambiente controlado a peça exige. Comece em cima e desça conforme a necessidade do projeto."
+      },
+      {
+        "id": "configs-de-temperatura",
+        "titulo": "Configs básicas de temperatura por material",
+        "corpo": "Estes são **pontos de partida** para a Ender 3 padrão — cada marca e cor varia, então sempre confira a recomendação do rótulo e faça um teste de temperatura (temp tower) quando trocar de fabricante.\n\n| Material | Bico (°C) | Mesa (°C) | Cooler | Velocidade |\n| --- | --- | --- | --- | --- |\n| PLA | 195–215 | 50–60 | 100% | Normal |\n| PETG | 230–245 | 70–85 | 30–50% | Um pouco menor |\n| ABS | 230–250 | 95–110 | 0–20% | Normal |\n| ASA | 240–260 | 95–110 | 0–20% | Normal |\n| TPU | 215–235 | 40–60 | 50–100% | Bem lenta (15–30 mm/s) |\n\nDicas que valem ouro: use **cola bastão ou laquê** na mesa pra ajudar a aderência (e proteger a mesa do PETG, que gruda demais); deixe o **cooler quase desligado** em ABS/ASA pra reduzir o empenamento; e no **TPU**, reduza a retração e a velocidade pra evitar entupimento e falhas de extrusão."
+      },
+      {
+        "id": "upgrades-que-ajudam",
+        "titulo": "Upgrades que ampliam o que a Ender 3 imprime",
+        "corpo": "A Ender 3 padrão já faz muita coisa, mas alguns upgrades baratos destravam materiais mais difíceis e melhoram o resultado geral:\n\n- **Enclosure (câmara fechada)** — essencial pra ABS/ASA sem empenar. Dá pra improvisar com uma caixa ou tenda barata.\n- **Bico de aço endurecido** — necessário se você for usar filamentos **abrasivos** (com fibra de carbono, brilho/glitter, madeira). O latão de fábrica desgasta rápido com esses.\n- **Extrusor direct drive** — melhora muito a impressão de **TPU**, permitindo mais velocidade sem falhas.\n- **Superfície PEI ou vidro** — primeira camada mais consistente e menos dor de cabeça com aderência.\n\nNada disso é obrigatório pra PLA e PETG. Invista nos upgrades só quando o projeto pedir o material que exige. Se está pensando em trocar de máquina em vez de fazer upgrade, vale dar uma olhada no [comparador de impressoras](/impressoras)."
+      },
+      {
+        "id": "onde-comprar-barato",
+        "titulo": "Onde comprar filamento barato pra Ender 3",
+        "corpo": "Filamento é gasto recorrente: você vai comprar rolo atrás de rolo. Por isso, a métrica que importa não é o preço do rolo isolado, e sim o **preço por quilo** — e ele varia bastante entre lojas, marcas e promoções. Um rolo \"barato\" de 500 g pode sair mais caro por quilo que um de 1 kg em oferta.\n\nComo a Ender 3 é compatível com **filamento de 1,75 mm** (o padrão de mercado no Brasil), você tem muita opção de marca e fornecedor. Isso é ótimo pro bolso: dá pra escolher pela melhor relação custo-benefício sem ficar preso a uma marca específica.\n\nUse o [comparador de filamentos](/filamentos) pra ver as ofertas atualizadas lado a lado, confira os rankings de [melhor PLA](/melhor/pla) e [melhor PETG](/melhor/petg), e se quiser entender as diferenças entre materiais antes de decidir, leia o [guia de tipos de filamento](/guias/tipos-de-filamento)."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Qual o melhor filamento para Ender 3 pra quem está começando?",
+        "a": "PLA, sem dúvida. Ele imprime fácil na Ender 3 padrão, perdoa erros de calibração e não precisa de câmara fechada. Use os outros materiais conforme a necessidade do projeto. Veja o ranking em /melhor/pla."
+      },
+      {
+        "q": "A Ender 3 imprime ABS?",
+        "a": "Sim, mas com cuidado. O ABS empena fácil por causa da retração térmica, então pede mesa bem quente (95–110 °C), ambiente sem corrente de ar e, idealmente, uma câmara fechada. Sem enclosure, peças grandes costumam descolar e rachar."
+      },
+      {
+        "q": "Preciso fazer upgrade pra imprimir PETG?",
+        "a": "Não. A Ender 3 padrão imprime PETG bem; só pede ajuste de retração, velocidade um pouco menor e cooler parcial. Cuidado é com a aderência: o PETG gruda demais, então use cola/laquê pra proteger a mesa e facilitar a remoção."
+      },
+      {
+        "q": "Qual a temperatura ideal de bico para PLA na Ender 3?",
+        "a": "Entre 195 e 215 °C é um bom ponto de partida, com a mesa em 50–60 °C. Como cada marca varia, faça um teste de temperatura (temp tower) ao trocar de fabricante pra achar o valor que dá o melhor acabamento."
+      },
+      {
+        "q": "Posso imprimir filamento flexível (TPU) na Ender 3?",
+        "a": "Pode, mas vá devagar — 15 a 30 mm/s. O extrusor Bowden de fábrica empurra flexível com dificuldade em alta velocidade, causando falhas e entupimento. Um upgrade pra direct drive melhora muito a impressão de TPU."
+      },
+      {
+        "q": "Que diâmetro de filamento a Ender 3 usa?",
+        "a": "1,75 mm, que é o padrão de mercado no Brasil. Isso te dá muita opção de marca e fornecedor — então compare sempre o preço por quilo entre lojas no comparador em /filamentos antes de comprar."
+      }
+    ],
+    "atualizadoEm": "2026-06-20",
+    "atualizadoLabel": "Junho de 2026"
   }
 ]

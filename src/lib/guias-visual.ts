@@ -27,6 +27,9 @@ const CAT_BY_SLUG: Record<string, GuiaCat> = {
   "como-secar-filamento": CUIDADOS,
   "peca-descola-da-mesa-warping": CUIDADOS,
   "erros-comuns-impressao-3d-fdm": CUIDADOS,
+  "quanto-custa-filamento-pla-no-brasil": CUSTO,
+  "onde-comprar-filamento-3d-barato": CUSTO,
+  "melhor-filamento-para-ender-3": FILAMENTOS,
 };
 
 export function guiaCat(slug: string): GuiaCat {
@@ -51,6 +54,9 @@ const DESTAQUE_BY_SLUG: Record<string, string> = {
   "como-secar-filamento": "Filamento úmido arruína a impressão",
   "peca-descola-da-mesa-warping": "A primeira camada decide tudo",
   "erros-comuns-impressao-3d-fdm": "Todo erro tem causa e solução",
+  "quanto-custa-filamento-pla-no-brasil": "Compare por preço/kg e some o frete",
+  "onde-comprar-filamento-3d-barato": "O barato de verdade é o custo total",
+  "melhor-filamento-para-ender-3": "Comece no PLA, evolua depois",
 };
 
 export function guiaDestaque(slug: string): string {
