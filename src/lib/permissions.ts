@@ -1,3 +1,5 @@
+import { notFound, redirect } from "next/navigation";
+
 import { auth } from "@/auth";
 
 /**
@@ -51,4 +53,15 @@ export function isLoja(v: Viewer): boolean {
 /** Pode publicar cupom da comunidade (qualquer logado; entra para moderação). */
 export function canSubmitCoupon(v: Viewer): boolean {
   return isLogged(v);
+}
+
+/**
+ * Garante acesso à área de moderação (/moderar e ações de moderação): admin OU
+ * MODERADOR. Redireciona para login se deslogado; 404 se sem permissão.
+ */
+export async function requireModerator(): Promise<Viewer> {
+  const v = await getViewer();
+  if (!v.id) redirect("/entrar");
+  if (!canModerate(v)) notFound();
+  return v;
 }

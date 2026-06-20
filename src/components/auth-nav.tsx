@@ -9,13 +9,19 @@ export function AuthNav() {
 
   if (status === "authenticated") {
     const isAdmin = session?.user?.isAdmin ?? false;
+    const role = session?.user?.role;
+    const dest = isAdmin
+      ? { href: "/admin", label: "Admin" }
+      : role === "MODERADOR"
+        ? { href: "/moderar", label: "Moderar" }
+        : { href: "/painel", label: "Painel" };
     return (
       <div className="flex items-center gap-1">
         <Link
-          href={isAdmin ? "/admin" : "/painel"}
+          href={dest.href}
           className="rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
         >
-          {isAdmin ? "Admin" : "Painel"}
+          {dest.label}
         </Link>
         <button
           type="button"

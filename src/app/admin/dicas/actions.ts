@@ -2,14 +2,14 @@
 
 import { revalidatePath } from "next/cache";
 
-import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
+import { requireModerator } from "@/lib/permissions";
 
 async function setStatus(
   formData: FormData,
   status: "APPROVED" | "REJECTED",
 ): Promise<void> {
-  await requireAdmin();
+  await requireModerator();
   const id = String(formData.get("tipId") ?? "");
   if (!id) return;
   const tip = await prisma.tip.update({
