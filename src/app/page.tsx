@@ -199,8 +199,9 @@ function Hero({
           </p>
         </div>
 
-        {/* Display: imagem-anúncio > produto destacado (admin) > visual padrão */}
-        <div className="hidden md:block">
+        {/* Display: imagem-anúncio > produto destacado (admin) > carrossel.
+            Visível também no mobile (abaixo do texto) — 80% do tráfego. */}
+        <div className="block">
           {ad && ad.imageUrl ? (
             <HeroAd banner={ad} />
           ) : featured ? (
