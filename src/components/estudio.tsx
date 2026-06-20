@@ -391,7 +391,7 @@ export function Estudio() {
             />
           </div>
           {tipo === "oferta" ? (
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <label className="mb-1 block text-xs font-medium text-muted-foreground">De (opcional)</label>
                 <input className={inputCls} value={campos.precoDe} onChange={(e) => set("precoDe", e.target.value)} placeholder="139,90" inputMode="decimal" />

@@ -51,7 +51,7 @@ export function ReviewForm({
             type="button"
             onClick={() => setRating(n)}
             aria-label={`${n} ${n > 1 ? "estrelas" : "estrela"}`}
-            className="p-0.5"
+            className="p-1.5"
           >
             <Star
               className={cn(

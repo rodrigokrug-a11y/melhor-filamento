@@ -146,7 +146,7 @@ export function CartOptimizer({ products }: { products: CartProduct[] }) {
                     <button
                       type="button"
                       onClick={() => setQty(prod.id, qty - 1)}
-                      className="flex size-10 items-center justify-center rounded-md sm:size-7 border hover:bg-accent"
+                      className="flex size-10 items-center justify-center rounded-md sm:size-9 border hover:bg-accent"
                     >
                       <Minus className="size-3.5" />
                     </button>
@@ -156,7 +156,7 @@ export function CartOptimizer({ products }: { products: CartProduct[] }) {
                     <button
                       type="button"
                       onClick={() => setQty(prod.id, qty + 1)}
-                      className="flex size-10 items-center justify-center rounded-md sm:size-7 border hover:bg-accent"
+                      className="flex size-10 items-center justify-center rounded-md sm:size-9 border hover:bg-accent"
                     >
                       <Plus className="size-3.5" />
                     </button>
@@ -164,7 +164,7 @@ export function CartOptimizer({ products }: { products: CartProduct[] }) {
                       type="button"
                       onClick={() => remove(prod.id)}
                       aria-label="Remover"
-                      className="ml-1 flex size-10 items-center justify-center rounded-md sm:size-7 text-muted-foreground hover:bg-accent hover:text-destructive"
+                      className="ml-1 flex size-10 items-center justify-center rounded-md sm:size-9 text-muted-foreground hover:bg-accent hover:text-destructive"
                     >
                       <Trash2 className="size-3.5" />
                     </button>

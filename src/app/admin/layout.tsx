@@ -24,6 +24,7 @@ const NAV = [
   { href: "/admin/patrocinios", label: "Patrocínios" },
   { href: "/admin/monetizacao", label: "Monetização" },
   { href: "/admin/lojas", label: "Lojas" },
+  { href: "/admin/usuarios", label: "Usuários" },
   { href: "/admin/marcas", label: "Marcas" },
   { href: "/admin/produtos", label: "Catálogo" },
   { href: "/cadastrar-oferta", label: "Nova oferta" },

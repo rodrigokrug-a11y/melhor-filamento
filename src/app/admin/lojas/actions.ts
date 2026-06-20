@@ -104,7 +104,7 @@ export async function grantSellerAccess(formData: FormData): Promise<void> {
 
   let user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
-    user = await prisma.user.create({ data: { email, role: "SELLER" } });
+    user = await prisma.user.create({ data: { email, role: "LOJA" } });
   }
   // Um usuário é dono de no máximo uma loja (ownerUserId é único).
   const owned = await prisma.seller.findUnique({

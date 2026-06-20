@@ -65,7 +65,7 @@ export function ProductCard({
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col p-4">
+      <div className="flex flex-1 flex-col p-3 sm:p-4">
         {product.boost != null ? (
           <span className="mb-1.5 inline-flex w-fit">
             <Badge variant="best">
@@ -99,8 +99,8 @@ export function ProductCard({
               {freteIncluded ? "menor total" : "a partir de"}
             </p>
           )}
-          <div className="flex items-end justify-between gap-2">
-            <p className="font-display text-xl font-bold tracking-tight tnum">
+          <div className="flex flex-wrap items-end justify-between gap-x-2 gap-y-0.5">
+            <p className="font-display text-lg font-bold tracking-tight tnum sm:text-xl">
               {formatBRL(price)}
             </p>
             <p className="shrink-0 font-mono text-[10px] text-muted-foreground">
@@ -131,7 +131,7 @@ export function ProductCard({
       <CompareButton
         slug={product.slug}
         kind={product.kind}
-        className="absolute right-12 top-2.5 z-20"
+        className="absolute right-14 top-2.5 z-20"
       />
     </article>
   );

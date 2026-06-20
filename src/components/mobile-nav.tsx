@@ -20,10 +20,10 @@ function MobileSubLink({
     <Link
       href={it.href}
       onClick={onClick}
-      className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+      className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-accent"
     >
       {Icon ? (
-        <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-brand-soft text-brand [&_svg]:size-3.5">
+        <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-brand-soft text-brand [&_svg]:size-4">
           <Icon />
         </span>
       ) : (

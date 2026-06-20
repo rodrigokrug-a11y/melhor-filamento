@@ -66,9 +66,13 @@ enum Region {
 }
 
 enum Role {
-  ADMIN
-  SELLER
+  CLIENTE // comprador (padrão de todo novo cadastro)
+  LOJA // loja cadastrada (dona de um Seller)
+  MODERADOR // modera conteúdo da comunidade, sem acesso total de admin
 }
+
+// Obs.: ADMIN é decidido por e-mail (ADMIN_EMAILS), não pelo enum — assim
+// ninguém vira admin via painel. O enum governa apenas os papéis acima.
 
 // ───────────── Catálogo ─────────────
 
@@ -229,7 +233,7 @@ model User {
   emailVerified DateTime?
   image         String?
   passwordHash  String? // login por e-mail/senha (bcrypt); null = só magic link
-  role          Role      @default(SELLER)
+  role          Role      @default(CLIENTE)
   sellerId      String?
   seller        Seller?   @relation("SellerMembers", fields: [sellerId], references: [id])
   ownedSeller   Seller?   @relation("SellerOwner")

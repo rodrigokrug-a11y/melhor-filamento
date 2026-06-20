@@ -186,6 +186,7 @@ const sellerData = [
 async function main() {
   // Limpa dados transacionais (respeitando FKs).
   await prisma.clickEvent.deleteMany();
+  await prisma.priceSnapshot.deleteMany();
   await prisma.offer.deleteMany();
   await prisma.shippingRule.deleteMany();
 

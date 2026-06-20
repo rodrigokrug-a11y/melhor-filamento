@@ -29,7 +29,8 @@ async function main() {
   const user = await prisma.user.upsert({
     where: { email },
     update: { passwordHash },
-    create: { email, passwordHash, role: "ADMIN" },
+    // Admin é decidido por e-mail (ADMIN_EMAILS), não pelo papel; cria como CLIENTE.
+    create: { email, passwordHash, role: "CLIENTE" },
   });
   console.log(`Senha definida para ${user.email} (role ${user.role}).`);
 }

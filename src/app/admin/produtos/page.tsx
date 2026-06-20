@@ -60,7 +60,7 @@ export default async function ProdutosAdminPage() {
               </div>
               <form
                 action={setProductOrder}
-                className="flex shrink-0 items-center gap-2"
+                className="flex flex-wrap items-center gap-2 sm:shrink-0"
               >
                 <input type="hidden" name="productId" value={product.id} />
                 <label className="text-xs font-medium text-muted-foreground">

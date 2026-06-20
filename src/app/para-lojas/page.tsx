@@ -94,7 +94,7 @@ export default function ParaLojasPage() {
             Você paga um valor fixo por mês e não fica refém de CPC. Previsível pra você, simples
             pra gente.
           </p>
-          <p className="mt-4 font-display text-3xl font-bold">
+          <p className="mt-4 font-display text-2xl font-bold sm:text-3xl">
             a partir de <span className="text-[var(--green-400)]">R$ 149</span>
             <span className="text-base font-medium text-[#9fc0bc]">/mês</span>
           </p>

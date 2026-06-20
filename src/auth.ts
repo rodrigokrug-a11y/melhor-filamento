@@ -62,9 +62,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
-    session({ session, token }) {
-      if (session.user && token.sub) session.user.id = token.sub;
-      if (session.user) session.user.isAdmin = isAdminEmail(session.user.email);
+    async session({ session, token }) {
+      if (session.user && token.sub) {
+        session.user.id = token.sub;
+        session.user.isAdmin = isAdminEmail(session.user.email);
+        // Papel buscado fresco do banco → promoção pelo admin vale na hora.
+        const u = await prisma.user.findUnique({
+          where: { id: token.sub },
+          select: { role: true },
+        });
+        session.user.role = u?.role ?? "CLIENTE";
+      }
       return session;
     },
   },

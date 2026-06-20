@@ -33,7 +33,7 @@ export function CompareBar() {
   const bottom = consented ? "bottom-4" : "bottom-48 sm:bottom-24";
 
   return (
-    <div className={`pointer-events-none fixed inset-x-0 z-50 px-4 ${bottom}`}>
+    <div className={`pointer-events-none fixed inset-x-0 z-50 px-3 sm:px-4 ${bottom}`}>
       <div className="pointer-events-auto mx-auto flex max-w-2xl items-center gap-3 rounded-full border bg-popover/95 py-2 pl-5 pr-2 shadow-lg backdrop-blur">
         <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-brand-soft text-brand">
           <Scale className="size-4" />
