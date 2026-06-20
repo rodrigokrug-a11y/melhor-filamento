@@ -1,12 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Loader2, LocateFixed, MapPin, Store } from "lucide-react";
 
-import { geocodeUserCep } from "@/app/perto/actions";
-import { useRegion } from "@/components/use-region";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { NearbyStore } from "@/lib/catalog-types";
@@ -23,27 +21,11 @@ const StoreMap = dynamic(() => import("@/components/store-map"), {
 type Coords = { lat: number; lng: number };
 
 export function NearbyView({ stores }: { stores: NearbyStore[] }) {
-  const { region } = useRegion();
-  const [gpsUser, setGpsUser] = useState<Coords | null>(null);
-  const [cepUser, setCepUser] = useState<Coords | null>(null);
+  const [user, setUser] = useState<Coords | null>(null);
   const [pickupOnly, setPickupOnly] = useState(false);
   const [locating, setLocating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const user = gpsUser ?? cepUser;
-  const source = gpsUser ? "gps" : cepUser ? "cep" : null;
-
-  // Sem GPS: usa o CEP informado para estimar a localização (nível cidade).
-  useEffect(() => {
-    if (gpsUser || cepUser || !region?.cep) return;
-    let cancelled = false;
-    geocodeUserCep(region.cep).then((c) => {
-      if (!cancelled && c) setCepUser({ lat: c.latitude, lng: c.longitude });
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [region?.cep, gpsUser, cepUser]);
+  const asked = useRef(false);
 
   function locate() {
     if (typeof navigator === "undefined" || !navigator.geolocation) {
@@ -54,18 +36,28 @@ export function NearbyView({ stores }: { stores: NearbyStore[] }) {
     setError(null);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setGpsUser({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        setUser({ lat: pos.coords.latitude, lng: pos.coords.longitude });
         setLocating(false);
       },
       () => {
-        setError("Não foi possível obter sua localização.");
+        setError(
+          "Não foi possível obter sua localização. Você pode permitir o acesso e tentar de novo.",
+        );
         setLocating(false);
       },
+      { enableHighAccuracy: false, timeout: 10_000, maximumAge: 300_000 },
     );
   }
 
+  // Pergunta a localização ao navegador assim que a página abre (é a página de
+  // "lojas perto de você"). O usuário ainda decide permitir ou não.
+  useEffect(() => {
+    if (asked.current) return;
+    asked.current = true;
+    locate();
+  }, []);
+
   const list = useMemo(() => {
-    const uf = region?.uf ?? null;
     const withDist = stores.map((s) => ({
       ...s,
       distanceKm: user
@@ -79,20 +71,17 @@ export function NearbyView({ stores }: { stores: NearbyStore[] }) {
       if (a.distanceKm != null && b.distanceKm != null) {
         return a.distanceKm - b.distanceKm;
       }
-      const aSame = uf && a.uf === uf ? 0 : 1;
-      const bSame = uf && b.uf === uf ? 0 : 1;
-      if (aSame !== bSame) return aSame - bSame;
       return a.name.localeCompare(b.name, "pt-BR");
     });
     return filtered;
-  }, [stores, user, pickupOnly, region]);
+  }, [stores, user, pickupOnly]);
 
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-3 rounded-2xl border bg-card p-4 shadow-sm">
         <Button type="button" onClick={locate} disabled={locating}>
           {locating ? <Loader2 className="animate-spin" /> : <LocateFixed />}
-          Usar minha localização
+          {user ? "Atualizar localização" : "Usar minha localização"}
         </Button>
         <button
           type="button"
@@ -108,19 +97,19 @@ export function NearbyView({ stores }: { stores: NearbyStore[] }) {
           <Store className="size-3.5" />
           Só com retirada
         </button>
-        {error ? <p className="text-xs text-destructive">{error}</p> : null}
-        {source === "cep" && region ? (
+        {error ? (
+          <p className="text-xs text-destructive">{error}</p>
+        ) : locating ? (
+          <p className="text-xs text-muted-foreground">Localizando você…</p>
+        ) : user ? (
           <p className="text-xs text-muted-foreground">
-            Distâncias a partir do seu CEP
-            {region.localidade ? ` (${region.localidade}/${region.uf})` : ""}.
-            Toque em “Usar minha localização” para mais precisão.
+            Lojas ordenadas pela distância até você.
           </p>
-        ) : !user && region?.uf ? (
+        ) : (
           <p className="text-xs text-muted-foreground">
-            Mostrando lojas de {region.uf} primeiro. Informe seu CEP no topo ou
-            use sua localização para ordenar por distância.
+            Permita o acesso à localização para ordenar as lojas por distância.
           </p>
-        ) : null}
+        )}
       </div>
 
       <StoreMap stores={list} user={user} />
