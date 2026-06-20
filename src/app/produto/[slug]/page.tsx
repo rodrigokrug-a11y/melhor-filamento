@@ -21,6 +21,12 @@ import {
   getProductDetail,
 } from "@/lib/catalog";
 import { getProductReviews } from "@/lib/reviews";
+import { CouponForm } from "@/components/coupon-form";
+import {
+  getApprovedCouponsForProduct,
+  getSellersForProduct,
+} from "@/lib/coupons";
+import { getViewer } from "@/lib/permissions";
 import { breadcrumbJsonLd, productJsonLd } from "@/lib/seo";
 import { formatBRL } from "@/lib/utils";
 
@@ -69,6 +75,11 @@ export default async function ProdutoPage({ params }: { params: Params }) {
 
   const reviewData = await getProductReviews(product.id);
   const priceHistory = await getPriceHistory(product.id, 180);
+  const [couponList, couponSellers, viewer] = await Promise.all([
+    getApprovedCouponsForProduct(product.id),
+    getSellersForProduct(product.id),
+    getViewer(),
+  ]);
   const isPrinter = product.kind === "PRINTER";
   const kindHref = isPrinter
     ? "/impressoras"
@@ -240,6 +251,50 @@ export default async function ProdutoPage({ params }: { params: Params }) {
           </Link>
         </div>
       </section>
+
+      {couponSellers.length > 0 ? (
+        <section className="mt-12">
+          <h2 className="text-lg font-semibold">Cupons da comunidade</h2>
+          <p className="mb-4 mt-1 text-sm text-muted-foreground">
+            Códigos de desconto das lojas, compartilhados por quem usa. Confira
+            sempre a validade no site da loja.
+          </p>
+          {couponList.length > 0 ? (
+            <ul className="mb-4 space-y-2">
+              {couponList.map((c) => (
+                <li
+                  key={c.id}
+                  className="flex flex-wrap items-center gap-3 rounded-2xl border bg-card p-3 shadow-sm"
+                >
+                  <span className="rounded-lg border border-dashed border-brand/40 bg-brand-soft px-2.5 py-1 font-mono text-sm font-bold tracking-wide text-brand">
+                    {c.code}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium">{c.sellerName}</p>
+                    {c.description ? (
+                      <p className="text-xs text-muted-foreground">
+                        {c.description}
+                      </p>
+                    ) : null}
+                  </div>
+                  {c.expiresAt ? (
+                    <span className="text-xs text-muted-foreground">
+                      até {c.expiresAt.toLocaleDateString("pt-BR")}
+                    </span>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mb-4 text-sm text-muted-foreground">
+              Nenhum cupom ainda. Conhece um? Compartilhe abaixo.
+            </p>
+          )}
+          <div className="rounded-2xl border border-dashed bg-card p-4">
+            <CouponForm sellers={couponSellers} isLogged={Boolean(viewer.id)} />
+          </div>
+        </section>
+      ) : null}
 
       {priceHistory.length >= 2 ? (
         <section className="mt-12">

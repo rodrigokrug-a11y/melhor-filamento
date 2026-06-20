@@ -149,6 +149,7 @@ model Seller {
   sources       Source[]
   boosts        Boost[]
   banners       Banner[]
+  coupons       Coupon[]
   createdAt     DateTime       @default(now())
 }
 
@@ -239,6 +240,7 @@ model User {
   ownedSeller   Seller?   @relation("SellerOwner")
   accounts      Account[]
   sessions      Session[]
+  coupons       Coupon[]  @relation("UserCoupons")
   createdAt     DateTime  @default(now())
 }
 
@@ -365,6 +367,27 @@ model Review {
 
   @@index([productId, status])
   @@index([brandId, status])
+  @@index([status])
+}
+
+// Cupom da comunidade: qualquer logado (CLIENTE+) compartilha um cupom de uma
+// loja; entra como PENDING e só aparece após moderação (admin/MODERADOR).
+model Coupon {
+  id              String        @id @default(cuid())
+  code            String
+  description     String?
+  sellerId        String
+  seller          Seller        @relation(fields: [sellerId], references: [id])
+  submittedById   String?
+  submittedBy     User?         @relation("UserCoupons", fields: [submittedById], references: [id])
+  submittedByName String?
+  discountType    CouponType?
+  discountValue   Decimal?      @db.Decimal(10, 2)
+  expiresAt       DateTime?
+  status          ContentStatus @default(PENDING)
+  createdAt       DateTime      @default(now())
+
+  @@index([sellerId, status])
   @@index([status])
 }
 
