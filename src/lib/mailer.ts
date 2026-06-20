@@ -93,7 +93,7 @@ export async function sendMail(input: MailInput): Promise<void> {
 
 /**
  * Layout de e-mail responsivo, com estilos inline (compatível com a maioria dos
- * clientes). Mantém a identidade da marca (laranja #F2541B).
+ * clientes). Identidade atual da marca: teal #0E7E7B + verde #54B62E + navy.
  */
 export function emailLayout(opts: {
   heading: string;
@@ -103,7 +103,9 @@ export function emailLayout(opts: {
   ctaUrl?: string;
   footnote?: string;
 }): string {
-  const brand = "#F2541B";
+  const brand = "#0E7E7B"; // teal da marca
+  const green = "#54B62E";
+  const navy = "#0C1F23";
   const cta =
     opts.ctaLabel && opts.ctaUrl
       ? `<tr><td style="padding:12px 0 4px"><a href="${opts.ctaUrl}" style="display:inline-block;background:${brand};color:#ffffff;text-decoration:none;font-weight:600;padding:13px 24px;border-radius:10px;font-size:15px">${opts.ctaLabel}</a></td></tr>`
@@ -120,10 +122,10 @@ export function emailLayout(opts: {
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;padding:28px 12px">
     <tr><td align="center">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden">
-        <tr><td style="background:${brand};height:5px"></td></tr>
+        <tr><td style="height:5px;background:${brand};background:linear-gradient(90deg,${brand},${green})"></td></tr>
         <tr><td style="padding:26px 28px 24px">
-          <a href="${SITE_URL}" style="text-decoration:none;color:#0f172a;font-weight:700;font-size:18px">Melhor<span style="color:${brand}">Filamento</span></a>
-          <h1 style="margin:18px 0 8px;font-size:20px;line-height:1.3;color:#0f172a">${opts.heading}</h1>
+          <a href="${SITE_URL}" style="text-decoration:none;color:${navy};font-weight:700;font-size:18px">Melhor<span style="color:${brand}">Filamento</span></a>
+          <h1 style="margin:18px 0 8px;font-size:20px;line-height:1.3;color:${navy}">${opts.heading}</h1>
           <p style="margin:0;color:#475569;font-size:15px;line-height:1.6">${opts.intro}</p>
           <table role="presentation" cellpadding="0" cellspacing="0">${body}${cta}</table>
           ${footnote}

@@ -10,9 +10,9 @@ import { formatBRL } from "@/lib/utils";
 
 type Store = NearbyStore & { distanceKm: number | null };
 
-const ORANGE = "#F2541B";
-const TEAL = "#0d9488";
-const BLUE = "#2563eb";
+const GREEN = "#54B62E"; // entrega (marca)
+const TEAL = "#0E7E7B"; // retira na loja (marca)
+const BLUE = "#2563eb"; // você
 
 function pin(color: string) {
   return L.divIcon({
@@ -56,7 +56,7 @@ export default function StoreMap({
         <Marker
           key={s.id}
           position={[s.latitude, s.longitude]}
-          icon={pin(s.offersPickup ? TEAL : ORANGE)}
+          icon={pin(s.offersPickup ? TEAL : GREEN)}
         >
           <Popup>
             <strong>{s.name}</strong>

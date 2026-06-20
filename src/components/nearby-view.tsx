@@ -116,10 +116,10 @@ export function NearbyView({ stores }: { stores: NearbyStore[] }) {
 
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
         <span className="inline-flex items-center gap-1.5">
-          <span className="size-2.5 rounded-full bg-teal" /> retira na loja
+          <span className="size-2.5 rounded-full bg-[#0E7E7B]" /> retira na loja
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="size-2.5 rounded-full bg-brand" /> entrega
+          <span className="size-2.5 rounded-full bg-[#54B62E]" /> entrega
         </span>
         <span className="inline-flex items-center gap-1.5">
           <span className="size-2.5 rounded-full bg-[#2563eb]" /> você
