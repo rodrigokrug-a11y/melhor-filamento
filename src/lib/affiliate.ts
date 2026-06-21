@@ -2,20 +2,25 @@
  * Reescrita de links de saída para AFILIADOS.
  *
  * Toda saída passa por /go/[offerId] → applyAffiliate() é chamado no link final.
- * Para monetizar uma loja, adicione o domínio dela aqui e como aplicar a tag/
- * parâmetro de afiliado (conforme você entra nos programas: Awin, Lomadee,
- * Amazon Associados, ou o programa próprio da loja).
+ * Duas formas de monetizar uma loja:
+ *  1. Config por loja no admin (campos `affiliateParams` / `affiliateTemplate`
+ *     em Seller) — preferido, dá pra cadastrar sem deploy.
+ *  2. Regra global por domínio aqui no código (ex.: Amazon/Mercado Livre, onde
+ *     a tag é a mesma independente da loja).
  *
- * Domínio NÃO cadastrado = link segue sem alteração (zero risco, nada quebra).
- * Casa por domínio-base, então "loja.exemplo.com.br" também casa "exemplo.com.br".
+ * Sem config = link segue sem alteração (zero risco, nada quebra).
  */
+export type SellerAffiliate = {
+  affiliateParams?: string | null;
+  affiliateTemplate?: string | null;
+};
+
 type Rewriter = (url: URL) => void;
 
+// Regras globais por domínio (preencha conforme entrar nos programas de rede).
 const AFFILIATE: Record<string, Rewriter> = {
-  // Preencha conforme entrar nos programas. Exemplos (deixe comentado até ter a tag real):
   // "amazon.com.br": (u) => u.searchParams.set("tag", "SEU-TAG-20"),
-  // "3dfila.com.br": (u) => u.searchParams.set("ref", "melhorfilamento"),
-  // "voolt3d.com.br": (u) => u.searchParams.set("utm_affiliate", "SEU-ID"),
+  // "mercadolivre.com.br": (u) => u.searchParams.set("matt_tool", "SEU-ID"),
 };
 
 function baseDomain(hostname: string): string {
@@ -23,18 +28,50 @@ function baseDomain(hostname: string): string {
 }
 
 /**
- * Aplica a regra de afiliado in-place se houver uma para o domínio da URL.
- * Retorna a mesma URL (alterada ou não). Nunca lança.
+ * Aplica a regra de afiliado. Config por loja tem prioridade; sem ela, cai na
+ * regra global por domínio. Retorna a URL final (pode ser uma nova URL quando
+ * a loja usa rede de afiliado com template). Nunca lança.
  */
-export function applyAffiliate(url: URL): URL {
-  const host = baseDomain(url.hostname);
-  const rule =
-    AFFILIATE[host] ??
-    Object.entries(AFFILIATE).find(([d]) => host === d || host.endsWith("." + d))?.[1];
-  try {
-    rule?.(url);
-  } catch {
-    // Regra de afiliado inválida não pode impedir o redirecionamento.
+export function applyAffiliate(url: URL, seller?: SellerAffiliate | null): URL {
+  // 1) Parâmetros de afiliado da loja (ex.: "ref=melhorfilamento&aff=ABC").
+  if (seller?.affiliateParams) {
+    try {
+      new URLSearchParams(seller.affiliateParams).forEach((v, k) => {
+        if (k) url.searchParams.set(k, v);
+      });
+    } catch {
+      // params malformados não impedem o redirecionamento.
+    }
   }
+
+  // 2) Template de rede de afiliado (embrulha o link, ex.: Awin/Lomadee).
+  if (seller?.affiliateTemplate && seller.affiliateTemplate.includes("{target}")) {
+    try {
+      return new URL(
+        seller.affiliateTemplate.replace(
+          "{target}",
+          encodeURIComponent(url.toString()),
+        ),
+      );
+    } catch {
+      // template inválido → segue com a URL (já com os params aplicados).
+    }
+  }
+
+  // 3) Sem config por loja → regra global por domínio.
+  if (!seller?.affiliateParams && !seller?.affiliateTemplate) {
+    const host = baseDomain(url.hostname);
+    const rule =
+      AFFILIATE[host] ??
+      Object.entries(AFFILIATE).find(
+        ([d]) => host === d || host.endsWith("." + d),
+      )?.[1];
+    try {
+      rule?.(url);
+    } catch {
+      // regra inválida não pode impedir o redirecionamento.
+    }
+  }
+
   return url;
 }

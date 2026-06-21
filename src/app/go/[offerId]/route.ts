@@ -19,7 +19,11 @@ export async function GET(
 
   const offer = await prisma.offer.findUnique({
     where: { id: offerId },
-    include: { seller: { select: { slug: true } } },
+    include: {
+      seller: {
+        select: { slug: true, affiliateParams: true, affiliateTemplate: true },
+      },
+    },
   });
 
   // Oferta inexistente, não aprovada ou esgotada → não vaza link; volta à home.
@@ -67,10 +71,11 @@ export async function GET(
   target.searchParams.set("utm_source", "melhorfilamento");
   target.searchParams.set("utm_medium", "lead");
   target.searchParams.set("utm_campaign", offer.seller.slug);
-  // Monetização por afiliado: reescreve o link da loja se houver regra cadastrada.
-  applyAffiliate(target);
+  // Monetização por afiliado: aplica a config da loja (ou a regra global por
+  // domínio). Pode devolver uma nova URL quando a loja usa rede de afiliado.
+  const finalUrl = applyAffiliate(target, offer.seller);
 
-  const response = NextResponse.redirect(target, 302);
+  const response = NextResponse.redirect(finalUrl, 302);
   if (isNewSession) {
     response.cookies.set(SESSION_COOKIE, sessionId, {
       httpOnly: true,

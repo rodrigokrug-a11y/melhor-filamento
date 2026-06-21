@@ -130,3 +130,24 @@ export async function revokeSellerAccess(formData: FormData): Promise<void> {
   });
   revalidatePath(`/admin/lojas/${sellerId}`);
 }
+
+/** Salva a configuração de afiliado da loja (aplicada no /go). */
+export async function setSellerAffiliate(formData: FormData): Promise<void> {
+  await requireAdmin();
+  const sellerId = String(formData.get("sellerId") ?? "");
+  if (!sellerId) return;
+  const params = String(formData.get("affiliateParams") ?? "")
+    .trim()
+    .slice(0, 500);
+  const template = String(formData.get("affiliateTemplate") ?? "")
+    .trim()
+    .slice(0, 500);
+  await prisma.seller.update({
+    where: { id: sellerId },
+    data: {
+      affiliateParams: params || null,
+      affiliateTemplate: template || null,
+    },
+  });
+  revalidatePath(`/admin/lojas/${sellerId}`);
+}

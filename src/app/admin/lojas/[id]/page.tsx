@@ -8,7 +8,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/db";
 
-import { grantSellerAccess, revokeSellerAccess } from "../actions";
+import {
+  grantSellerAccess,
+  revokeSellerAccess,
+  setSellerAffiliate,
+} from "../actions";
 
 export const metadata: Metadata = { title: "Loja", robots: { index: false } };
 
@@ -27,6 +31,8 @@ export default async function AdminLojaDetailPage({
       name: true,
       website: true,
       isVerified: true,
+      affiliateParams: true,
+      affiliateTemplate: true,
       owner: { select: { email: true, name: true } },
     },
   });
@@ -117,6 +123,58 @@ export default async function AdminLojaDetailPage({
             </Button>
           </form>
         )}
+      </section>
+
+      <section className="mb-8 rounded-2xl border bg-card p-4">
+        <h3 className="font-semibold">Afiliado (monetização)</h3>
+        <p className="mb-3 mt-1 text-sm text-muted-foreground">
+          Aplicado no link de saída (<code>/go</code>). Cadastre conforme entrar
+          no programa da loja — vale na hora, sem deploy.
+        </p>
+        <form action={setSellerAffiliate} className="space-y-3">
+          <input type="hidden" name="sellerId" value={seller.id} />
+          <div className="space-y-1">
+            <label
+              htmlFor="affiliateParams"
+              className="text-sm font-medium"
+            >
+              Parâmetros de afiliado
+            </label>
+            <input
+              id="affiliateParams"
+              name="affiliateParams"
+              defaultValue={seller.affiliateParams ?? ""}
+              placeholder="ref=melhorfilamento&aff=ABC123"
+              className="h-9 w-full rounded-md border border-input bg-background px-2.5 font-mono text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            />
+            <p className="text-xs text-muted-foreground">
+              Query anexada ao link da loja (programa próprio dela). Ex.:{" "}
+              <code>ref=melhorfilamento</code> ou <code>utm_affiliate=SEU-ID</code>.
+            </p>
+          </div>
+          <div className="space-y-1">
+            <label
+              htmlFor="affiliateTemplate"
+              className="text-sm font-medium"
+            >
+              Template de rede (opcional)
+            </label>
+            <input
+              id="affiliateTemplate"
+              name="affiliateTemplate"
+              defaultValue={seller.affiliateTemplate ?? ""}
+              placeholder="https://rede.com/click?u={target}"
+              className="h-9 w-full rounded-md border border-input bg-background px-2.5 font-mono text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            />
+            <p className="text-xs text-muted-foreground">
+              Só para redes (Awin/Lomadee): use <code>{"{target}"}</code> no
+              lugar do link, que entra embrulhado.
+            </p>
+          </div>
+          <Button size="sm" type="submit">
+            Salvar afiliado
+          </Button>
+        </form>
       </section>
 
       <section>

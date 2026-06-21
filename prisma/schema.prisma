@@ -141,6 +141,12 @@ model Seller {
   latitude      Float?
   longitude     Float?
   offersPickup  Boolean        @default(false) // permite retirada na loja física
+  // Monetização por afiliado (aplicado no /go ao link de saída):
+  // - affiliateParams: query a anexar, ex. "ref=melhorfilamento" ou "aff=ABC123"
+  // - affiliateTemplate: URL de rede de afiliado com {target} no lugar do link
+  //   (ex. Awin/Lomadee). Se preenchido, embrulha o link final.
+  affiliateParams   String?
+  affiliateTemplate String?
   ownerUserId   String?        @unique
   owner         User?          @relation("SellerOwner", fields: [ownerUserId], references: [id])
   members       User[]         @relation("SellerMembers")
