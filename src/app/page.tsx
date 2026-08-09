@@ -160,11 +160,11 @@ function Hero({
             <span className="text-offer">Compre melhor.</span>
           </p>
           <h1 className="mt-4 text-balance font-display text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-            O melhor preço em{" "}
+            Encontre o melhor preço de{" "}
             <span className="bg-gradient-to-r from-brand to-offer bg-clip-text text-transparent">
-              filamento e resina 3D
+              filamento
             </span>{" "}
-            do Brasil
+            no Brasil
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-pretty text-muted-foreground sm:text-lg lg:mx-0">
             Compare o preço de várias lojas num lugar só — e use as ferramentas
