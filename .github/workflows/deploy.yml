@@ -1,0 +1,116 @@
+name: Deploy
+
+# Publica em produção na Vercel.
+#
+# ⚠️ Se o projeto já usa a integração Vercel↔GitHub (deploy automático a cada
+# push), NÃO ative este workflow também: os dois publicariam a mesma coisa em
+# paralelo, gastando build e disputando o mesmo deploy. Escolha um dos dois.
+#
+# Este workflow fica INERTE até que o segredo VERCEL_TOKEN exista no
+# repositório — sem ele o job encerra em verde sem publicar nada. Para ativar,
+# veja as instruções em DEPLOY.md (seção 4).
+
+on:
+  push:
+    branches: [main]
+  # Permite publicar sob demanda pelo botão "Run workflow" na aba Actions.
+  workflow_dispatch:
+
+# Nunca cancelar um deploy em andamento: publicar pela metade é pior do que
+# esperar. Pushes novos entram na fila.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Publicar em produção
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      # O contexto `secrets` não pode ser usado no `if` do job, então a
+      # verificação vira o primeiro passo e os demais dependem dela.
+      - name: Verificar credenciais
+        id: check
+        env:
+          TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          if [ -z "$TOKEN" ] || [ -z "$ORG_ID" ] || [ -z "$PROJECT_ID" ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Deploy pulado — configure VERCEL_TOKEN, VERCEL_ORG_ID e VERCEL_PROJECT_ID em Settings → Secrets. Veja DEPLOY.md."
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.check.outputs.ready == 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.check.outputs.ready == 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar Vercel CLI
+        if: steps.check.outputs.ready == 'true'
+        run: npm install --global vercel@latest
+
+      # Traz as variáveis de ambiente de produção do projeto na Vercel
+      # (inclusive DATABASE_URL) para que o build possa migrar o banco e
+      # renderizar as rotas estáticas que leem dados.
+      - name: Baixar configuração de produção
+        if: steps.check.outputs.ready == 'true'
+        run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      # Roda `npm run build`, que aplica as migrações pendentes antes de
+      # compilar. Se uma migração falhar, o build falha e nada é publicado —
+      # a versão atual continua no ar.
+      - name: Build de produção
+        if: steps.check.outputs.ready == 'true'
+        run: vercel build --prod --token="$VERCEL_TOKEN"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Publicar
+        if: steps.check.outputs.ready == 'true'
+        id: deploy
+        run: |
+          url=$(vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN")
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "::notice::Publicado em $url"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      # Confirma que o app subiu e alcança o banco antes de dar o deploy por
+      # bom — a rota /api/health responde {"status":"ok","db":"up"}.
+      - name: Checar saúde do app
+        if: steps.check.outputs.ready == 'true'
+        env:
+          # Via env, e não interpolado direto no script, para que a saída do
+          # passo anterior nunca seja avaliada como shell.
+          url: ${{ steps.deploy.outputs.url }}
+        run: |
+          for attempt in 1 2 3 4 5; do
+            body=$(curl -fsS --max-time 20 "$url/api/health" 2>/dev/null) || body=""
+            case "$body" in
+              *'"db":"up"'*)
+                echo "Saúde OK: $body"
+                exit 0
+                ;;
+            esac
+            echo "Tentativa $attempt sem resposta saudável; aguardando..."
+            sleep 10
+          done
+          echo "::error::O deploy foi publicado mas /api/health não confirmou o banco."
+          exit 1
