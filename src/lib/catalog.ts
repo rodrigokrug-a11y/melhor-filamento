@@ -18,6 +18,7 @@ import {
   type ProductListItem,
   materialLabel,
 } from "@/lib/catalog-types";
+import { DAY_MS, buildDailyMinSeries } from "@/lib/price-history";
 import { prisma } from "@/lib/db";
 import {
   type CouponType,
@@ -598,26 +599,47 @@ export const getPriceHistory = cache(
     productId: string,
     days = 30,
   ): Promise<{ date: string; price: number }[]> => {
-    const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
-    const snaps = await prisma.priceSnapshot.findMany({
-      where: {
-        createdAt: { gte: since },
-        offer: { productId, status: "APPROVED" },
-      },
-      select: { price: true, createdAt: true },
-      orderBy: { createdAt: "asc" },
+    const offers = await prisma.offer.findMany({
+      where: { productId, status: "APPROVED" },
+      select: { id: true },
     });
+    if (offers.length === 0) return [];
+    const offerIds = offers.map((o) => o.id);
 
-    const byDay = new Map<string, number>();
-    for (const s of snaps) {
-      const day = s.createdAt.toISOString().slice(0, 10);
-      const price = Number(s.price);
-      const current = byDay.get(day);
-      if (current == null || price < current) byDay.set(day, price);
-    }
-    return [...byDay.entries()]
-      .map(([date, price]) => ({ date, price }))
-      .sort((a, b) => a.date.localeCompare(b.date));
+    const startDayMs =
+      new Date(Date.now() - days * DAY_MS).setUTCHours(0, 0, 0, 0);
+    const since = new Date(startDayMs);
+
+    // Como só gravamos snapshot quando o preço muda, os dias iniciais da
+    // janela podem não ter nenhum ponto. O baseline (último snapshot de cada
+    // oferta antes da janela) diz qual era o preço vigente na abertura dela.
+    const [baseline, changes] = await Promise.all([
+      prisma.priceSnapshot.findMany({
+        where: { offerId: { in: offerIds }, createdAt: { lt: since } },
+        orderBy: [{ offerId: "asc" }, { createdAt: "desc" }],
+        distinct: ["offerId"],
+        select: { offerId: true, price: true },
+      }),
+      prisma.priceSnapshot.findMany({
+        where: { offerId: { in: offerIds }, createdAt: { gte: since } },
+        orderBy: { createdAt: "asc" },
+        select: { offerId: true, price: true, createdAt: true },
+      }),
+    ]);
+
+    return buildDailyMinSeries({
+      baseline: baseline.map((b) => ({
+        offerId: b.offerId,
+        price: toNumber(b.price),
+      })),
+      changes: changes.map((c) => ({
+        offerId: c.offerId,
+        price: toNumber(c.price),
+        at: c.createdAt,
+      })),
+      startDayMs,
+      dayCount: days + 1,
+    });
   },
 );
 

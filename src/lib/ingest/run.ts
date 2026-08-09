@@ -50,17 +50,23 @@ async function upsertIngestedOffer(args: {
 
   const existing = await prisma.offer.findFirst({
     where: { sourceId: args.sourceId, productId: args.productId },
-    select: { id: true },
+    select: { id: true, price: true },
   });
 
   let offerId: string;
+  // Snapshot só quando o preço muda: um ponto por execução faria a tabela
+  // crescer sem limite repetindo o mesmo valor. O histórico é uma série de
+  // degraus — `buildDailyMinSeries` repete o último preço nos dias sem ponto.
+  let priceChanged: boolean;
   if (existing) {
+    priceChanged = Number(existing.price) !== Number(price);
     await prisma.offer.update({
       where: { id: existing.id },
       data: { price, url: args.url, stockStatus },
     });
     offerId = existing.id;
   } else {
+    priceChanged = true; // primeira leitura: registra o ponto inicial da série
     // Ingestão é disparada pelo admin (fontes controladas) → já entra aprovada.
     const created = await prisma.offer.create({
       data: {
@@ -77,7 +83,9 @@ async function upsertIngestedOffer(args: {
     offerId = created.id;
   }
 
-  await prisma.priceSnapshot.create({ data: { offerId, price } });
+  if (priceChanged) {
+    await prisma.priceSnapshot.create({ data: { offerId, price } });
+  }
 
   // Preenche a imagem do produto se ainda não houver uma.
   // Ignora cards sociais (og:image gerado) — não são fotos de produto.
@@ -252,30 +260,115 @@ export async function ingestSource(sourceId: string): Promise<IngestResult> {
   return result;
 }
 
-export async function runAllSources(): Promise<{
+/** Quantos domínios diferentes raspar ao mesmo tempo. */
+const HOST_CONCURRENCY = 4;
+
+function hostOf(url: string): string {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return url;
+  }
+}
+
+/** Executa `fn` sobre `items` com no máximo `limit` execuções simultâneas. */
+async function mapWithConcurrency<T, R>(
+  items: T[],
+  limit: number,
+  fn: (item: T) => Promise<R>,
+): Promise<R[]> {
+  const results = new Array<R>(items.length);
+  let next = 0;
+  const workers = Array.from(
+    { length: Math.min(limit, items.length) },
+    async () => {
+      for (;;) {
+        const i = next++;
+        if (i >= items.length) return;
+        results[i] = await fn(items[i]);
+      }
+    },
+  );
+  await Promise.all(workers);
+  return results;
+}
+
+export type RunAllResult = {
   sources: number;
   found: number;
   created: number;
   upserted: number;
   unmatched: number;
-}> {
+  /** Fontes que não chegaram a rodar por estouro de prazo. */
+  skipped: number;
+};
+
+/**
+ * Roda todas as fontes ativas.
+ *
+ * Fontes do mesmo domínio rodam em série (não martelar a mesma loja), mas
+ * domínios diferentes rodam em paralelo — o custo aqui é quase todo espera de
+ * rede, então serializar tudo desperdiça o tempo da função.
+ *
+ * `deadlineMs` limita o tempo total: ao estourar, as fontes restantes são
+ * contadas em `skipped` em vez de o processo ser morto no meio pelo timeout
+ * da plataforma, que deixaria fontes com status desatualizado e sem sinal.
+ */
+export async function runAllSources(
+  opts: { deadlineMs?: number } = {},
+): Promise<RunAllResult> {
+  const startedAt = Date.now();
+  const deadlineMs = opts.deadlineMs ?? Infinity;
+
   const sources = await prisma.source.findMany({
     where: { enabled: true },
-    select: { id: true },
+    select: { id: true, url: true },
   });
-  const totals = {
+
+  const byHost = new Map<string, string[]>();
+  for (const s of sources) {
+    const host = hostOf(s.url);
+    const group = byHost.get(host);
+    if (group) group.push(s.id);
+    else byHost.set(host, [s.id]);
+  }
+
+  const totals: RunAllResult = {
     sources: sources.length,
     found: 0,
     created: 0,
     upserted: 0,
     unmatched: 0,
+    skipped: 0,
   };
-  for (const s of sources) {
-    const r = await ingestSource(s.id);
-    totals.found += r.found;
-    totals.created += r.created;
-    totals.upserted += r.upserted;
-    totals.unmatched += r.unmatched;
+
+  const perGroup = await mapWithConcurrency(
+    [...byHost.values()],
+    HOST_CONCURRENCY,
+    async (ids) => {
+      const acc = { found: 0, created: 0, upserted: 0, unmatched: 0, skipped: 0 };
+      for (const id of ids) {
+        if (Date.now() - startedAt >= deadlineMs) {
+          acc.skipped += 1;
+          continue;
+        }
+        const r = await ingestSource(id);
+        acc.found += r.found;
+        acc.created += r.created;
+        acc.upserted += r.upserted;
+        acc.unmatched += r.unmatched;
+      }
+      return acc;
+    },
+  );
+
+  for (const g of perGroup) {
+    totals.found += g.found;
+    totals.created += g.created;
+    totals.upserted += g.upserted;
+    totals.unmatched += g.unmatched;
+    totals.skipped += g.skipped;
   }
+
   return totals;
 }
