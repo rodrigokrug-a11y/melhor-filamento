@@ -3,6 +3,45 @@
 import { type CouponType } from "@/lib/pricing";
 import { type ShippingRuleLite } from "@/lib/shipping";
 
+/**
+ * Depois de quantos dias sem a ingestão reencontrar a oferta na loja ela deixa
+ * de ser exibida. O prazo é deliberadamente folgado: se a ingestão quebrar por
+ * alguns dias, mostrar preço um pouco velho é melhor do que esvaziar o
+ * catálogo inteiro sem aviso — a idade real aparece na página do produto.
+ */
+export const STALE_OFFER_DAYS = 30;
+
+/** Idade a partir da qual o preço passa a exibir aviso em vez de só a data. */
+export const UNVERIFIED_OFFER_DAYS = 7;
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+/**
+ * Quando o preço desta oferta foi verificado na loja pela última vez.
+ *
+ * Retorna `null` para oferta cadastrada à mão (`lastSeenAt` nulo): ela nunca
+ * passa pela ingestão, então não há data que possamos prometer ao usuário.
+ */
+export function offerFreshness(
+  lastSeenAt: string | null,
+  now: number = Date.now(),
+): { label: string; stale: boolean } | null {
+  if (!lastSeenAt) return null;
+  const seen = new Date(lastSeenAt).getTime();
+  if (!Number.isFinite(seen)) return null;
+
+  // Relógios podem divergir; data no futuro conta como hoje, não como negativa.
+  const days = Math.floor(Math.max(0, now - seen) / DAY_MS);
+  const label =
+    days <= 0
+      ? "preço verificado hoje"
+      : days === 1
+        ? "preço verificado ontem"
+        : `preço verificado há ${days} dias`;
+
+  return { label, stale: days >= UNVERIFIED_OFFER_DAYS };
+}
+
 export type ProductKind = "FILAMENT" | "RESIN" | "PRINTER";
 
 export const KIND_LABELS: Record<string, string> = {
@@ -215,6 +254,8 @@ export type OfferView = {
   sponsoredActive: boolean;
   shippingRules: ShippingRuleLite[];
   submittedByName: string | null;
+  /** ISO da última verificação pela ingestão; null em cadastro manual. */
+  lastSeenAt: string | null;
 };
 
 export type ProductDetail = {

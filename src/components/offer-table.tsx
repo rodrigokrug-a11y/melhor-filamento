@@ -1,14 +1,14 @@
 "use client";
 
 import { useMemo } from "react";
-import { Megaphone, ShieldCheck, Tag, Truck } from "lucide-react";
+import { Clock, Megaphone, ShieldCheck, Tag, Truck } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { OfferLink } from "@/components/offer-link";
 import { VerifiedOfferSeal, VerifiedStoreSeal } from "@/components/seals";
 import { useRegion } from "@/components/use-region";
 import { Badge } from "@/components/ui/badge";
-import type { OfferView } from "@/lib/catalog-types";
+import { type OfferView, offerFreshness } from "@/lib/catalog-types";
 import { type ShippingEstimate, estimateShipping, totalForRegion } from "@/lib/shipping";
 import { cn, formatBRL } from "@/lib/utils";
 
@@ -88,6 +88,9 @@ function shippingLabel(s: ShippingEstimate | null): string {
 
 function OfferRow({ offer, isBest }: { offer: ComputedOffer; isBest: boolean }) {
   const hasCoupon = offer.discount > 0;
+  // Calculado no render (não em useMemo) para não congelar a idade do preço
+  // caso a aba fique aberta; é uma conta de subtração, custo irrelevante.
+  const freshness = offerFreshness(offer.lastSeenAt);
 
   return (
     <div
@@ -128,6 +131,17 @@ function OfferRow({ offer, isBest }: { offer: ComputedOffer; isBest: boolean }) 
           <p className="mt-1.5 text-xs text-muted-foreground">
             cadastrado por{" "}
             <span className="font-medium text-foreground">{offer.submittedByName}</span>
+          </p>
+        ) : null}
+        {freshness ? (
+          <p
+            className={cn(
+              "mt-1.5 inline-flex items-center gap-1 text-xs",
+              freshness.stale ? "text-amber-600 dark:text-amber-500" : "text-muted-foreground",
+            )}
+          >
+            <Clock className="size-3.5 shrink-0" />
+            {freshness.label}
           </p>
         ) : null}
       </div>
