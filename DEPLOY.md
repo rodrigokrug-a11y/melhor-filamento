@@ -65,6 +65,33 @@ npm run db:deploy
 
 > `DATABASE_URL` precisa existir no ambiente de **build**, não só no de runtime: há rotas que leem o banco na geração estática, e é o build que aplica as migrações (seção 3).
 
+### 4.1. Publicar pelo GitHub Actions (opcional)
+
+Há um workflow em `.github/workflows/deploy.yml` que publica em produção a
+cada push no `main`, e também sob demanda pelo botão **Run workflow** na aba
+**Actions**. Ele termina com uma checagem de `/api/health`, para não dar por
+bom um deploy que subiu sem alcançar o banco.
+
+> **Escolha um caminho, não os dois.** Se a integração Vercel↔GitHub já
+> publica automaticamente a cada push, mantenha o workflow desativado — os
+> dois publicariam a mesma coisa em paralelo. Para usar o workflow, desligue
+> o deploy automático em **Vercel → Settings → Git**.
+
+O workflow fica **inerte enquanto os segredos não existirem**: sem eles o job
+encerra em verde sem publicar nada, então nada quebra por deixá-lo parado.
+Para ativar, adicione em **GitHub → Settings → Secrets and variables →
+Actions**:
+
+| Segredo | Onde encontrar |
+| --- | --- |
+| `VERCEL_TOKEN` | Vercel → Account Settings → Tokens → Create |
+| `VERCEL_ORG_ID` | `.vercel/project.json` após rodar `vercel link`, campo `orgId` |
+| `VERCEL_PROJECT_ID` | mesmo arquivo, campo `projectId` |
+
+As variáveis de ambiente da aplicação **não** viram segredo do GitHub: o
+workflow roda `vercel pull` e busca as de produção direto do projeto na
+Vercel.
+
 ## 5. Opção B — Docker / VPS
 
 O `next.config.ts` já usa `output: "standalone"`. Há um `Dockerfile` multi-stage pronto.
