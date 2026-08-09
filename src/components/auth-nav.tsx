@@ -16,10 +16,10 @@ export function AuthNav() {
         ? { href: "/moderar", label: "Moderar" }
         : { href: "/painel", label: "Painel" };
     return (
-      <div className="flex items-center gap-1">
+      <div className="flex shrink-0 items-center gap-1">
         <Link
           href={dest.href}
-          className="rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+          className="inline-flex h-9 items-center whitespace-nowrap rounded-md px-3 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
         >
           {dest.label}
         </Link>
@@ -37,16 +37,16 @@ export function AuthNav() {
   }
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex shrink-0 items-center gap-1">
       <Link
         href="/entrar"
-        className="rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+        className="inline-flex h-9 items-center whitespace-nowrap rounded-md px-3 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
       >
         Entrar
       </Link>
       <Link
         href="/criar-conta"
-        className="rounded-full bg-brand px-3.5 py-2 text-sm font-semibold text-white transition-colors hover:bg-teal"
+        className="inline-flex h-9 items-center whitespace-nowrap rounded-full bg-brand px-4 text-sm font-semibold text-white transition-colors hover:bg-teal"
       >
         Criar conta
       </Link>
