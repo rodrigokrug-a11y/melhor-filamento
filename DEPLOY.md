@@ -32,38 +32,60 @@ Copie de `.env.example`. Em produção, defina:
 
 ## 3. Banco de dados (migrações)
 
-As migrações **não** rodam seed e devem ser aplicadas a cada deploy:
+As migrações rodam **automaticamente no build**: o script `build` é
+`prisma migrate deploy && next build`. Não há passo manual por release — subir
+código que depende de uma coluna nova sem ela existir quebraria o site, então
+a ordem está garantida pelo próprio build. O `prisma generate` roda sozinho no
+`postinstall`. As migrações **não** rodam seed.
+
+Consequências que valem conhecer:
+
+- O ambiente de **build** precisa de `DATABASE_URL` apontando para produção.
+  (Já precisava: há rotas que leem o banco na geração estática.)
+- Se uma migração falhar, o **deploy inteiro falha** e a versão antiga
+  continua no ar — que é o comportamento desejado.
+- Se o processo for **interrompido** no meio de uma migração, o Prisma marca
+  aquela migração como falha e passa a recusar os deploys seguintes com o erro
+  `P3009`. Nesse caso, resolva com `prisma migrate resolve` antes de tentar de
+  novo: veja https://pris.ly/d/migrate-resolve
+
+Para aplicar as migrações fora de um deploy (por exemplo, ao restaurar um
+banco), o mesmo comando está disponível avulso:
 
 ```bash
-npx prisma migrate deploy
+npm run db:deploy
 ```
-
-Rode esse comando no pipeline de release (com `DATABASE_URL` apontando para produção), **antes** de subir a nova versão do app. O `prisma generate` roda sozinho no `postinstall`.
 
 ## 4. Opção A — Vercel (recomendado)
 
 1. Importe o repositório na Vercel.
 2. Em **Settings → Environment Variables**, defina as variáveis da seção 2.
-3. Build Command padrão (`next build`) funciona — o `postinstall` gera o Prisma Client.
-4. Migrações: rode `npx prisma migrate deploy` como passo de release (Vercel “Deploy Hook”/CI) ou manualmente após apontar `DATABASE_URL` para produção.
-5. Aponte o domínio `melhorfilamento.com.br` em **Settings → Domains**.
+3. Build Command padrão (`npm run build`) funciona — o `postinstall` gera o Prisma Client e o build aplica as migrações pendentes.
+4. Aponte o domínio `melhorfilamento.com.br` em **Settings → Domains**.
 
-> Se alguma rota for renderizada estaticamente lendo o banco, garanta `DATABASE_URL` disponível também no ambiente de **build**.
+> `DATABASE_URL` precisa existir no ambiente de **build**, não só no de runtime: há rotas que leem o banco na geração estática, e é o build que aplica as migrações (seção 3).
 
 ## 5. Opção B — Docker / VPS
 
 O `next.config.ts` já usa `output: "standalone"`. Há um `Dockerfile` multi-stage pronto.
 
 ```bash
-# 1. Build da imagem
-docker build -t melhorfilamento .
+# 1. Build da imagem — aplica as migrações pendentes e gera o app.
+#    O DATABASE_URL vai como build-arg porque o `npm run build` de dentro da
+#    imagem precisa dele tanto para migrar quanto para a geração estática.
+docker build -t melhorfilamento \
+  --build-arg DATABASE_URL="postgresql://..." \
+  --build-arg NEXT_PUBLIC_SITE_URL="https://melhorfilamento.com.br" .
 
-# 2. Migre o banco (uma vez por release)
-DATABASE_URL="postgresql://..." npx prisma migrate deploy
-
-# 3. Rode o container (porta 3000)
+# 2. Rode o container (porta 3000)
 docker run -p 3000:3000 --env-file .env.production melhorfilamento
 ```
+
+> Atenção: aqui as migrações rodam ao **construir a imagem**, não ao publicá-la
+> — a imagem fica atrelada ao banco apontado no build. Se preferir imagens
+> agnósticas de ambiente, troque a linha `RUN npm run build` do `Dockerfile`
+> por `RUN npx next build` e volte a rodar `npm run db:deploy` como passo
+> separado de release.
 
 O container roda como usuário sem privilégios e serve `node server.js`. Coloque um proxy reverso (Caddy/Nginx) na frente para TLS, ou use a TLS do provedor.
 
