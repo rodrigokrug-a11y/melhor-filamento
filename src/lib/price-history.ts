@@ -21,9 +21,25 @@ function dayKey(ms: number): string {
   return new Date(ms).toISOString().slice(0, 10);
 }
 
-function minOf(prices: Iterable<number>): number {
+/**
+ * Menor preço entre as ofertas que ainda existiam no dia `dayMs`.
+ *
+ * Uma oferta que sumiu da loja não pode continuar puxando o histórico para
+ * baixo: seu preço deixa de contar a partir do dia seguinte ao último em que
+ * a ingestão a encontrou. `activeUntil` ausente ou nulo = não expira (oferta
+ * cadastrada à mão, que a ingestão nunca revisita).
+ */
+function minActive(
+  current: Map<string, number>,
+  activeUntil: Map<string, number | null> | undefined,
+  dayMs: number,
+): number {
   let min = Infinity;
-  for (const p of prices) if (p < min) min = p;
+  for (const [offerId, price] of current) {
+    const until = activeUntil?.get(offerId);
+    if (until != null && until < dayMs) continue;
+    if (price < min) min = price;
+  }
   return min;
 }
 
@@ -44,8 +60,10 @@ export function buildDailyMinSeries(args: {
   changes: PriceChange[];
   startDayMs: number;
   dayCount: number;
+  /** Por oferta, o início do dia da última vez que foi vista na loja. */
+  activeUntil?: Map<string, number | null>;
 }): DailyPrice[] {
-  const { baseline, changes, startDayMs, dayCount } = args;
+  const { baseline, changes, startDayMs, dayCount, activeUntil } = args;
 
   // Preço corrente de cada oferta, avançando no tempo.
   const current = new Map<string, number>();
@@ -65,12 +83,13 @@ export function buildDailyMinSeries(args: {
 
   const series: DailyPrice[] = [];
   for (let i = 0; i < dayCount; i++) {
-    const key = dayKey(startDayMs + i * DAY_MS);
+    const dayMs = startDayMs + i * DAY_MS;
+    const key = dayKey(dayMs);
 
-    let dayMin = minOf(current.values());
+    let dayMin = minActive(current, activeUntil, dayMs);
     for (const change of byDay.get(key) ?? []) {
       current.set(change.offerId, change.price);
-      const after = minOf(current.values());
+      const after = minActive(current, activeUntil, dayMs);
       if (after < dayMin) dayMin = after;
     }
 

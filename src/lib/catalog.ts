@@ -16,6 +16,7 @@ import {
   type ProductDetail,
   type ProductKind,
   type ProductListItem,
+  STALE_OFFER_DAYS,
   materialLabel,
 } from "@/lib/catalog-types";
 import { DAY_MS, buildDailyMinSeries } from "@/lib/price-history";
@@ -29,22 +30,32 @@ import {
 } from "@/lib/pricing";
 import { type ShippingRuleLite } from "@/lib/shipping";
 
-const ACTIVE_OFFER_WHERE = {
-  status: "APPROVED",
-  stockStatus: { not: "OUT_OF_STOCK" },
-} as const;
+function activeOfferWhere() {
+  return {
+    status: "APPROVED",
+    stockStatus: { not: "OUT_OF_STOCK" },
+    // `lastSeenAt` nulo = oferta cadastrada à mão, que a ingestão nunca
+    // revisita. Essa não expira; só expira o que já foi visto e sumiu.
+    OR: [
+      { lastSeenAt: null },
+      { lastSeenAt: { gte: new Date(Date.now() - STALE_OFFER_DAYS * DAY_MS) } },
+    ],
+  } satisfies Prisma.OfferWhereInput;
+}
 
-const PRODUCT_WITH_OFFERS = {
-  brand: true,
-  offers: {
-    where: ACTIVE_OFFER_WHERE,
-    include: { seller: { include: { shippingRules: true } } },
-  },
-  reviews: { where: { status: "APPROVED" }, select: { rating: true } },
-} satisfies Prisma.ProductInclude;
+function productWithOffers() {
+  return {
+    brand: true,
+    offers: {
+      where: activeOfferWhere(),
+      include: { seller: { include: { shippingRules: true } } },
+    },
+    reviews: { where: { status: "APPROVED" }, select: { rating: true } },
+  } satisfies Prisma.ProductInclude;
+}
 
 type ProductWithOffers = Prisma.ProductGetPayload<{
-  include: typeof PRODUCT_WITH_OFFERS;
+  include: ReturnType<typeof productWithOffers>;
 }>;
 
 function toNumber(value: unknown): number {
@@ -98,6 +109,7 @@ function buildOfferView(
     sponsoredActive: isSponsoredActive(o.isSponsored, o.sponsoredUntil, now),
     shippingRules: mapShippingRules(o.seller.shippingRules),
     submittedByName: o.submittedByName,
+    lastSeenAt: o.lastSeenAt?.toISOString() ?? null,
   };
 }
 
@@ -204,7 +216,7 @@ export const searchProducts = cache(
 
     const rows = await prisma.product.findMany({
       where: {
-        offers: { some: ACTIVE_OFFER_WHERE },
+        offers: { some: activeOfferWhere() },
         AND: tokens.map((tok) => ({
           OR: [
             { name: { contains: tok, mode: "insensitive" as const } },
@@ -213,7 +225,7 @@ export const searchProducts = cache(
           ],
         })),
       },
-      include: PRODUCT_WITH_OFFERS,
+      include: productWithOffers(),
       take: 80,
     });
 
@@ -241,7 +253,7 @@ export async function searchSuggestions(
 
   const rows = await prisma.product.findMany({
     where: {
-      offers: { some: ACTIVE_OFFER_WHERE },
+      offers: { some: activeOfferWhere() },
       AND: tokens.map((tok) => ({
         OR: [
           { name: { contains: tok, mode: "insensitive" as const } },
@@ -276,8 +288,8 @@ export async function getProductsBySlugs(
   if (unique.length === 0) return [];
 
   const rows = await prisma.product.findMany({
-    where: { slug: { in: unique }, offers: { some: ACTIVE_OFFER_WHERE } },
-    include: PRODUCT_WITH_OFFERS,
+    where: { slug: { in: unique }, offers: { some: activeOfferWhere() } },
+    include: productWithOffers(),
   });
 
   const byslug = new Map(rows.map((r) => [r.slug, r]));
@@ -293,8 +305,8 @@ export const getProductCardById = cache(
   async (id: string): Promise<ProductListItem | null> => {
     if (!id) return null;
     const p = await prisma.product.findFirst({
-      where: { id, offers: { some: ACTIVE_OFFER_WHERE } },
-      include: PRODUCT_WITH_OFFERS,
+      where: { id, offers: { some: activeOfferWhere() } },
+      include: productWithOffers(),
     });
     return p ? buildListItem(p) : null;
   },
@@ -304,7 +316,7 @@ export const getProductCardById = cache(
 export const getProductPicklist = cache(
   async (): Promise<{ id: string; label: string }[]> => {
     const rows = await prisma.product.findMany({
-      where: { offers: { some: ACTIVE_OFFER_WHERE } },
+      where: { offers: { some: activeOfferWhere() } },
       select: { id: true, name: true, brand: { select: { name: true } } },
       orderBy: [{ brand: { name: "asc" } }, { name: "asc" }],
       take: 1500,
@@ -323,8 +335,8 @@ export const getDeals = cache(
 
     const [rows, snaps] = await Promise.all([
       prisma.product.findMany({
-        where: { offers: { some: ACTIVE_OFFER_WHERE } },
-        include: PRODUCT_WITH_OFFERS,
+        where: { offers: { some: activeOfferWhere() } },
+        include: productWithOffers(),
       }),
       prisma.priceSnapshot.findMany({
         where: { createdAt: { gte: since }, offer: { status: "APPROVED" } },
@@ -420,7 +432,7 @@ export const getCatalog = cache(
   ): Promise<CatalogResult> => {
     const rows = await prisma.product.findMany({
       where: { kind },
-      include: PRODUCT_WITH_OFFERS,
+      include: productWithOffers(),
       orderBy: { name: "asc" },
     });
 
@@ -529,7 +541,7 @@ export const getProductDetail = cache(
   async (slug: string): Promise<ProductDetail | null> => {
     const p = await prisma.product.findUnique({
       where: { slug },
-      include: PRODUCT_WITH_OFFERS,
+      include: productWithOffers(),
     });
     if (!p) return null;
 
@@ -568,8 +580,8 @@ export const getProductDetail = cache(
 export const getComparableProducts = cache(
   async (kind: ProductKind = "FILAMENT"): Promise<CompareProduct[]> => {
     const rows = await prisma.product.findMany({
-      where: { kind, offers: { some: ACTIVE_OFFER_WHERE } },
-      include: PRODUCT_WITH_OFFERS,
+      where: { kind, offers: { some: activeOfferWhere() } },
+      include: productWithOffers(),
       orderBy: { name: "asc" },
     });
     const now = new Date();
@@ -601,10 +613,20 @@ export const getPriceHistory = cache(
   ): Promise<{ date: string; price: number }[]> => {
     const offers = await prisma.offer.findMany({
       where: { productId, status: "APPROVED" },
-      select: { id: true },
+      select: { id: true, lastSeenAt: true },
     });
     if (offers.length === 0) return [];
     const offerIds = offers.map((o) => o.id);
+
+    // Oferta que sumiu da loja para de contar no menor preço a partir do dia
+    // seguinte ao último em que foi vista — senão o histórico continuaria
+    // exibindo um preço que ninguém consegue mais comprar.
+    const activeUntil = new Map<string, number | null>(
+      offers.map((o) => [
+        o.id,
+        o.lastSeenAt ? new Date(o.lastSeenAt).setUTCHours(0, 0, 0, 0) : null,
+      ]),
+    );
 
     const startDayMs =
       new Date(Date.now() - days * DAY_MS).setUTCHours(0, 0, 0, 0);
@@ -639,6 +661,7 @@ export const getPriceHistory = cache(
       })),
       startDayMs,
       dayCount: days + 1,
+      activeUntil,
     });
   },
 );
@@ -663,7 +686,7 @@ export const getStoresForMap = cache(async (): Promise<NearbyStore[]> => {
       offersPickup: true,
       isVerified: true,
       offers: {
-        where: ACTIVE_OFFER_WHERE,
+        where: activeOfferWhere(),
         select: {
           price: true,
           couponType: true,
@@ -711,7 +734,7 @@ export const getBrandWithProducts = cache(
     const brand = await prisma.brand.findUnique({
       where: { slug },
       include: {
-        products: { include: PRODUCT_WITH_OFFERS, orderBy: { name: "asc" } },
+        products: { include: productWithOffers(), orderBy: { name: "asc" } },
       },
     });
     if (!brand) return null;
@@ -751,7 +774,7 @@ export const getBrandsOverview = cache(async (): Promise<BrandSummary[]> => {
     orderBy: { name: "asc" },
     include: {
       products: {
-        where: { offers: { some: ACTIVE_OFFER_WHERE } },
+        where: { offers: { some: activeOfferWhere() } },
         select: { id: true },
       },
     },

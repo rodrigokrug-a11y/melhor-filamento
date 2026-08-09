@@ -119,6 +119,52 @@ describe("buildDailyMinSeries", () => {
     expect(series.map((p) => p.price)).toEqual([100, 100, 100]);
   });
 
+  it("para de contar a oferta que sumiu da loja", () => {
+    const series = buildDailyMinSeries({
+      baseline: [
+        { offerId: "sumiu", price: 50 },
+        { offerId: "fica", price: 90 },
+      ],
+      changes: [],
+      startDayMs: START,
+      dayCount: 4,
+      // "sumiu" foi vista pela última vez no dia 1 da janela.
+      activeUntil: new Map([
+        ["sumiu", START + DAY_MS],
+        ["fica", null],
+      ]),
+    });
+
+    // Enquanto existia ela era a mais barata; depois o menor preço real
+    // passa a ser o da oferta que continua no ar.
+    expect(series.map((p) => p.price)).toEqual([50, 50, 90, 90]);
+  });
+
+  it("não expira oferta sem data de verificação (cadastro manual)", () => {
+    const series = buildDailyMinSeries({
+      baseline: [{ offerId: "manual", price: 40 }],
+      changes: [],
+      startDayMs: START,
+      dayCount: 3,
+      activeUntil: new Map([["manual", null]]),
+    });
+
+    expect(series.map((p) => p.price)).toEqual([40, 40, 40]);
+  });
+
+  it("omite o dia inteiro quando nenhuma oferta está ativa", () => {
+    const series = buildDailyMinSeries({
+      baseline: [{ offerId: "sumiu", price: 50 }],
+      changes: [],
+      startDayMs: START,
+      dayCount: 3,
+      activeUntil: new Map([["sumiu", START]]),
+    });
+
+    // Só o primeiro dia tem preço; depois não há oferta alguma a exibir.
+    expect(series).toEqual([{ date: "2026-03-01", price: 50 }]);
+  });
+
   it("retorna vazio quando não há baseline nem mudanças", () => {
     expect(
       buildDailyMinSeries({

@@ -183,6 +183,9 @@ model Offer {
   submittedByUserId String?
   sourceId       String?
   source         Source?         @relation(fields: [sourceId], references: [id])
+  // Última vez que a ingestão encontrou esta oferta na loja. Null em oferta
+  // cadastrada à mão, que nunca é revisitada e por isso não expira.
+  lastSeenAt     DateTime?
   clicks         ClickEvent[]
   snapshots      PriceSnapshot[]
   leads          Lead[]
@@ -193,6 +196,7 @@ model Offer {
   @@index([sellerId])
   @@index([status])
   @@index([sourceId])
+  @@index([lastSeenAt])
 }
 
 // ───────────── Frete ─────────────

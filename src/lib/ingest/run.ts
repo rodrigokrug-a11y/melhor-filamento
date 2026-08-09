@@ -58,11 +58,14 @@ async function upsertIngestedOffer(args: {
   // crescer sem limite repetindo o mesmo valor. O histórico é uma série de
   // degraus — `buildDailyMinSeries` repete o último preço nos dias sem ponto.
   let priceChanged: boolean;
+  // Carimbo de "vi esta oferta agora": é o que permite expirar oferta que
+  // sumiu da loja em vez de deixá-la publicada com preço velho para sempre.
+  const lastSeenAt = new Date();
   if (existing) {
     priceChanged = Number(existing.price) !== Number(price);
     await prisma.offer.update({
       where: { id: existing.id },
-      data: { price, url: args.url, stockStatus },
+      data: { price, url: args.url, stockStatus, lastSeenAt },
     });
     offerId = existing.id;
   } else {
@@ -77,6 +80,7 @@ async function upsertIngestedOffer(args: {
         url: args.url,
         stockStatus,
         status: "APPROVED",
+        lastSeenAt,
       },
       select: { id: true },
     });
