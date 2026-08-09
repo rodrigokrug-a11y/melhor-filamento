@@ -54,5 +54,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 USER nextjs
 EXPOSE 3000
-# As migrações são aplicadas fora do container (npx prisma migrate deploy).
+# As migrações já foram aplicadas no estágio builder, por `npm run build` —
+# por isso o build precisa enxergar o banco (ver DEPLOY.md, seções 3 e 4).
 CMD ["node", "server.js"]
