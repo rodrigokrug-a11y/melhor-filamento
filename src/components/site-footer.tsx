@@ -12,7 +12,7 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
       { href: "/resinas", label: "Resinas" },
       { href: "/impressoras", label: "Impressoras" },
       { href: "/comparar", label: "Comparar" },
-      { href: "/marcas", label: "Marcas" },
+      { href: "/marca", label: "Marcas" },
     ],
   },
   {

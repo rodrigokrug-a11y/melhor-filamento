@@ -110,7 +110,7 @@ async function importLogos(logos: unknown[]): Promise<ImportState> {
   summary.sellersUpdated = sellers;
   summary.warnings.push(`${brands} marca(s) com logo atualizado.`);
   revalidatePath("/admin/lojas");
-  revalidatePath("/marcas");
+  revalidatePath("/marca");
   return { ok: true, summary };
 }
 
@@ -171,7 +171,7 @@ async function importProfiles(profiles: unknown[]): Promise<ImportState> {
   }
   summary.warnings.push(`${updated} marca(s) com perfil atualizado.`);
   if (unmatched) summary.warnings.push(`${unmatched} nome(s) sem marca correspondente.`);
-  revalidatePath("/marcas");
+  revalidatePath("/marca");
   return { ok: true, summary };
 }
 
