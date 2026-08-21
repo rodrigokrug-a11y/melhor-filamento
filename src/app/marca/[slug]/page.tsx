@@ -97,13 +97,13 @@ export default async function MarcaPage({ params }: { params: Params }) {
         dangerouslySetInnerHTML={{
           __html: breadcrumbJsonLd([
             { name: "Início", path: "/" },
-            { name: "Marcas", path: "/marcas" },
+            { name: "Marcas", path: "/marca" },
             { name: brand.name, path: `/marca/${brand.slug}` },
           ]),
         }}
       />
       <Link
-        href="/marcas"
+        href="/marca"
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="size-4" />

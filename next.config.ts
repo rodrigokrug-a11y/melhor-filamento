@@ -11,6 +11,12 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/*": ["./node_modules/.prisma/client/**/*"],
   },
+  // A listagem de marcas passou de /marcas para /marca, unificando com a
+  // página de cada marca (/marca/[slug]). O redirect é permanente para o
+  // Google transferir o histórico da URL antiga em vez de tratá-la como 404.
+  async redirects() {
+    return [{ source: "/marcas", destination: "/marca", permanent: true }];
+  },
   // Cabeçalhos de segurança (sem CSP por ora — evita quebrar GA/Ads/fontes;
   // CSP fica como melhoria futura, idealmente em report-only primeiro).
   async headers() {

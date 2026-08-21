@@ -57,7 +57,7 @@ export const MAIN_NAV: NavEntry[] = [
       { href: "/filamentos", label: "Filamentos", icon: Boxes },
       { href: "/resinas", label: "Resinas", icon: FlaskConical },
       { href: "/impressoras", label: "Impressoras", icon: Printer },
-      { href: "/marcas", label: "Marcas", icon: Store },
+      { href: "/marca", label: "Marcas", icon: Store },
       { href: "/ofertas", label: "Ofertas do dia", icon: Flame },
       // /perto usa geolocalização do navegador (independe de CEP/frete).
       { href: "/perto", label: "Lojas perto de você", icon: MapPin },

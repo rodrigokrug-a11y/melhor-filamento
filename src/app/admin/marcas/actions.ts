@@ -18,7 +18,7 @@ function isValidHttpUrl(value: string): boolean {
 
 function revalidateBrandSurfaces(): void {
   revalidatePath("/admin/marcas");
-  revalidatePath("/marcas");
+  revalidatePath("/marca");
   revalidatePath("/");
 }
 

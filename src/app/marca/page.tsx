@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Megaphone, Store } from "lucide-react";
+import { ArrowRight, Megaphone, Store } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
+import { CatalogGrid } from "@/components/catalog-grid";
 import { PageBanner } from "@/components/banners";
 import { PageHeader } from "@/components/page-header";
-import { getBrandsOverview } from "@/lib/catalog";
+import { getBrandsOverview, getCatalog } from "@/lib/catalog";
 
 export const revalidate = 3600;
 
@@ -13,19 +14,30 @@ export const metadata: Metadata = {
   title: "Marcas de filamento e resina 3D",
   description:
     "Conheça as marcas de filamentos e resinas para impressão 3D e compare preços entre lojas do Brasil.",
-  alternates: { canonical: "/marcas" },
+  alternates: { canonical: "/marca" },
   openGraph: {
     title: "Marcas de filamento e resina 3D",
     description:
       "Conheça as marcas de filamentos e resinas 3D e compare preços entre lojas.",
-    url: "/marcas",
+    url: "/marca",
     type: "website",
   },
 };
 
-export default async function MarcasPage() {
+export default async function MarcaPage() {
   // Mostra TODAS as marcas, com ou sem oferta (na página da marca dá pra pedir ofertas).
-  const brands = await getBrandsOverview();
+  const [brands, filamentos, resinas] = await Promise.all([
+    getBrandsOverview(),
+    getCatalog("FILAMENT", { sort: "preco-asc" }),
+    getCatalog("RESIN", { sort: "preco-asc" }),
+  ]);
+
+  // Anúncios reais logo abaixo das marcas: quem entra aqui está garimpando
+  // preço, então a página não termina numa lista de logotipos.
+  const listings = [
+    ...filamentos.products.slice(0, 8),
+    ...resinas.products.slice(0, 4),
+  ].sort((a, b) => a.bestPrice - b.bestPrice);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
@@ -67,6 +79,23 @@ export default async function MarcasPage() {
           ))}
         </div>
       )}
+
+      {listings.length > 0 ? (
+        <section className="mt-12">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <h2 className="font-display text-xl font-bold tracking-tight sm:text-2xl">
+              Ofertas das marcas
+            </h2>
+            <Link
+              href="/ofertas"
+              className="inline-flex items-center gap-1 text-sm font-medium text-brand hover:underline"
+            >
+              Ver todas <ArrowRight className="size-4" />
+            </Link>
+          </div>
+          <CatalogGrid products={listings} sort="preco-asc" />
+        </section>
+      ) : null}
     </div>
   );
 }
