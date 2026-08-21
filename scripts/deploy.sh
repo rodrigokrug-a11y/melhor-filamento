@@ -27,10 +27,35 @@ die() {
 
 # As mesmas variáveis que o compose passa ao container em runtime; aqui elas
 # são necessárias em tempo de build (migrações, SSG e valores inlinados).
-set -a
-# shellcheck disable=SC1091
-. ./.env
-set +a
+#
+# Lido linha a linha, e não com `source`: um .env não é script de shell. O
+# Compose aceita valores com parêntese, & ou espaço sem aspas, que o bash
+# tentaria interpretar — e um DSN de SMTP ou uma senha bastam para quebrar.
+# Aqui o valor nunca é avaliado, só atribuído.
+load_env() {
+  local line key val
+  while IFS= read -r line || [ -n "$line" ]; do
+    line=${line#"${line%%[![:space:]]*}"}          # tira espaço à esquerda
+    case "$line" in '' | '#'*) continue ;; esac
+    line=${line#export }
+    case "$line" in *=*) ;; *) continue ;; esac
+
+    key=${line%%=*}
+    val=${line#*=}
+    key=${key%"${key##*[![:space:]]}"}             # tira espaço à direita
+    # Ignora nomes que não sejam identificadores válidos.
+    case "$key" in '' | *[!A-Za-z0-9_]*) continue ;; esac
+
+    # Remove um par de aspas envolventes, se houver.
+    case "$val" in
+      \"*\") val=${val#\"}; val=${val%\"} ;;
+      \'*\') val=${val#\'}; val=${val%\'} ;;
+    esac
+
+    export "$key=$val"
+  done < .env
+}
+load_env
 
 : "${DATABASE_URL:?defina DATABASE_URL no .env}"
 : "${NEXT_PUBLIC_SITE_URL:?defina NEXT_PUBLIC_SITE_URL no .env}"
