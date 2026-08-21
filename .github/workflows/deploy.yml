@@ -1,0 +1,108 @@
+name: Deploy
+
+# Publica em produção no VPS: entra por SSH e roda scripts/deploy.sh, que já
+# faz git pull, migrações, build da imagem e troca do container.
+#
+# Fica INERTE até que os segredos existam — sem eles o job encerra em verde
+# sem publicar nada. Instruções de configuração em DEPLOY.md (seção 4.1).
+
+on:
+  push:
+    branches: [main]
+  # Permite publicar sob demanda pelo botão "Run workflow" na aba Actions.
+  workflow_dispatch:
+
+# Nunca cancelar um deploy em andamento: publicar pela metade é pior do que
+# esperar. Um push novo espera na fila.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Publicar em produção
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      # O contexto `secrets` não pode ser usado no `if` de um job, então a
+      # verificação vira o primeiro passo e os demais dependem dela.
+      - name: Verificar credenciais
+        id: check
+        env:
+          HOST: ${{ secrets.VPS_HOST }}
+          USER_NAME: ${{ secrets.VPS_USER }}
+          KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          if [ -z "$HOST" ] || [ -z "$USER_NAME" ] || [ -z "$KEY" ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Deploy pulado — configure VPS_HOST, VPS_USER e VPS_SSH_KEY em Settings → Secrets. Veja DEPLOY.md, seção 4.1."
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Preparar chave SSH
+        if: steps.check.outputs.ready == 'true'
+        env:
+          KEY: ${{ secrets.VPS_SSH_KEY }}
+          HOST: ${{ secrets.VPS_HOST }}
+          PORT: ${{ secrets.VPS_PORT }}
+          KNOWN: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          if [ -n "$KNOWN" ]; then
+            # Preferido: impressão digital fixada pelo dono do servidor.
+            printf '%s\n' "$KNOWN" > ~/.ssh/known_hosts
+          else
+            # Sem a impressão digital fixada, confiamos no que o host
+            # apresentar agora. Defina VPS_KNOWN_HOSTS para fechar essa brecha.
+            echo "::warning::VPS_KNOWN_HOSTS não definido — a identidade do servidor não está fixada."
+            ssh-keyscan -p "${PORT:-22}" -H "$HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          fi
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Publicar
+        if: steps.check.outputs.ready == 'true'
+        env:
+          HOST: ${{ secrets.VPS_HOST }}
+          USER_NAME: ${{ secrets.VPS_USER }}
+          PORT: ${{ secrets.VPS_PORT }}
+          DIR: ${{ secrets.VPS_PROJECT_DIR }}
+        run: |
+          set -Eeuo pipefail
+          # A pasta vai citada como literal de shell para o servidor.
+          remote_dir=$(printf '%q' "${DIR:-}")
+          ssh -i ~/.ssh/id_deploy \
+              -o IdentitiesOnly=yes \
+              -o StrictHostKeyChecking=yes \
+              -o BatchMode=yes \
+              -p "${PORT:-22}" \
+              "$USER_NAME@$HOST" \
+              "DEPLOY_DIR=$remote_dir bash -s" <<'REMOTE'
+          set -Eeuo pipefail
+
+          dir="${DEPLOY_DIR:-}"
+          if [ -z "$dir" ]; then
+            # Sem a pasta configurada, pergunta ao próprio container em que
+            # diretório o compose foi levantado — assim o segredo é opcional.
+            dir=$(docker inspect mf-prod-app \
+              --format '{{index .Config.Labels "com.docker.compose.project.working_dir"}}' \
+              2>/dev/null || true)
+          fi
+
+          if [ -z "$dir" ] || [ ! -d "$dir" ]; then
+            echo "erro: não localizei a pasta do projeto no servidor." >&2
+            echo "Defina o segredo VPS_PROJECT_DIR com o caminho completo." >&2
+            exit 1
+          fi
+
+          echo "==> Pasta do projeto: $dir"
+          cd "$dir"
+          ./scripts/deploy.sh
+          REMOTE
+
+      - name: Remover a chave
+        if: always()
+        run: rm -f ~/.ssh/id_deploy
