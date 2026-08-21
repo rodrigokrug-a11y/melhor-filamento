@@ -100,7 +100,27 @@ jobs:
 
           echo "==> Pasta do projeto: $dir"
           cd "$dir"
-          ./scripts/deploy.sh
+
+          if [ ! -d .git ]; then
+            echo "erro: $dir não é um clone git — não há como atualizar o código." >&2
+            exit 1
+          fi
+
+          # O código precisa ser atualizado ANTES de chamar o script: numa
+          # máquina com clone antigo, scripts/deploy.sh ainda não existe, e
+          # o pull que está dentro dele nunca chegaria a rodar.
+          echo "==> Branch no servidor: $(git rev-parse --abbrev-ref HEAD)"
+          git fetch --quiet origin main
+          git merge --ff-only origin/main
+          echo "==> Commit: $(git rev-parse --short HEAD) $(git log -1 --pretty=%s)"
+
+          if [ ! -x ./scripts/deploy.sh ]; then
+            echo "erro: scripts/deploy.sh não encontrado (ou sem permissão de execução)." >&2
+            exit 1
+          fi
+
+          # --no-pull porque o pull já foi feito acima.
+          ./scripts/deploy.sh --no-pull
           REMOTE
 
       - name: Remover a chave
