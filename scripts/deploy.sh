@@ -15,6 +15,7 @@ set -Eeuo pipefail
 COMPOSE_FILE="docker-compose.prod.yml"
 IMAGE="melhorfilamento-app:latest"
 DB_CONTAINER="mf-prod-db"
+BUILDX_BUILDER="mf-deploy-builder"
 
 cd "$(dirname "$0")/.."
 
@@ -86,15 +87,33 @@ NETWORK=$(docker inspect "$DB_CONTAINER" \
   awk '{print $1}')
 [ -n "$NETWORK" ] || die "não consegui descobrir a rede do container $DB_CONTAINER"
 
+BUILD_ARGS=(
+  --build-arg DATABASE_URL="$DATABASE_URL"
+  --build-arg NEXT_PUBLIC_SITE_URL="$NEXT_PUBLIC_SITE_URL"
+  --build-arg NEXT_SERVER_ACTIONS_ENCRYPTION_KEY="${NEXT_SERVER_ACTIONS_ENCRYPTION_KEY:-}"
+  --build-arg NEXT_PUBLIC_GA_ID="${NEXT_PUBLIC_GA_ID:-}"
+  --build-arg NEXT_PUBLIC_GOOGLE_ADS_ID="${NEXT_PUBLIC_GOOGLE_ADS_ID:-}"
+  -t "$IMAGE"
+)
+
 echo "==> Construindo a imagem na rede $NETWORK (as migrações rodam aqui)"
-docker build \
-  --network "$NETWORK" \
-  --build-arg DATABASE_URL="$DATABASE_URL" \
-  --build-arg NEXT_PUBLIC_SITE_URL="$NEXT_PUBLIC_SITE_URL" \
-  --build-arg NEXT_SERVER_ACTIONS_ENCRYPTION_KEY="${NEXT_SERVER_ACTIONS_ENCRYPTION_KEY:-}" \
-  --build-arg NEXT_PUBLIC_GA_ID="${NEXT_PUBLIC_GA_ID:-}" \
-  --build-arg NEXT_PUBLIC_GOOGLE_ADS_ID="${NEXT_PUBLIC_GOOGLE_ADS_ID:-}" \
-  -t "$IMAGE" .
+# O BuildKit, builder padrão do Docker moderno, só aceita `host`, `none` ou
+# `default` em --network; uma rede nomeada do compose ele recusa. O builder
+# clássico aceita, então tentamos ele primeiro.
+if DOCKER_BUILDKIT=0 docker build --network "$NETWORK" "${BUILD_ARGS[@]}" .; then
+  echo "==> Imagem construída pelo builder clássico"
+else
+  # O builder clássico é obsoleto e pode não existir em versões novas do
+  # Docker. Neste caso subimos um builder buildx dedicado, plugado na mesma
+  # rede — que é a saída sugerida pela própria mensagem de erro do BuildKit.
+  echo "==> Builder clássico indisponível; usando um builder buildx na rede"
+  docker buildx rm "$BUILDX_BUILDER" >/dev/null 2>&1 || true
+  docker buildx create --name "$BUILDX_BUILDER" \
+    --driver docker-container --driver-opt "network=$NETWORK" >/dev/null
+  # --load traz a imagem para o daemon local, que é de onde o compose lê.
+  docker buildx build --builder "$BUILDX_BUILDER" --load "${BUILD_ARGS[@]}" .
+  docker buildx rm "$BUILDX_BUILDER" >/dev/null 2>&1 || true
+fi
 
 # --force-recreate porque a tag não muda: sem isso, um build novo poderia não
 # trocar o container e o deploy passaria silenciosamente em branco.
