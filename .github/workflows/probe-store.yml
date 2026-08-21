@@ -1,0 +1,45 @@
+name: Analisar loja
+
+# Roda o scraper do projeto contra uma loja candidata e diz se ela dá para
+# ser cadastrada como fonte — antes de mexer no banco.
+#
+# Roda no runner do GitHub, que tem internet aberta: não precisa do VPS nem
+# de segredo nenhum, e não escreve nada em lugar algum. É só leitura.
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "URL da loja (a home basta)"
+        required: true
+        type: string
+      amostras:
+        description: "Quantas páginas de produto abrir"
+        required: false
+        default: "5"
+        type: string
+
+jobs:
+  probe:
+    name: Analisar
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Analisar a loja
+        env:
+          # Via env, e não interpolado no script, para que a entrada do
+          # formulário nunca seja avaliada como shell.
+          URL: ${{ inputs.url }}
+          AMOSTRAS: ${{ inputs.amostras }}
+        run: npx tsx scripts/probe-source.ts "$URL" "${AMOSTRAS:-5}"
