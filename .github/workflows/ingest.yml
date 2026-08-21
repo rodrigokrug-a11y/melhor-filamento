@@ -1,0 +1,143 @@
+name: Ingestão
+
+# Roda a ingestão de preços sob demanda e devolve um diagnóstico: o que cada
+# fonte encontrou, quais falharam e como ficou o catálogo depois.
+#
+# Não roda sozinho em push nem em agenda — a atualização periódica já é feita
+# pelo cron do servidor. Este workflow existe para disparar fora de hora e
+# para investigar o estado das fontes.
+#
+# Reaproveita os mesmos segredos do deploy (VPS_HOST, VPS_USER, VPS_SSH_KEY):
+# o INGEST_SECRET é lido do .env no próprio servidor, e a chamada é feita em
+# 127.0.0.1, sem expor o endpoint na internet.
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ingest-production
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    name: Rodar e diagnosticar
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Verificar credenciais
+        id: check
+        env:
+          HOST: ${{ secrets.VPS_HOST }}
+          USER_NAME: ${{ secrets.VPS_USER }}
+          KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          if [ -z "$HOST" ] || [ -z "$USER_NAME" ] || [ -z "$KEY" ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Pulado — configure VPS_HOST, VPS_USER e VPS_SSH_KEY. Veja DEPLOY.md, seção 4.1."
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Preparar chave SSH
+        if: steps.check.outputs.ready == 'true'
+        env:
+          KEY: ${{ secrets.VPS_SSH_KEY }}
+          HOST: ${{ secrets.VPS_HOST }}
+          PORT: ${{ secrets.VPS_PORT }}
+          KNOWN: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          if [ -n "$KNOWN" ]; then
+            printf '%s\n' "$KNOWN" > ~/.ssh/known_hosts
+          else
+            echo "::warning::VPS_KNOWN_HOSTS não definido — identidade do servidor não fixada."
+            ssh-keyscan -p "${PORT:-22}" -H "$HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          fi
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Rodar a ingestão
+        if: steps.check.outputs.ready == 'true'
+        env:
+          HOST: ${{ secrets.VPS_HOST }}
+          USER_NAME: ${{ secrets.VPS_USER }}
+          PORT: ${{ secrets.VPS_PORT }}
+          DIR: ${{ secrets.VPS_PROJECT_DIR }}
+        run: |
+          set -Eeuo pipefail
+          remote_dir=$(printf '%q' "${DIR:-}")
+          ssh -i ~/.ssh/id_deploy \
+              -o IdentitiesOnly=yes \
+              -o StrictHostKeyChecking=yes \
+              -o BatchMode=yes \
+              -p "${PORT:-22}" \
+              "$USER_NAME@$HOST" \
+              "DEPLOY_DIR=$remote_dir bash -s" <<'REMOTE'
+          set -Eeuo pipefail
+
+          dir="${DEPLOY_DIR:-}"
+          if [ -z "$dir" ]; then
+            dir=$(docker inspect mf-prod-app \
+              --format '{{index .Config.Labels "com.docker.compose.project.working_dir"}}' \
+              2>/dev/null || true)
+          fi
+          [ -n "$dir" ] && [ -d "$dir" ] || { echo "erro: pasta do projeto não localizada." >&2; exit 1; }
+          cd "$dir"
+
+          # Lê do .env sem executá-lo (um .env não é script — ver deploy.sh).
+          read_env() {
+            sed -n "s/^[[:space:]]*$1[[:space:]]*=[[:space:]]*//p" .env | head -1 |
+              sed -e 's/^"//' -e 's/"$//' -e "s/^'//" -e "s/'\$//"
+          }
+          secret=$(read_env INGEST_SECRET)
+          port=$(read_env APP_PORT); port=${port:-3000}
+
+          [ -n "$secret" ] || { echo "erro: INGEST_SECRET não está no .env do servidor." >&2; exit 1; }
+
+          psql() {
+            docker exec mf-prod-db psql -U postgres -d melhorfilamento -P pager=off "$@"
+          }
+
+          echo "===================== ANTES ====================="
+          psql -c 'SELECT count(*) FILTER (WHERE enabled) AS fontes_ativas,
+                          count(*) FILTER (WHERE NOT enabled) AS desativadas,
+                          count(*) AS total
+                   FROM "Source";'
+          # Literais em dollar-quoting ($$...$$) para não conflitar com as
+          # aspas simples que envolvem o SQL aqui no shell.
+          psql -c 'SELECT (SELECT count(*) FROM "Seller") AS lojas,
+                          (SELECT count(*) FROM "Product") AS produtos,
+                          (SELECT count(*) FROM "Offer" WHERE status = $$APPROVED$$) AS ofertas_aprovadas,
+                          (SELECT count(*) FROM "Product" WHERE "imageUrl" IS NULL) AS produtos_sem_foto;'
+
+          echo "===================== RODANDO ==================="
+          # O segredo vai no header e nunca é impresso.
+          http=$(curl -sS -o /tmp/ingest-out.json -w '%{http_code}' \
+                   --max-time 600 -X POST \
+                   -H "x-ingest-secret: $secret" \
+                   "http://127.0.0.1:${port}/api/ingest" || echo "000")
+          echo "HTTP $http"
+          cat /tmp/ingest-out.json 2>/dev/null || true
+          echo ""
+
+          echo "===================== DEPOIS ===================="
+          psql -c 'SELECT (SELECT count(*) FROM "Product") AS produtos,
+                          (SELECT count(*) FROM "Offer" WHERE status = $$APPROVED$$) AS ofertas_aprovadas,
+                          (SELECT count(*) FROM "Product" WHERE "imageUrl" IS NULL) AS produtos_sem_foto,
+                          (SELECT count(*) FROM "Offer" WHERE "lastSeenAt" > now() - interval $$1 day$$) AS vistas_hoje;'
+
+          echo "--- estado de cada fonte ---"
+          psql -c 'SELECT s.name AS loja, so.kind, so.enabled,
+                          left(coalesce(so."lastStatus", so."lastError", $$sem execução$$), 70) AS status,
+                          so."lastRunAt"
+                   FROM "Source" so JOIN "Seller" s ON s.id = so."sellerId"
+                   ORDER BY so."lastRunAt" DESC NULLS LAST;'
+
+          [ "$http" = "200" ] || { echo "erro: a ingestão respondeu HTTP $http" >&2; exit 1; }
+          REMOTE
+
+      - name: Remover a chave
+        if: always()
+        run: rm -f ~/.ssh/id_deploy
