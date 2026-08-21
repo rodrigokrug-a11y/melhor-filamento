@@ -72,6 +72,22 @@ export default async function HomePage() {
     ...filamentos.products.slice(0, 4),
     ...resinas.products.slice(0, 2),
   ];
+  // Vitrine logo abaixo do hero: anúncios reais, misturando filamento e
+  // resina, ordenados pelo menor preço. Vem antes de qualquer bloco
+  // institucional para o visitante já ver preço de verdade e testar o site.
+  const showcase = [
+    ...filamentos.products.slice(0, 5),
+    ...resinas.products.slice(0, 3),
+  ].sort((a, b) => a.bestPrice - b.bestPrice);
+  // Os trilhos abaixo mostram o que a vitrine não mostrou, para a home não
+  // repetir o mesmo produto duas vezes.
+  const shown = new Set(showcase.map((p) => p.id));
+  const maisFilamentos = filamentos.products
+    .filter((p) => !shown.has(p.id))
+    .slice(0, 4);
+  const maisResinas = resinas.products
+    .filter((p) => !shown.has(p.id))
+    .slice(0, 4);
 
   return (
     <>
@@ -84,7 +100,22 @@ export default async function HomePage() {
 
       <div className="mx-auto max-w-6xl space-y-10 px-4 py-10 sm:space-y-16 sm:py-14">
         <Reveal>
-          <FeatureBlocks />
+          <OffersShowcase products={showcase} />
+        </Reveal>
+
+        <Reveal>
+          <Rail
+            title="Outros filamentos baratos"
+            href="/filamentos"
+            products={maisFilamentos}
+          />
+        </Reveal>
+        <Reveal>
+          <Rail
+            title="Outras resinas baratas"
+            href="/resinas"
+            products={maisResinas}
+          />
         </Reveal>
 
         <Reveal>
@@ -96,18 +127,7 @@ export default async function HomePage() {
         </Reveal>
 
         <Reveal>
-          <Rail
-            title="Filamentos mais baratos"
-            href="/filamentos"
-            products={filamentos.products.slice(0, 4)}
-          />
-        </Reveal>
-        <Reveal>
-          <Rail
-            title="Resinas mais baratas"
-            href="/resinas"
-            products={resinas.products.slice(0, 4)}
-          />
+          <FeatureBlocks />
         </Reveal>
 
         <Reveal>
@@ -342,7 +362,7 @@ function BrandsSection({ brands }: { brands: BrandSummary[] }) {
   if (brands.length === 0) return null;
   return (
     <section>
-      <SectionHeading title="Marcas" href="/marcas" linkLabel="Ver todas" />
+      <SectionHeading title="Marcas" href="/marca" linkLabel="Ver todas" />
       <div className="flex flex-wrap gap-3">
         {brands.map((b) => (
           <Link
@@ -356,6 +376,34 @@ function BrandsSection({ brands }: { brands: BrandSummary[] }) {
               <Megaphone className="size-3.5 text-brand" />
             ) : null}
           </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Vitrine de anúncios logo abaixo do hero.
+ *
+ * É a primeira coisa depois da dobra: em vez de cartões institucionais, o
+ * visitante encontra preço real de várias lojas e já consegue clicar, comparar
+ * e entender o que o site faz sem precisar navegar.
+ */
+function OffersShowcase({ products }: { products: ProductListItem[] }) {
+  if (products.length === 0) return null;
+  return (
+    <section>
+      <SectionHeading
+        title="Ofertas de agora"
+        href="/ofertas"
+        linkLabel="Ver todas"
+      />
+      <p className="-mt-2 mb-4 text-sm text-muted-foreground">
+        Filamentos e resinas com o menor preço entre as lojas que acompanhamos.
+      </p>
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {products.map((p) => (
+          <ProductCard key={p.id} product={p} />
         ))}
       </div>
     </section>
