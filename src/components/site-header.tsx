@@ -27,12 +27,18 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-1.5">
           <MainNav />
+          {/* Entre xl e 2xl o header não comporta o rótulo inteiro: são 1229px
+              de conteúdo para 1120px úteis. Como esta é a ação secundária —
+              interessa a quem cadastra oferta, não a quem compara preço — ela
+              encolhe para só o ícone nessa faixa, com nome no title/aria. */}
           <Link
             href="/cadastrar-oferta"
-            className="mr-1 hidden h-9 items-center gap-1.5 whitespace-nowrap rounded-full border-[1.5px] border-input px-4 text-sm font-semibold text-teal transition-colors hover:border-brand hover:bg-brand-soft hover:text-teal xl:inline-flex"
+            title="Cadastrar oferta"
+            aria-label="Cadastrar oferta"
+            className="mr-1 hidden h-9 items-center gap-1.5 whitespace-nowrap rounded-full border-[1.5px] border-input px-2.5 text-sm font-semibold text-teal transition-colors hover:border-brand hover:bg-brand-soft hover:text-teal xl:inline-flex 2xl:px-4"
           >
             <Plus className="size-4" />
-            Cadastrar oferta
+            <span className="hidden 2xl:inline">Cadastrar oferta</span>
           </Link>
           <Link
             href="/busca"

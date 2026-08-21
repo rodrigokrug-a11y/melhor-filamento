@@ -2,7 +2,9 @@
 
 Guia de publicação em produção. Stack: **Next.js 16 (App Router) + Prisma 7 (driver `pg`) + PostgreSQL**.
 
-> Recomendado: **Vercel + Postgres gerenciado** (Neon/Supabase) para o caminho zero-config. O **Docker** é a alternativa portátil (VPS, Railway, Fly, Render).
+> **Produção hoje:** VPS (Hostinger) com **Docker Compose** — app e Postgres em
+> containers, nginx do host fazendo proxy e TLS. É a seção 4. A **Vercel**
+> (seção 5) fica registrada como alternativa, mas não é o que está no ar.
 
 ---
 
@@ -28,7 +30,7 @@ Copie de `.env.example`. Em produção, defina:
 | `INGEST_SECRET` | ⬜ | Segredo do `POST /api/ingest` (cron de ingestão). |
 | `CONTACT_EMAIL` | ⬜ | E-mail exibido nas páginas LGPD (padrão: contato@…). |
 
-> ⚠️ Nunca faça commit de segredos. Em produção, defina-os no painel do provedor (Vercel/host) ou em um gerenciador de segredos.
+> ⚠️ Nunca faça commit de segredos. Em produção eles vivem no `.env` do VPS (não versionado), lido tanto pelo compose quanto pelo `scripts/deploy.sh`.
 
 ## 3. Banco de dados (migrações)
 
@@ -56,65 +58,67 @@ banco), o mesmo comando está disponível avulso:
 npm run db:deploy
 ```
 
-## 4. Opção A — Vercel (recomendado)
+## 4. VPS + Docker Compose (o que está em produção)
+
+O `next.config.ts` usa `output: "standalone"`, e o `docker-compose.prod.yml`
+sobe dois containers: `mf-prod-app` (o Next) e `mf-prod-db` (Postgres, com
+volume `mf_prod_pgdata`). O app escuta só em `127.0.0.1:${APP_PORT}` — quem
+expõe na internet é o **nginx do host**, que também termina o TLS.
+
+As variáveis da seção 2 ficam num `.env` **no VPS**, fora do versionamento.
+
+### Publicar
+
+Da pasta do projeto no VPS:
+
+```bash
+./scripts/deploy.sh
+```
+
+O script faz a sequência inteira: `git pull` do `main`, sobe o Postgres e
+espera ficar saudável, constrói a imagem **na rede do compose** (necessário
+porque o build aplica as migrações e a geração estática lê o banco — sem a
+rede, o host `db` do `DATABASE_URL` não resolve), recria o container do app e
+confere `/api/health` antes de dar o deploy por concluído.
+
+Para publicar sem atualizar o código, use `./scripts/deploy.sh --no-pull`.
+
+Se algo falhar, o script encerra com uma mensagem apontando o próximo passo —
+não há estado pela metade que passe silenciosamente.
+
+### Fazendo à mão
+
+Se precisar rodar os passos separados:
+
+```bash
+docker compose -f docker-compose.prod.yml up -d db
+NET=$(docker inspect mf-prod-db --format '{{range $n, $_ := .NetworkSettings.Networks}}{{$n}}{{end}}')
+docker build --network "$NET" \
+  --build-arg DATABASE_URL="postgresql://..." \
+  --build-arg NEXT_PUBLIC_SITE_URL="https://melhorfilamento.com.br" \
+  --build-arg NEXT_SERVER_ACTIONS_ENCRYPTION_KEY="..." \
+  -t melhorfilamento-app:latest .
+docker compose -f docker-compose.prod.yml up -d --force-recreate app
+```
+
+> As migrações rodam ao **construir a imagem**, não ao publicá-la — a imagem
+> fica atrelada ao banco apontado no build. Se preferir imagens agnósticas de
+> ambiente, troque `RUN npm run build` no `Dockerfile` por `RUN npx next build`
+> e rode `npm run db:deploy` como passo separado de release.
+
+Imagens antigas se acumulam a cada deploy; `docker image prune -f` limpa as
+camadas órfãs quando o disco apertar.
+
+## 5. Alternativa — Vercel
+
+Registrado para o caso de uma migração futura; **não é o que está no ar**.
 
 1. Importe o repositório na Vercel.
 2. Em **Settings → Environment Variables**, defina as variáveis da seção 2.
 3. Build Command padrão (`npm run build`) funciona — o `postinstall` gera o Prisma Client e o build aplica as migrações pendentes.
-4. Aponte o domínio `melhorfilamento.com.br` em **Settings → Domains**.
+4. Aponte o domínio em **Settings → Domains**.
 
 > `DATABASE_URL` precisa existir no ambiente de **build**, não só no de runtime: há rotas que leem o banco na geração estática, e é o build que aplica as migrações (seção 3).
-
-### 4.1. Publicar pelo GitHub Actions (opcional)
-
-Há um workflow em `.github/workflows/deploy.yml` que publica em produção a
-cada push no `main`, e também sob demanda pelo botão **Run workflow** na aba
-**Actions**. Ele termina com uma checagem de `/api/health`, para não dar por
-bom um deploy que subiu sem alcançar o banco.
-
-> **Escolha um caminho, não os dois.** Se a integração Vercel↔GitHub já
-> publica automaticamente a cada push, mantenha o workflow desativado — os
-> dois publicariam a mesma coisa em paralelo. Para usar o workflow, desligue
-> o deploy automático em **Vercel → Settings → Git**.
-
-O workflow fica **inerte enquanto os segredos não existirem**: sem eles o job
-encerra em verde sem publicar nada, então nada quebra por deixá-lo parado.
-Para ativar, adicione em **GitHub → Settings → Secrets and variables →
-Actions**:
-
-| Segredo | Onde encontrar |
-| --- | --- |
-| `VERCEL_TOKEN` | Vercel → Account Settings → Tokens → Create |
-| `VERCEL_ORG_ID` | `.vercel/project.json` após rodar `vercel link`, campo `orgId` |
-| `VERCEL_PROJECT_ID` | mesmo arquivo, campo `projectId` |
-
-As variáveis de ambiente da aplicação **não** viram segredo do GitHub: o
-workflow roda `vercel pull` e busca as de produção direto do projeto na
-Vercel.
-
-## 5. Opção B — Docker / VPS
-
-O `next.config.ts` já usa `output: "standalone"`. Há um `Dockerfile` multi-stage pronto.
-
-```bash
-# 1. Build da imagem — aplica as migrações pendentes e gera o app.
-#    O DATABASE_URL vai como build-arg porque o `npm run build` de dentro da
-#    imagem precisa dele tanto para migrar quanto para a geração estática.
-docker build -t melhorfilamento \
-  --build-arg DATABASE_URL="postgresql://..." \
-  --build-arg NEXT_PUBLIC_SITE_URL="https://melhorfilamento.com.br" .
-
-# 2. Rode o container (porta 3000)
-docker run -p 3000:3000 --env-file .env.production melhorfilamento
-```
-
-> Atenção: aqui as migrações rodam ao **construir a imagem**, não ao publicá-la
-> — a imagem fica atrelada ao banco apontado no build. Se preferir imagens
-> agnósticas de ambiente, troque a linha `RUN npm run build` do `Dockerfile`
-> por `RUN npx next build` e volte a rodar `npm run db:deploy` como passo
-> separado de release.
-
-O container roda como usuário sem privilégios e serve `node server.js`. Coloque um proxy reverso (Caddy/Nginx) na frente para TLS, ou use a TLS do provedor.
 
 ## 6. Pós-deploy (checklist)
 
