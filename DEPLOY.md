@@ -86,6 +86,47 @@ Para publicar sem atualizar o código, use `./scripts/deploy.sh --no-pull`.
 Se algo falhar, o script encerra com uma mensagem apontando o próximo passo —
 não há estado pela metade que passe silenciosamente.
 
+### 4.1. Publicar pelo GitHub Actions (sem abrir o terminal)
+
+`.github/workflows/deploy.yml` entra no VPS por SSH e roda o mesmo
+`scripts/deploy.sh`. Dispara a cada push no `main` e também sob demanda, pelo
+botão **Run workflow** na aba **Actions**.
+
+O job fica **inerte enquanto os segredos não existirem**: encerra em verde sem
+publicar nada, então adicioná-lo ao repositório não muda o comportamento
+atual.
+
+**1. Gere um par de chaves só para o deploy** — no VPS, conectado como o
+usuário que vai publicar:
+
+```bash
+ssh-keygen -t ed25519 -C "github-actions-deploy" -f ~/.ssh/gh_deploy -N ""
+cat ~/.ssh/gh_deploy.pub >> ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+cat ~/.ssh/gh_deploy          # a chave PRIVADA: vai para o segredo
+ssh-keyscan -H "$(curl -s ifconfig.me)"   # a identidade do host (opcional)
+```
+
+**2. Cadastre em GitHub → Settings → Secrets and variables → Actions:**
+
+| Segredo | Obrigatório | Conteúdo |
+| --- | --- | --- |
+| `VPS_HOST` | ✅ | IP ou domínio do servidor |
+| `VPS_USER` | ✅ | Usuário do SSH (ex.: `root`) |
+| `VPS_SSH_KEY` | ✅ | A chave **privada** inteira, incluindo as linhas `BEGIN`/`END` |
+| `VPS_KNOWN_HOSTS` | ⬜ | Saída do `ssh-keyscan`. Sem ela o workflow confia no que o host apresentar na hora — funciona, mas fica sem proteção contra um servidor forjado no meio do caminho. |
+| `VPS_PORT` | ⬜ | Porta do SSH, se não for a 22 |
+| `VPS_PROJECT_DIR` | ⬜ | Caminho do projeto. Se ficar vazio, o workflow descobre sozinho perguntando ao container `mf-prod-app` onde o compose foi levantado. |
+
+Nunca cole a chave privada em e-mail, chat ou issue: do seu terminal ela vai
+direto para o campo de segredo do GitHub, que não a exibe de volta.
+
+**3. Publique:** aba **Actions** → **Deploy** → **Run workflow**. A partir daí,
+todo merge no `main` publica sozinho.
+
+Para revogar o acesso depois, basta apagar a linha correspondente de
+`~/.ssh/authorized_keys` no servidor.
+
 ### Fazendo à mão
 
 Se precisar rodar os passos separados:
