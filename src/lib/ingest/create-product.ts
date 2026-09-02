@@ -126,6 +126,20 @@ export function brandFromKnown(
   return best;
 }
 
+/**
+ * O nome sem o sufixo que parece marca — o "corpo" do título.
+ *
+ * Loja costuma carimbar o próprio nome no fim ("… D3 - 3D Fila"), e com a lista
+ * vindo do banco esse carimbo virou candidato a marca: uma impressora Creality
+ * seria classificada como "3D Fila". O fabricante citado no corpo do título
+ * vale mais que o carimbo do fim; se não houver nenhum, `brandFromName` ainda
+ * pega o sufixo no passo seguinte.
+ */
+export function bodyOfName(raw: string): string {
+  const suffix = brandFromName(raw);
+  return suffix ? stripSuffix(raw, suffix) : raw;
+}
+
 /** Mesma entidade, ignorando caixa e espaços — "3D Prime" vs " 3d prime ". */
 function sameEntity(a: string | null, b: string | null): boolean {
   if (!a || !b) return false;
@@ -264,7 +278,7 @@ export function deriveCanonical(
   const extracted = sameEntity(extractedBrand, sellerName) ? null : extractedBrand;
   const brandName = normalizeBrand(
     extracted ??
-      brandFromKnown(rawName, known) ??
+      brandFromKnown(bodyOfName(rawName), known) ??
       brandFromName(rawName) ??
       // A loja de marca própria continua virando marca; mas se o nome dela
       // contém uma marca já conhecida ("eSUN Brasil" → "eSun"), usa a

@@ -133,3 +133,38 @@ describe("nome do produto", () => {
     expect(depois.name).toBe("Filamento Masterprint PLA Azul Céu");
   });
 });
+
+describe("carimbo da loja no fim do título", () => {
+  const known = ["Creality", "Sermoon", "3D Fila", "Bambu Lab"];
+
+  it("o fabricante do corpo vence o nome da loja carimbado no fim", () => {
+    // Caso real de produção: "IMPRESSORA 3D SERMOON D3 - 3D Fila" viraria marca
+    // "3D Fila" — que é a loja — porque com a lista vindo do banco o carimbo do
+    // fim passou a ser candidato a marca.
+    expect(
+      deriveCanonical("IMPRESSORA 3D SERMOON D3 - 3D Fila", null, "3D Fila Oficial", known)
+        .brandName,
+    ).toBe("Sermoon");
+  });
+
+  it("sem fabricante no corpo, o sufixo ainda vale como marca", () => {
+    // A regra acima não pode cegar o caminho legítimo: quando o título não cita
+    // nenhum fabricante, o sufixo continua sendo a melhor pista.
+    expect(
+      deriveCanonical("Filamento ABS Azul Céu - 3D Fila", null, "Loja Qualquer", known)
+        .brandName,
+    ).toBe("3D Fila");
+  });
+
+  it("marca no meio do título sobrevive a sufixo de especificação", () => {
+    // "- 500g" não é marca, então nada é removido e "Creality" segue no corpo.
+    expect(
+      deriveCanonical(
+        "Resina Standard LCD Plus Branca - Creality - 500g",
+        null,
+        "3D Prime",
+        known,
+      ).brandName,
+    ).toBe("Creality");
+  });
+});
