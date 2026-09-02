@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, Bot } from "lucide-react";
 
+import { auth } from "@/auth";
+import { AiLoginGate } from "@/components/tools/ai-login-gate";
 import { AssistantChat } from "@/components/tools/assistant-chat";
 import { PageHeader } from "@/components/page-header";
 
@@ -20,7 +22,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Page() {
+export default async function Page() {
+  const session = await auth();
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
       <Link
@@ -36,7 +39,15 @@ export default function Page() {
         title="Assistente de impressão 3D"
         subtitle="Tire dúvidas sobre materiais, configurações e problemas de impressão — respostas na hora."
       />
-      <AssistantChat />
+      {session?.user ? (
+        <AssistantChat />
+      ) : (
+        <AiLoginGate
+          title="Entre para conversar com o assistente"
+          description="Cada resposta consome a API de IA, então o assistente é exclusivo para quem tem conta. É grátis e leva menos de um minuto."
+          callbackUrl="/ferramentas/assistente"
+        />
+      )}
     </div>
   );
 }
