@@ -16,19 +16,26 @@
  */
 
 import { deriveCanonical, inferProductFields } from "@/lib/ingest/create-product";
+import { matchesUrlFilter, parseUrlFilter } from "@/lib/ingest/url-filter";
 import { extractOffer } from "@/lib/scrape/extract";
 import { SCRAPER_USER_AGENT, fetchPage } from "@/lib/scrape/fetch";
 import { isAllowedByRobots } from "@/lib/scrape/robots";
 import { parseSitemap } from "@/lib/scrape/sitemap";
 
 /** Mesmo filtro que a ingestão aplica ao varrer um sitemap. */
-const PRODUCT_FILTER = /produto|product|prod-/i;
-
 const RAW_URL = process.argv[2];
 const SAMPLES = Number(process.argv[3] ?? 5);
+// Terceiro argumento: os mesmos trechos que o cadastro da fonte aceita. Serve
+// para TESTAR um filtro antes de salvá-lo — a pergunta "esse filtro pega os
+// produtos desta loja?" tem resposta aqui, sem tocar no banco.
+const FILTER_RAW = process.argv[4] ?? "";
+const FILTER = parseUrlFilter(FILTER_RAW);
+const matchesFilter = (u: string) => matchesUrlFilter(u, FILTER);
 
 if (!RAW_URL) {
-  console.error("uso: npx tsx scripts/probe-source.ts <url> [amostras]");
+  console.error(
+    "uso: npx tsx scripts/probe-source.ts <url> [amostras] [trechos-da-url]",
+  );
   process.exit(2);
 }
 
@@ -180,8 +187,11 @@ async function main() {
   }
 
   // A distinção que importa: existe sitemap, mas as URLs batem com o filtro?
-  const matching = unique.filter((u) => PRODUCT_FILTER.test(u));
-  console.log(`Que batem com o filtro da ingestão (${PRODUCT_FILTER}): ${matching.length}`);
+  const matching = unique.filter(matchesFilter);
+  const origem = FILTER_RAW.trim() ? "informado" : "padrão";
+  console.log(
+    `Que batem com o filtro ${origem} (${FILTER.join(", ")}): ${matching.length}`,
+  );
 
   console.log("\nSegmentos de caminho mais comuns:");
   for (const [seg, n] of pathHistogram(unique)) console.log(`  /${seg}  (${n})`);
@@ -192,8 +202,10 @@ async function main() {
   if (matching.length === 0) {
     console.log("\nATENÇÃO: há sitemap, mas NENHUMA URL bate com o filtro da");
     console.log("ingestão. A loja seria cadastrada e traria zero ofertas — que");
-    console.log("é como uma fonte morta se disfarça de 'ok'. Ajustar o filtro");
-    console.log("ao padrão acima antes de cadastrar.");
+    console.log("é como uma fonte morta se disfarça de 'ok'. Escolha um trecho");
+    console.log("dos caminhos acima e passe no 3º argumento para testar:");
+    console.log(`  npx tsx scripts/probe-source.ts "${RAW_URL}" 5 "/loja/"`);
+    console.log("O mesmo texto vai no campo da fonte, no admin.");
   }
 
   // Amostra as que batem; se nenhuma bater, amostra assim mesmo para

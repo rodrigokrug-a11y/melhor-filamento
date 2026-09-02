@@ -306,6 +306,10 @@ model Source {
   kind       IngestKind @default(PAGE)
   url        String
   label      String?
+  // Trechos de URL de produto, separados por vírgula ("produto, /p/"). Null =
+  // usa o padrão. Cada loja monta a URL do seu jeito, e fonte cujo formato não
+  // batia varria o sitemap inteiro e voltava vazia sem acusar erro.
+  urlFilter  String?
   enabled    Boolean    @default(true)
   lastRunAt  DateTime?
   lastStatus String?

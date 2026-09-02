@@ -29,7 +29,13 @@ export function parseSitemap(xml: string): SitemapParse {
  */
 export async function discoverUrls(
   rootUrl: string,
-  opts: { limit?: number; include?: RegExp; maxFetches?: number } = {},
+  opts: {
+    limit?: number;
+    /** Fica com a URL de produto. Recebe predicado, não regex: o filtro vem do
+     *  cadastro da fonte como lista de trechos (ver lib/ingest/url-filter). */
+    include?: (url: string) => boolean;
+    maxFetches?: number;
+  } = {},
 ): Promise<string[]> {
   const limit = opts.limit ?? 100;
   const maxFetches = opts.maxFetches ?? 25;
@@ -65,7 +71,7 @@ export async function discoverUrls(
       for (const sm of ordered) if (!seen.has(sm)) queue.push(sm);
     } else {
       for (const u of parsed.urls) {
-        if (opts.include && !opts.include.test(u)) continue;
+        if (opts.include && !opts.include(u)) continue;
         if (!found.includes(u)) found.push(u);
         if (found.length >= limit) break;
       }

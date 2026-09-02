@@ -4,8 +4,17 @@ import { CreateSourceForm } from "@/components/create-source-form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/db";
+import {
+  DEFAULT_URL_FILTER,
+  URL_FILTER_MAX_LENGTH,
+} from "@/lib/ingest/url-filter";
 
-import { deleteSource, runSourceNow, toggleSource } from "./actions";
+import {
+  deleteSource,
+  runSourceNow,
+  toggleSource,
+  updateSourceFilter,
+} from "./actions";
 
 const KIND_LABELS: Record<string, string> = {
   PAGE: "Página",
@@ -113,6 +122,32 @@ export default async function FontesPage() {
                     </form>
                   </div>
                 </div>
+
+                {source.kind === "SITEMAP" ? (
+                  <form
+                    action={updateSourceFilter}
+                    className="flex flex-wrap items-center gap-2"
+                  >
+                    <input type="hidden" name="sourceId" value={source.id} />
+                    <label
+                      htmlFor={`filtro-${source.id}`}
+                      className="text-xs text-muted-foreground"
+                    >
+                      URL de produto contém
+                    </label>
+                    <input
+                      id={`filtro-${source.id}`}
+                      name="urlFilter"
+                      defaultValue={source.urlFilter ?? ""}
+                      placeholder={DEFAULT_URL_FILTER.join(", ")}
+                      maxLength={URL_FILTER_MAX_LENGTH}
+                      className="h-8 min-w-0 flex-1 rounded-md border border-input bg-background px-2 font-mono text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    />
+                    <Button size="sm" variant="outline" type="submit">
+                      Salvar filtro
+                    </Button>
+                  </form>
+                ) : null}
               </li>
             ))}
           </ul>
