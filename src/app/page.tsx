@@ -30,6 +30,7 @@ import { SearchBox } from "@/components/search-box";
 import { Stars } from "@/components/stars";
 import { Badge } from "@/components/ui/badge";
 import { getBrandsOverview, getCatalog, getProductCardById } from "@/lib/catalog";
+import { pickShowcase } from "@/lib/showcase";
 import {
   type BrandSummary,
   MATERIAL_INFO,
@@ -73,12 +74,12 @@ export default async function HomePage() {
     ...resinas.products.slice(0, 2),
   ];
   // Vitrine logo abaixo do hero: anúncios reais, misturando filamento e
-  // resina, ordenados pelo menor preço. Vem antes de qualquer bloco
-  // institucional para o visitante já ver preço de verdade e testar o site.
-  const showcase = [
-    ...filamentos.products.slice(0, 5),
-    ...resinas.products.slice(0, 3),
-  ].sort((a, b) => a.bestPrice - b.bestPrice);
+  // resina. Vem antes de qualquer bloco institucional para o visitante já ver
+  // preço de verdade e testar o site.
+  const showcase = pickShowcase([
+    ...filamentos.products,
+    ...resinas.products,
+  ]);
   // Os trilhos abaixo mostram o que a vitrine não mostrou, para a home não
   // repetir o mesmo produto duas vezes.
   const shown = new Set(showcase.map((p) => p.id));
@@ -399,7 +400,8 @@ function OffersShowcase({ products }: { products: ProductListItem[] }) {
         linkLabel="Ver todas"
       />
       <p className="-mt-2 mb-4 text-sm text-muted-foreground">
-        Filamentos e resinas com o menor preço entre as lojas que acompanhamos.
+        Com desconto ativo ou melhor preço por quilo. A seleção gira ao longo
+        do dia.
       </p>
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {products.map((p) => (
