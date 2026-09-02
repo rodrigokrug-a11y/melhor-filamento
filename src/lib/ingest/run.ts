@@ -17,6 +17,8 @@ export type IngestResult = {
   created: number;
   upserted: number;
   unmatched: number;
+  /** Encerrada por prazo antes de varrer a fonte inteira. */
+  truncated?: boolean;
   error?: string;
 };
 
@@ -101,7 +103,12 @@ async function upsertIngestedOffer(args: {
   }
 }
 
-export async function ingestSource(sourceId: string): Promise<IngestResult> {
+export async function ingestSource(
+  sourceId: string,
+  opts: { deadlineAt?: number } = {},
+): Promise<IngestResult> {
+  const expired = () => opts.deadlineAt != null && Date.now() >= opts.deadlineAt;
+
   const result: IngestResult = {
     found: 0,
     matched: 0,
@@ -150,6 +157,12 @@ export async function ingestSource(sourceId: string): Promise<IngestResult> {
       });
       candidates = [];
       for (const u of urls) {
+        // Sem esta checagem, uma única fonte SITEMAP com centenas de páginas
+        // consome o prazo inteiro e as fontes seguintes nunca rodam.
+        if (expired()) {
+          result.truncated = true;
+          break;
+        }
         try {
           const { html, finalUrl } = await fetchPage(u);
           const offer = extractOffer(html, finalUrl);
@@ -249,7 +262,7 @@ export async function ingestSource(sourceId: string): Promise<IngestResult> {
       where: { id: source.id },
       data: {
         lastRunAt: new Date(),
-        lastStatus: `ok: ${result.upserted} oferta(s), ${result.created} novo(s) produto(s), ${result.unmatched} sem produto`,
+        lastStatus: `${result.truncated ? "parcial" : "ok"}: ${result.upserted} oferta(s), ${result.created} novo(s) produto(s), ${result.unmatched} sem produto`,
         lastError: null,
       },
     });
@@ -324,9 +337,13 @@ export async function runAllSources(
   const startedAt = Date.now();
   const deadlineMs = opts.deadlineMs ?? Infinity;
 
+  // Ordem por antiguidade, não a ordem natural da tabela: quando o prazo
+  // estoura, quem for cortado é sempre o mesmo se a ordem for fixa — foi o que
+  // deixou eSUN e 3D Fila uma hora atrás das demais. Assim a fila gira.
   const sources = await prisma.source.findMany({
     where: { enabled: true },
     select: { id: true, url: true },
+    orderBy: { lastRunAt: { sort: "asc", nulls: "first" } },
   });
 
   const byHost = new Map<string, string[]>();
@@ -356,7 +373,9 @@ export async function runAllSources(
           acc.skipped += 1;
           continue;
         }
-        const r = await ingestSource(id);
+        // O prazo desce junto: sem isso, uma fonte com centenas de páginas
+        // ignora o limite e leva o processo inteiro junto.
+        const r = await ingestSource(id, { deadlineAt: startedAt + deadlineMs });
         acc.found += r.found;
         acc.created += r.created;
         acc.upserted += r.upserted;
