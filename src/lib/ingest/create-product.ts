@@ -74,19 +74,62 @@ export function detectPrinterTech(name: string): string {
 const PRINTER_ACCESSORY_RE =
   /\b(bico|hotend|hot\s?end|nozzle|display|mesa|placa|chapa|fonte|sensor|correia|rolamento|polia|ventoinha|cooler|esp[áa]tula|fim de curso|end\s?stop|acoplamento|engrenagem|cabo|adaptador|suporte)\b/i;
 
-// Fabricantes 3D conhecidos — p/ acertar a marca pelo nome (ex.: "Bambu Lab").
-const KNOWN_3D_BRANDS = [
+// Semente de fabricantes 3D — usada quando não há lista vinda do banco (testes,
+// chamadas avulsas). A lista real vem de loadKnownBrands(), que lê a tabela
+// Brand: é lá que o admin cadastra e cura as marcas.
+export const SEED_3D_BRANDS = [
   "Bambu Lab", "Creality", "Elegoo", "Anycubic", "Prusa", "Flashforge",
   "FLSUN", "Snapmaker", "Sovol", "Sermoon", "Artillery", "Kywoo", "Qidi",
   "Two Trees", "Raise3D", "Phrozen", "Sethi3D", "GTMax", "Cliever",
   "eSun", "Sunlu", "Polymaker", "Eryone", "Voolt",
 ];
-function brandFromKnown(name: string): string | null {
-  for (const b of KNOWN_3D_BRANDS) {
-    const esc = b.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    if (new RegExp(`\\b${esc}\\b`, "i").test(name)) return b;
+
+/**
+ * Marcas conhecidas: as cadastradas no banco mais a semente.
+ *
+ * O catálogo já tinha dezenas de marcas curadas à mão que a ingestão ignorava,
+ * porque a lista vivia como array fixo aqui dentro. Ler da tabela faz o
+ * cadastro do admin valer na classificação — cadastrar a marca passa a ser o
+ * jeito de ensinar o robô a reconhecê-la.
+ */
+export async function loadKnownBrands(): Promise<string[]> {
+  const rows = await prisma.brand.findMany({ select: { name: true } });
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const name of [...rows.map((r) => r.name), ...SEED_3D_BRANDS]) {
+    const clean = name.trim();
+    const key = clean.toLowerCase();
+    if (!clean || seen.has(key)) continue;
+    seen.add(key);
+    out.push(clean);
   }
-  return null;
+  return out;
+}
+
+/**
+ * Acha um fabricante conhecido citado no nome do produto.
+ *
+ * Devolve o nome MAIS LONGO que casa: com "3D Lab" e "3D Lab Filamentos" na
+ * lista, o primeiro casaria antes por estar em outra posição do array, e a
+ * marca mais específica se perderia por acaso da ordenação.
+ */
+export function brandFromKnown(
+  name: string,
+  known: readonly string[] = SEED_3D_BRANDS,
+): string | null {
+  let best: string | null = null;
+  for (const b of known) {
+    if (b.length <= (best?.length ?? 0)) continue;
+    const esc = b.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    if (new RegExp(`\\b${esc}\\b`, "i").test(name)) best = b;
+  }
+  return best;
+}
+
+/** Mesma entidade, ignorando caixa e espaços — "3D Prime" vs " 3d prime ". */
+function sameEntity(a: string | null, b: string | null): boolean {
+  if (!a || !b) return false;
+  return a.trim().toLowerCase() === b.trim().toLowerCase();
 }
 
 /** Infere material, cor, peso/volume e diâmetro a partir do nome do produto. */
@@ -180,6 +223,10 @@ function cleanName(
   let n = raw.replace(/\s*para impressora 3d\s*/i, " ");
   n = stripSuffix(n, brand);
   n = stripSuffix(n, sellerName);
+  // O sufixo que PARECE marca sai sempre, mesmo quando outra marca venceu a
+  // derivação. Sem isso o nome mudaria junto com a marca, e o re-scrape
+  // deixaria de casar por nome com o produto já salvo — duplicando-o.
+  n = stripSuffix(n, brandFromName(raw));
   // Remove sufixo de voltagem (impressoras) p/ consolidar 110V/220V/Bivolt
   // no mesmo produto — senão o re-scrape recria a variante a cada execução.
   n = n.replace(/\s*[-–]\s*(110\s*v|220\s*v|bivolt)\s*$/i, "");
@@ -207,11 +254,27 @@ export function deriveCanonical(
   rawName: string,
   extractedBrand: string | null,
   sellerName: string | null,
+  known: readonly string[] = SEED_3D_BRANDS,
 ): { name: string; brandName: string } {
+  // A loja publica a si mesma como "brand" no JSON-LD com frequência, e essa
+  // marca falsa ganhava de um fabricante escrito no próprio título: "Filamento
+  // - Bambu Lab - TPU-AMS" vendido pela 3D Prime virava marca "3D Prime".
+  // Quando a marca extraída é a própria loja, ela não informa nada — o título
+  // vale mais.
+  const extracted = sameEntity(extractedBrand, sellerName) ? null : extractedBrand;
   const brandName = normalizeBrand(
-    extractedBrand ??
-      brandFromKnown(rawName) ??
+    extracted ??
+      brandFromKnown(rawName, known) ??
       brandFromName(rawName) ??
+      // A loja de marca própria continua virando marca; mas se o nome dela
+      // contém uma marca já conhecida ("eSUN Brasil" → "eSun"), usa a
+      // conhecida em vez de criar uma quase-duplicata. A própria loja sai dos
+      // candidatos: quando ela já está cadastrada como marca, casaria consigo
+      // mesma por ser o nome mais longo e esconderia a marca de dentro.
+      brandFromKnown(
+        sellerName ?? "",
+        known.filter((b) => !sameEntity(b, sellerName)),
+      ) ??
       sellerName ??
       "Sem marca",
   );
@@ -239,12 +302,14 @@ async function resolveBrandId(name: string): Promise<string> {
 export async function createProductFromExtracted(
   extracted: ExtractedOffer,
   sellerName: string | null,
+  known: readonly string[] = SEED_3D_BRANDS,
 ): Promise<{ id: string; name: string }> {
   const rawName = extracted.name ?? "Produto importado";
   const { name, brandName } = deriveCanonical(
     rawName,
     extracted.brand ?? null,
     sellerName,
+    known,
   );
   const fields = inferProductFields(rawName);
   // Impressora começa só com a tecnologia; demais specs entram por importação.
