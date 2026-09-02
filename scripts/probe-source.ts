@@ -2,8 +2,13 @@
  * Analisa uma loja candidata antes de cadastrá-la como fonte de ingestão.
  *
  * Roda o mesmo scraper que a ingestão usa, então o resultado prevê o que
- * aconteceria de verdade: se o robots.txt permite, se há sitemap, quantas
- * páginas de produto aparecem e o que o extrator consegue ler de cada uma.
+ * aconteceria de verdade — mas com um nível de detalhe que a ingestão não
+ * expõe, para distinguir os motivos de uma loja "não dar certo":
+ *
+ *   - o robots.txt bloqueia?
+ *   - não existe sitemap, ou existe e as URLs não batem com o filtro?
+ *   - as páginas abrem mas o extrator não acha preço?
+ *   - o preço é lido mas o material não é reconhecido (produto descartado)?
  *
  * Uso:  npx tsx scripts/probe-source.ts https://loja.com.br [amostras]
  *
@@ -12,11 +17,12 @@
 
 import { deriveCanonical, inferProductFields } from "@/lib/ingest/create-product";
 import { extractOffer } from "@/lib/scrape/extract";
-import { fetchPage } from "@/lib/scrape/fetch";
+import { SCRAPER_USER_AGENT, fetchPage } from "@/lib/scrape/fetch";
 import { isAllowedByRobots } from "@/lib/scrape/robots";
-import { SCRAPER_USER_AGENT } from "@/lib/scrape/fetch";
-import { discoverUrls } from "@/lib/scrape/sitemap";
-import { parseAnyFeed } from "@/lib/scrape/feed";
+import { parseSitemap } from "@/lib/scrape/sitemap";
+
+/** Mesmo filtro que a ingestão aplica ao varrer um sitemap. */
+const PRODUCT_FILTER = /produto|product|prod-/i;
 
 const RAW_URL = process.argv[2];
 const SAMPLES = Number(process.argv[3] ?? 5);
@@ -39,6 +45,76 @@ function line(title: string) {
   console.log(`\n=== ${title} ${"=".repeat(Math.max(0, 56 - title.length))}`);
 }
 
+function msg(e: unknown): string {
+  return e instanceof Error ? e.message : String(e);
+}
+
+/** Sitemaps declarados no robots.txt — a forma canônica de encontrá-los. */
+async function sitemapsFromRobots(origin: string): Promise<string[]> {
+  try {
+    const { html } = await fetchPage(`${origin}/robots.txt`, {
+      accept: "any",
+      maxBytes: 512_000,
+    });
+    const out: string[] = [];
+    for (const l of html.split(/\r?\n/)) {
+      const m = /^\s*sitemap\s*:\s*(\S+)/i.exec(l);
+      if (m) out.push(m[1]);
+    }
+    return out;
+  } catch {
+    return [];
+  }
+}
+
+type Node = { url: string; kind: string; count: number; error?: string };
+
+/** Lê um sitemap e, se for índice, desce um nível. Devolve as URLs de página. */
+async function walkSitemap(
+  url: string,
+  visited: Set<string>,
+  report: Node[],
+  depth = 0,
+): Promise<string[]> {
+  if (visited.has(url) || visited.size > 40) return [];
+  visited.add(url);
+
+  let xml: string;
+  try {
+    ({ html: xml } = await fetchPage(url, { accept: "any", maxBytes: 10_000_000 }));
+  } catch (e) {
+    report.push({ url, kind: "—", count: 0, error: msg(e) });
+    return [];
+  }
+
+  const parsed = parseSitemap(xml);
+  report.push({ url, kind: parsed.kind, count: parsed.urls.length });
+
+  if (parsed.kind === "urlset") return parsed.urls;
+  if (depth >= 2) return [];
+
+  const all: string[] = [];
+  // Índices grandes: desce só nos primeiros, o bastante para ver o padrão.
+  for (const child of parsed.urls.slice(0, 8)) {
+    all.push(...(await walkSitemap(child, visited, report, depth + 1)));
+  }
+  return all;
+}
+
+/** Segmento inicial de caminho mais comum — revela o padrão de URL da loja. */
+function pathHistogram(urls: string[]): [string, number][] {
+  const counts = new Map<string, number>();
+  for (const u of urls) {
+    try {
+      const seg = new URL(u).pathname.split("/").filter(Boolean)[0] ?? "(raiz)";
+      counts.set(seg, (counts.get(seg) ?? 0) + 1);
+    } catch {
+      // ignora URL malformada
+    }
+  }
+  return [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8);
+}
+
 async function main() {
   const url = cleanUrl(RAW_URL);
   const origin = new URL(url).origin;
@@ -46,67 +122,92 @@ async function main() {
   line("LOJA");
   console.log(`URL informada : ${RAW_URL}`);
   console.log(`URL limpa     : ${url}`);
-  console.log(`Origem        : ${origin}`);
   console.log(`User-Agent    : ${SCRAPER_USER_AGENT}`);
 
   line("ROBOTS.TXT");
   let allowed = false;
   try {
     allowed = await isAllowedByRobots(new URL(url), SCRAPER_USER_AGENT);
-    console.log(allowed ? "PERMITE a raiz" : "BLOQUEIA a raiz — a loja não pode ser raspada");
+    console.log(allowed ? "PERMITE a raiz" : "BLOQUEIA a raiz");
   } catch (e) {
-    console.log(`falhou ao ler: ${(e as Error).message}`);
+    console.log(`falhou ao ler: ${msg(e)}`);
   }
   if (!allowed) {
     console.log("\nVEREDITO: não cadastrar. Respeitar o robots.txt é condição.");
     return;
   }
 
-  line("DESCOBERTA DE URLS (sitemap)");
-  let urls: string[] = [];
-  for (const candidate of [
+  const declared = await sitemapsFromRobots(origin);
+  console.log(
+    declared.length
+      ? `Sitemaps declarados: ${declared.join(", ")}`
+      : "Nenhum sitemap declarado no robots.txt",
+  );
+
+  line("SITEMAPS");
+  const candidates = [
+    ...declared,
     `${origin}/sitemap.xml`,
     `${origin}/sitemap_index.xml`,
     `${origin}/sitemap-index.xml`,
-  ]) {
-    try {
-      const found = await discoverUrls(candidate, {
-        limit: 200,
-        maxFetches: 25,
-        // Mesmo filtro da ingestão: cobre WooCommerce (/produto/) e Tray (/prod-).
-        include: /produto|product|prod-/i,
-      });
-      console.log(`${candidate} -> ${found.length} URL(s) de produto`);
-      if (found.length > urls.length) urls = found;
-    } catch (e) {
-      console.log(`${candidate} -> ${(e as Error).message}`);
-    }
+    `${origin}/wp-sitemap.xml`,
+    `${origin}/sitemap/sitemap-index.xml`,
+  ];
+
+  const visited = new Set<string>();
+  const report: Node[] = [];
+  const pageUrls: string[] = [];
+  for (const c of candidates) {
+    pageUrls.push(...(await walkSitemap(c, visited, report)));
   }
 
-  line("FEED (alternativa ao sitemap)");
-  for (const candidate of [`${origin}/feed`, `${origin}/rss`, `${origin}/feed.xml`]) {
-    try {
-      const { html } = await fetchPage(candidate, { accept: "any", maxBytes: 8_000_000 });
-      const items = parseAnyFeed(html, candidate);
-      console.log(`${candidate} -> ${items.length} item(ns)`);
-    } catch (e) {
-      console.log(`${candidate} -> ${(e as Error).message}`);
-    }
+  for (const n of report) {
+    console.log(
+      `${n.error ? "✗" : "✓"} ${n.url}\n    ${
+        n.error ? n.error : `${n.kind} · ${n.count} entrada(s)`
+      }`,
+    );
   }
 
-  if (urls.length === 0) {
-    console.log("\nVEREDITO: sem sitemap utilizável. Ainda dá para cadastrar como");
-    console.log("fonte PAGE (uma URL de produto por vez), mas não em lote.");
+  const unique = [...new Set(pageUrls)];
+  console.log(`\nTotal de URLs de página encontradas: ${unique.length}`);
+
+  if (unique.length === 0) {
+    console.log("\nVEREDITO: nenhum sitemap utilizável.");
+    console.log("Cadastrar como fonte PAGE (uma URL de produto por vez), ou");
+    console.log("investigar se a loja publica catálogo em outro formato.");
     return;
   }
 
-  line(`AMOSTRAGEM (${Math.min(SAMPLES, urls.length)} de ${urls.length})`);
+  // A distinção que importa: existe sitemap, mas as URLs batem com o filtro?
+  const matching = unique.filter((u) => PRODUCT_FILTER.test(u));
+  console.log(`Que batem com o filtro da ingestão (${PRODUCT_FILTER}): ${matching.length}`);
+
+  console.log("\nSegmentos de caminho mais comuns:");
+  for (const [seg, n] of pathHistogram(unique)) console.log(`  /${seg}  (${n})`);
+
+  console.log("\nAmostra de URLs:");
+  for (const u of unique.slice(0, 5)) console.log(`  ${u}`);
+
+  if (matching.length === 0) {
+    console.log("\nATENÇÃO: há sitemap, mas NENHUMA URL bate com o filtro da");
+    console.log("ingestão. A loja seria cadastrada e traria zero ofertas — que");
+    console.log("é como uma fonte morta se disfarça de 'ok'. Ajustar o filtro");
+    console.log("ao padrão acima antes de cadastrar.");
+  }
+
+  // Amostra as que batem; se nenhuma bater, amostra assim mesmo para
+  // descobrir se são páginas de produto sob outro padrão de URL.
+  const pool = matching.length > 0 ? matching : unique;
+  const amostras = Math.min(SAMPLES, pool.length);
+
+  line(`AMOSTRAGEM (${amostras} de ${pool.length})`);
   let ok = 0;
   let comPreco = 0;
   let comImagem = 0;
   let reconhecidos = 0;
 
-  for (const u of urls.slice(0, SAMPLES)) {
+  for (const u of pool.slice(0, amostras)) {
     try {
       const { html, finalUrl } = await fetchPage(u);
       const offer = extractOffer(html, finalUrl);
@@ -116,43 +217,41 @@ async function main() {
 
       const canon = deriveCanonical(offer.name ?? "", offer.brand, null);
       const fields = inferProductFields(offer.name ?? "");
-      const entendido = fields.material !== "OUTRO" || fields.kind === "PRINTER";
-      if (entendido) reconhecidos += 1;
+      // Espelha a regra da ingestão: material desconhecido e não-impressora
+      // é descartado, mesmo com preço lido.
+      const entraNoCatalogo = fields.material !== "OUTRO" || fields.kind === "PRINTER";
+      if (entraNoCatalogo) reconhecidos += 1;
 
       console.log(`\n· ${finalUrl}`);
-      console.log(`  nome      : ${offer.name ?? "—"}`);
-      console.log(`  preço     : ${offer.price ?? "—"}`);
-      console.log(`  imagem    : ${offer.image ? "sim" : "—"}`);
-      console.log(`  marca     : ${offer.brand ?? "—"}  | gtin: ${offer.gtin ?? "—"}`);
-      console.log(`  estoque   : ${offer.availability}`);
-      console.log(`  canônico  : ${canon.name} (marca: ${canon.brandName})`);
+      console.log(`  nome     : ${offer.name ?? "—"}`);
+      console.log(`  preço    : ${offer.price ?? "—"}   estoque: ${offer.availability}`);
+      console.log(`  imagem   : ${offer.image ? "sim" : "—"}   marca: ${offer.brand ?? "—"}   gtin: ${offer.gtin ?? "—"}`);
+      console.log(`  canônico : ${canon.name} (marca: ${canon.brandName})`);
       console.log(
-        `  inferido  : material=${fields.material} tipo=${fields.kind}` +
+        `  inferido : material=${fields.material} tipo=${fields.kind}` +
           ` peso=${fields.netWeightG ?? "—"}g diâmetro=${fields.diameterMm ?? "—"}mm` +
-          (entendido ? "" : "  <-- NÃO seria cadastrado"),
+          (entraNoCatalogo ? "" : "   <-- SERIA DESCARTADO"),
       );
     } catch (e) {
-      console.log(`\n· ${u}\n  ERRO: ${(e as Error).message}`);
+      console.log(`\n· ${u}\n  ERRO: ${msg(e)}`);
     }
   }
 
   line("VEREDITO");
-  const amostras = Math.min(SAMPLES, urls.length);
-  console.log(`páginas lidas       : ${ok}/${amostras}`);
-  console.log(`com preço           : ${comPreco}/${amostras}`);
-  console.log(`com imagem          : ${comImagem}/${amostras}`);
-  console.log(`material reconhecido: ${reconhecidos}/${amostras}`);
-  console.log(`produtos no sitemap : ${urls.length}`);
-  if (ok === 0) {
-    console.log("\nNão dá para ler as páginas — investigar antes de cadastrar.");
-  } else if (comPreco === 0) {
-    console.log("\nLê as páginas mas não acha preço: o extrator precisa de ajuste.");
-  } else {
-    console.log("\nPronta para cadastrar como fonte SITEMAP.");
-  }
+  console.log(`páginas abertas      : ${ok}/${amostras}`);
+  console.log(`com preço            : ${comPreco}/${amostras}`);
+  console.log(`com imagem           : ${comImagem}/${amostras}`);
+  console.log(`entrariam no catálogo: ${reconhecidos}/${amostras}`);
+  console.log(`URLs no sitemap      : ${unique.length} (${matching.length} no filtro atual)`);
+
+  if (ok === 0) console.log("\nNão dá para ler as páginas — investigar antes de cadastrar.");
+  else if (comPreco === 0) console.log("\nLê as páginas mas não acha preço: o extrator precisa de ajuste.");
+  else if (matching.length === 0) console.log("\nPrecisa ajustar o filtro de URL antes de cadastrar.");
+  else if (reconhecidos < amostras) console.log("\nCadastrável, mas parte do catálogo seria descartada por material não reconhecido.");
+  else console.log("\nPronta para cadastrar como fonte SITEMAP.");
 }
 
 main().catch((e) => {
-  console.error(`falhou: ${(e as Error).message}`);
+  console.error(`falhou: ${msg(e)}`);
   process.exit(1);
 });
