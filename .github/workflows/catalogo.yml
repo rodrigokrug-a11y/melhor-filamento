@@ -1,0 +1,163 @@
+name: Diagnóstico do catálogo
+
+# Fotografa o catálogo de produção: como as marcas estão distribuídas, quanto
+# do acervo caiu em "Sem marca" ou no nome da loja, e o que os títulos brutos
+# das ofertas trazem. É a evidência que falta para mexer na derivação de marca
+# sem chutar.
+#
+# Só leitura: SELECT, nada mais. Não roda a ingestão, não escreve no banco e
+# não publica nada. Entra pelo mesmo caminho SSH do deploy.
+
+on:
+  workflow_dispatch:
+    inputs:
+      amostras:
+        description: "Quantos títulos brutos listar por marca suspeita"
+        required: false
+        default: "10"
+        type: string
+
+jobs:
+  diagnostico:
+    name: Fotografar o catálogo
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Verificar credenciais
+        id: check
+        env:
+          HOST: ${{ secrets.VPS_HOST }}
+          USER_NAME: ${{ secrets.VPS_USER }}
+          KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          if [ -z "$HOST" ] || [ -z "$USER_NAME" ] || [ -z "$KEY" ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Pulado — configure VPS_HOST, VPS_USER e VPS_SSH_KEY. Veja DEPLOY.md, seção 4.1."
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Preparar chave SSH
+        if: steps.check.outputs.ready == 'true'
+        env:
+          KEY: ${{ secrets.VPS_SSH_KEY }}
+          HOST: ${{ secrets.VPS_HOST }}
+          PORT: ${{ secrets.VPS_PORT }}
+          KNOWN: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          if [ -n "$KNOWN" ]; then
+            printf '%s\n' "$KNOWN" > ~/.ssh/known_hosts
+          else
+            echo "::warning::VPS_KNOWN_HOSTS não definido — identidade do servidor não fixada."
+            ssh-keyscan -p "${PORT:-22}" -H "$HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          fi
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Consultar o catálogo
+        if: steps.check.outputs.ready == 'true'
+        env:
+          HOST: ${{ secrets.VPS_HOST }}
+          USER_NAME: ${{ secrets.VPS_USER }}
+          PORT: ${{ secrets.VPS_PORT }}
+          DIR: ${{ secrets.VPS_PROJECT_DIR }}
+          AMOSTRAS: ${{ inputs.amostras }}
+        run: |
+          set -Eeuo pipefail
+          remote_dir=$(printf '%q' "${DIR:-}")
+          # Só dígitos: o valor entra num LIMIT no servidor.
+          n=$(printf '%s' "${AMOSTRAS:-10}" | tr -cd '0-9')
+          n=${n:-10}
+          ssh -i ~/.ssh/id_deploy \
+              -o IdentitiesOnly=yes \
+              -o StrictHostKeyChecking=yes \
+              -o BatchMode=yes \
+              -p "${PORT:-22}" \
+              "$USER_NAME@$HOST" \
+              "DEPLOY_DIR=$remote_dir AMOSTRAS=$n bash -s" <<'REMOTE'
+          set -Eeuo pipefail
+
+          dir="${DEPLOY_DIR:-}"
+          if [ -z "$dir" ]; then
+            dir=$(docker inspect mf-prod-app \
+              --format '{{index .Config.Labels "com.docker.compose.project.working_dir"}}' \
+              2>/dev/null || true)
+          fi
+          [ -n "$dir" ] && [ -d "$dir" ] || { echo "erro: pasta do projeto não localizada." >&2; exit 1; }
+          cd "$dir"
+
+          n="${AMOSTRAS:-10}"
+
+          psql() {
+            docker exec mf-prod-db psql -U postgres -d melhorfilamento -P pager=off "$@"
+          }
+
+          # Literais em dollar-quoting ($$...$$) para não conflitar com as aspas
+          # simples que envolvem o SQL aqui no shell.
+
+          echo "============ 1. Quantas marcas existem ============"
+          psql -c 'SELECT count(*) AS marcas_cadastradas,
+                          count(*) FILTER (
+                            WHERE EXISTS (SELECT 1 FROM "Product" p WHERE p."brandId" = b.id)
+                          ) AS com_produto
+                   FROM "Brand" b;'
+
+          echo "============ 2. Marcas por nº de produtos ============"
+          psql -c 'SELECT b.name AS marca,
+                          count(p.id) AS produtos,
+                          count(*) FILTER (WHERE p.kind = $$FILAMENT$$) AS filamento,
+                          count(*) FILTER (WHERE p.kind = $$RESIN$$) AS resina,
+                          count(*) FILTER (WHERE p.kind = $$PRINTER$$) AS impressora
+                   FROM "Brand" b LEFT JOIN "Product" p ON p."brandId" = b.id
+                   GROUP BY b.id, b.name
+                   ORDER BY count(p.id) DESC;'
+
+          echo "============ 3. Marca que é o nome de uma loja ============"
+          echo "(a derivação cai no nome da loja quando não acha marca no título)"
+          psql -c 'SELECT b.name AS marca_igual_a_loja,
+                          count(p.id) AS produtos
+                   FROM "Brand" b
+                   JOIN "Seller" s ON lower(s.name) = lower(b.name)
+                   LEFT JOIN "Product" p ON p."brandId" = b.id
+                   GROUP BY b.id, b.name
+                   ORDER BY count(p.id) DESC;'
+
+          echo "============ 4. Marcas visíveis no catálogo (com oferta ativa) ============"
+          psql -c 'SELECT p.kind,
+                          count(DISTINCT p."brandId") AS marcas_visiveis,
+                          count(DISTINCT p.id) AS produtos_visiveis
+                   FROM "Product" p
+                   WHERE EXISTS (
+                     SELECT 1 FROM "Offer" o
+                     WHERE o."productId" = p.id AND o.status = $$APPROVED$$
+                   )
+                   GROUP BY p.kind
+                   ORDER BY p.kind;'
+
+          echo "============ 5. Amostra de nomes por loja ============"
+          echo "(é deste texto que a marca teria de sair; $n por loja)"
+          # O título bruto da oferta não é guardado — Product.name é o mais
+          # próximo, já sem o sufixo de marca/loja que a derivação removeu.
+          # row_number por loja garante amostra de TODAS as lojas; um LIMIT
+          # global só mostraria a primeira em ordem alfabética.
+          psql -c "WITH amostra AS (
+                     SELECT s.name AS loja,
+                            p.name AS nome_produto,
+                            b.name AS marca_atual,
+                            row_number() OVER (PARTITION BY s.id ORDER BY random()) AS rn
+                     FROM \"Offer\" o
+                     JOIN \"Seller\" s ON s.id = o.\"sellerId\"
+                     JOIN \"Product\" p ON p.id = o.\"productId\"
+                     JOIN \"Brand\" b ON b.id = p.\"brandId\"
+                     WHERE p.kind <> 'PRINTER' AND o.status = 'APPROVED'
+                   )
+                   SELECT loja, left(nome_produto, 80) AS nome_produto, marca_atual
+                   FROM amostra WHERE rn <= $n ORDER BY loja, marca_atual;"
+          REMOTE
+
+      - name: Remover a chave
+        if: always()
+        run: rm -f ~/.ssh/id_deploy
