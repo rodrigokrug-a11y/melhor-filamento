@@ -2,6 +2,7 @@ import {
   createProductFromExtracted,
   deriveCanonical,
   inferProductFields,
+  loadKnownBrands,
 } from "@/lib/ingest/create-product";
 import { loadProductIndex, matchProduct, productSignature } from "@/lib/ingest/match";
 import { prisma } from "@/lib/db";
@@ -105,7 +106,7 @@ async function upsertIngestedOffer(args: {
 
 export async function ingestSource(
   sourceId: string,
-  opts: { deadlineAt?: number } = {},
+  opts: { deadlineAt?: number; knownBrands?: readonly string[] } = {},
 ): Promise<IngestResult> {
   const expired = () => opts.deadlineAt != null && Date.now() >= opts.deadlineAt;
 
@@ -131,6 +132,9 @@ export async function ingestSource(
 
   try {
     const index = await loadProductIndex();
+    // Uma consulta por fonte, não por produto: a lista muda pouco e é lida
+    // centenas de vezes dentro do laço abaixo.
+    const known = opts.knownBrands ?? (await loadKnownBrands());
     let candidates: Candidate[];
 
     if (source.kind === "FEED") {
@@ -202,7 +206,7 @@ export async function ingestSource(
       if (c.price == null || c.price <= 0 || !c.name) continue;
       // Canoniza nome+marca IGUAL à criação — senão o re-scrape não casa com o
       // produto já salvo (limpo/normalizado) e duplicaríamos a cada execução.
-      const canon = deriveCanonical(c.name, c.brand, sellerName);
+      const canon = deriveCanonical(c.name, c.brand, sellerName, known);
       let productId = matchProduct(
         { name: canon.name, gtin: c.gtin, brand: canon.brandName },
         index,
@@ -226,6 +230,7 @@ export async function ingestSource(
             source: "html",
           },
           sellerName,
+          known,
         );
         productId = product.id;
         // Adiciona ao índice em memória p/ casar variações na mesma execução
@@ -354,6 +359,11 @@ export async function runAllSources(
     else byHost.set(host, [s.id]);
   }
 
+  // Uma vez para a execução inteira. Marcas criadas durante a rodada só valem
+  // na próxima — trocar a lista no meio faria fontes irmãs classificarem o
+  // mesmo produto de formas diferentes conforme a ordem em que rodassem.
+  const knownBrands = await loadKnownBrands();
+
   const totals: RunAllResult = {
     sources: sources.length,
     found: 0,
@@ -375,7 +385,10 @@ export async function runAllSources(
         }
         // O prazo desce junto: sem isso, uma fonte com centenas de páginas
         // ignora o limite e leva o processo inteiro junto.
-        const r = await ingestSource(id, { deadlineAt: startedAt + deadlineMs });
+        const r = await ingestSource(id, {
+          deadlineAt: startedAt + deadlineMs,
+          knownBrands,
+        });
         acc.found += r.found;
         acc.created += r.created;
         acc.upserted += r.upserted;
