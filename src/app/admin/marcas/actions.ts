@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
+import { revalidateHome } from "@/lib/home";
 
 const PROMOTE_DAYS = 30;
 
@@ -19,7 +20,7 @@ function isValidHttpUrl(value: string): boolean {
 function revalidateBrandSurfaces(): void {
   revalidatePath("/admin/marcas");
   revalidatePath("/marca");
-  revalidatePath("/");
+  revalidateHome();
 }
 
 export async function setBrandLogo(formData: FormData): Promise<void> {

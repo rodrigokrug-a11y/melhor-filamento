@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
+import { revalidateHome } from "@/lib/home";
 
 async function setStatus(
   formData: FormData,
@@ -21,7 +22,7 @@ async function setStatus(
   revalidatePath("/admin");
   // Páginas estáticas/ISR afetadas pela mudança de visibilidade.
   revalidatePath(`/produto/${offer.product.slug}`);
-  revalidatePath("/");
+  revalidateHome();
 }
 
 export async function approveOffer(formData: FormData): Promise<void> {

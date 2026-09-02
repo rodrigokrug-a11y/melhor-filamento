@@ -29,16 +29,16 @@ import { Reveal } from "@/components/reveal";
 import { SearchBox } from "@/components/search-box";
 import { Stars } from "@/components/stars";
 import { Badge } from "@/components/ui/badge";
-import { getBrandsOverview, getCatalog, getProductCardById } from "@/lib/catalog";
+import { getProductCardById } from "@/lib/catalog";
 import {
   type BrandSummary,
   MATERIAL_INFO,
   materialLabel,
   type ProductListItem,
 } from "@/lib/catalog-types";
-import { getRanking } from "@/lib/reviews";
+import { getHomeData } from "@/lib/home";
+import { drawHomeDeals } from "@/lib/home-deals";
 import { type ActiveBanner, getActiveBanner } from "@/lib/banners";
-import { getMaterialsOverview } from "@/lib/tips";
 import { formatBRL } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -46,48 +46,24 @@ export const metadata: Metadata = {
   openGraph: { url: "/" },
 };
 
-// ISR: revalida a home periodicamente (anúncios e preços atualizam sem
-// redeploy). O admin também chama revalidatePath("/") ao salvar banners.
-export const revalidate = 300;
+// Render por requisição: os anúncios da home são sorteados a cada acesso,
+// então a página não pode ficar em HTML estático. As consultas continuam em
+// cache (getHomeData, 5 min) — quem varia por acesso é o sorteio, não o banco.
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [filamentos, resinas, brands, ranking, materials, heroAd] =
-    await Promise.all([
-      getCatalog("FILAMENT", { sort: "preco-asc" }),
-      getCatalog("RESIN", { sort: "preco-asc" }),
-      getBrandsOverview(),
-      getRanking(),
-      getMaterialsOverview(),
-      getActiveBanner("HERO"),
-    ]);
-  const featuredBrands = brands.filter((b) => b.productCount > 0).slice(0, 8);
-  const topRanking = ranking.slice(0, 3);
-  const topMaterials = materials.slice(0, 6);
+  const [home, heroAd] = await Promise.all([
+    getHomeData(),
+    getActiveBanner("HERO"),
+  ]);
   // Display do hero: produto escolhido pelo admin (se houver) tem prioridade.
   const featuredProduct = heroAd?.productId
     ? await getProductCardById(heroAd.productId)
     : null;
-  // Ofertas que rolam no hero: mistura os filamentos e resinas mais baratos.
-  const heroDeals = [
-    ...filamentos.products.slice(0, 4),
-    ...resinas.products.slice(0, 2),
-  ];
-  // Vitrine logo abaixo do hero: anúncios reais, misturando filamento e
-  // resina, ordenados pelo menor preço. Vem antes de qualquer bloco
-  // institucional para o visitante já ver preço de verdade e testar o site.
-  const showcase = [
-    ...filamentos.products.slice(0, 5),
-    ...resinas.products.slice(0, 3),
-  ].sort((a, b) => a.bestPrice - b.bestPrice);
-  // Os trilhos abaixo mostram o que a vitrine não mostrou, para a home não
-  // repetir o mesmo produto duas vezes.
-  const shown = new Set(showcase.map((p) => p.id));
-  const maisFilamentos = filamentos.products
-    .filter((p) => !shown.has(p.id))
-    .slice(0, 4);
-  const maisResinas = resinas.products
-    .filter((p) => !shown.has(p.id))
-    .slice(0, 4);
+  // Anúncios sorteados entre os mais baratos: carrossel do hero, vitrine logo
+  // abaixo dele (preço de verdade antes de qualquer bloco institucional) e os
+  // trilhos — sem repetir o mesmo produto entre as seções.
+  const { hero, showcase, moreFilaments, moreResins } = drawHomeDeals(home);
 
   return (
     <>
@@ -95,7 +71,7 @@ export default async function HomePage() {
         <PageBanner placement="HOME" />
       </div>
       <CatStrip />
-      <Hero deals={heroDeals} ad={heroAd} featured={featuredProduct} />
+      <Hero deals={hero} ad={heroAd} featured={featuredProduct} />
       <TrustBar />
 
       <div className="mx-auto max-w-6xl space-y-10 px-4 py-10 sm:space-y-16 sm:py-14">
@@ -107,14 +83,14 @@ export default async function HomePage() {
           <Rail
             title="Outros filamentos baratos"
             href="/filamentos"
-            products={maisFilamentos}
+            products={moreFilaments}
           />
         </Reveal>
         <Reveal>
           <Rail
             title="Outras resinas baratas"
             href="/resinas"
-            products={maisResinas}
+            products={moreResins}
           />
         </Reveal>
 
@@ -123,7 +99,7 @@ export default async function HomePage() {
         </Reveal>
 
         <Reveal>
-          <BrandsSection brands={featuredBrands} />
+          <BrandsSection brands={home.brands} />
         </Reveal>
 
         <Reveal>
@@ -132,8 +108,8 @@ export default async function HomePage() {
 
         <Reveal>
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <RankingTeaser items={topRanking} />
-            <DicasTeaser materials={topMaterials} />
+            <RankingTeaser items={home.ranking} />
+            <DicasTeaser materials={home.materials} />
           </div>
         </Reveal>
       </div>

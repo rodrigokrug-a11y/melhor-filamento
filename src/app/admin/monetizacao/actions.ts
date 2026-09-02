@@ -9,6 +9,7 @@ import { revalidatePath } from "next/cache";
 
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
+import { revalidateHome } from "@/lib/home";
 
 const VALID: AdStatus[] = ["ACTIVE", "PAUSED", "REJECTED", "ENDED"];
 const BOOST_PLACEMENTS: BoostPlacement[] = [
@@ -32,7 +33,7 @@ const BANNER_PLACEMENTS: BannerPlacement[] = [
 /** Revalida home + listagens (onde aparecem destaque e banners). */
 function revalidateListings() {
   revalidatePath("/admin/monetizacao");
-  revalidatePath("/");
+  revalidateHome();
   revalidatePath("/filamentos");
   revalidatePath("/resinas");
   revalidatePath("/impressoras");

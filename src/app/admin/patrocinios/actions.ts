@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
+import { revalidateHome } from "@/lib/home";
 
 const SPONSOR_DAYS = 30;
 
@@ -19,7 +20,7 @@ export async function sponsorOffer(formData: FormData): Promise<void> {
   });
   revalidatePath("/admin/patrocinios");
   revalidatePath(`/produto/${offer.product.slug}`);
-  revalidatePath("/");
+  revalidateHome();
 }
 
 export async function unsponsorOffer(formData: FormData): Promise<void> {
@@ -33,5 +34,5 @@ export async function unsponsorOffer(formData: FormData): Promise<void> {
   });
   revalidatePath("/admin/patrocinios");
   revalidatePath(`/produto/${offer.product.slug}`);
-  revalidatePath("/");
+  revalidateHome();
 }

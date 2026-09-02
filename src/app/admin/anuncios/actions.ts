@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
+import { revalidateHome } from "@/lib/home";
 
 /** Edição em massa: muda status (visível/oculto) e/ou patrocínio de vários anúncios. */
 export async function bulkUpdateOffers(
@@ -28,7 +29,7 @@ export async function bulkUpdateOffers(
 
   await prisma.offer.updateMany({ where: { id: { in: ids } }, data });
   revalidatePath("/admin/anuncios");
-  revalidatePath("/");
+  revalidateHome();
 }
 
 /** Edita o preço de um anúncio (e registra no histórico). */
@@ -59,7 +60,7 @@ export async function deleteOffers(ids: string[]): Promise<void> {
   await prisma.offer.deleteMany({ where: { id: { in: ids } } });
 
   revalidatePath("/admin/anuncios");
-  revalidatePath("/");
+  revalidateHome();
   for (const s of new Set(offers.map((o) => o.product.slug))) {
     revalidatePath(`/produto/${s}`);
   }
