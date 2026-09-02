@@ -10,6 +10,7 @@ import { extractOffer } from "@/lib/scrape/extract";
 import { parseAnyFeed } from "@/lib/scrape/feed";
 import { fetchPage } from "@/lib/scrape/fetch";
 import { discoverUrls } from "@/lib/scrape/sitemap";
+import { urlFilterPredicate } from "@/lib/ingest/url-filter";
 import type { Availability } from "@/lib/scrape/types";
 
 export type IngestResult = {
@@ -125,6 +126,7 @@ export async function ingestSource(
       sellerId: true,
       kind: true,
       url: true,
+      urlFilter: true,
       seller: { select: { name: true } },
     },
   });
@@ -152,12 +154,13 @@ export async function ingestSource(
         url: i.url ?? source.url,
       }));
     } else if (source.kind === "SITEMAP") {
-      // Filtro amplo de URL de produto: /produto/ (WooCommerce) e /prod-/ (Tray)
-      // — cobre as plataformas comuns no Brasil sem puxar páginas/categorias.
+      // O filtro vem do cadastro da fonte; sem ele valem os trechos padrão
+      // (/produto/ do WooCommerce, /prod-/ da Tray). Loja com outro formato de
+      // URL varria o sitemap inteiro e voltava com zero produtos, sem erro.
       const urls = await discoverUrls(source.url, {
         limit: 250,
         maxFetches: 50,
-        include: /produto|product|prod-/i,
+        include: urlFilterPredicate(source.urlFilter),
       });
       candidates = [];
       for (const u of urls) {

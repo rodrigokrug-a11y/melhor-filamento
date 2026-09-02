@@ -5,6 +5,10 @@ import { Loader2, Plus } from "lucide-react";
 
 import { createSource } from "@/app/admin/fontes/actions";
 import { Button } from "@/components/ui/button";
+import {
+  DEFAULT_URL_FILTER,
+  URL_FILTER_MAX_LENGTH,
+} from "@/lib/ingest/url-filter";
 
 const initialState: { error?: string } = {};
 
@@ -55,6 +59,20 @@ export function CreateSourceForm({
         aria-label="Rótulo"
         className={inputClass}
       />
+      <div>
+        <input
+          name="urlFilter"
+          placeholder={`Trechos da URL de produto — vazio usa "${DEFAULT_URL_FILTER.join(", ")}"`}
+          aria-label="Trechos da URL de produto"
+          maxLength={URL_FILTER_MAX_LENGTH}
+          className={inputClass}
+        />
+        <p className="mt-1 text-xs text-muted-foreground">
+          Só vale para Sitemap. Separe por vírgula os trechos que aparecem na URL
+          de produto desta loja — ex.: <code>/produto/</code> ou <code>/p/</code>.
+          Se o formato dela for outro, a varredura volta vazia.
+        </p>
+      </div>
       {state.error ? (
         <p className="text-sm text-destructive">{state.error}</p>
       ) : null}
