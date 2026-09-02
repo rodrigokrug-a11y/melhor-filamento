@@ -1,4 +1,8 @@
-import { brandFromKnown, loadKnownBrands } from "@/lib/ingest/create-product";
+import {
+  bodyOfName,
+  brandFromKnown,
+  loadKnownBrands,
+} from "@/lib/ingest/create-product";
 import { prisma } from "@/lib/db";
 
 /**
@@ -40,18 +44,22 @@ export async function planRebrand(): Promise<RebrandPlan> {
   for (const p of products) {
     const current = p.brand.name;
 
-    // 1. Fabricante conhecido escrito no nome do produto. É o caso do filamento
-    //    Bambu Lab vendido pela 3D Prime, que ficou com a marca da loja porque
-    //    a loja se anuncia como marca no JSON-LD.
-    let target = brandFromKnown(p.name, known);
+    // Só mexe em produto preso ao nome de uma LOJA — que é o defeito. Produto
+    // já atribuído a um fabricante de verdade fica como está: numa passagem em
+    // massa, "Creality" virar "Sermoon" (a linha dela) não é ganho nenhum e
+    // "Creality" virar "3D Fila" (a loja, carimbada no fim do título) é perda.
+    if (!sellerNames.has(current.trim().toLowerCase())) continue;
 
-    // 2. Marca que é o nome de uma loja e contém uma marca conhecida
-    //    ("eSUN Brasil" → "eSun"). Só vale se a marca atual for de fato uma
-    //    loja: senão estaríamos encurtando o nome de uma marca legítima.
-    if (!target && sellerNames.has(current.trim().toLowerCase())) {
-      // A própria marca sai dos candidatos: quando a loja está cadastrada como
-      // marca, ela casaria consigo mesma por ser o nome mais longo e esconderia
-      // a marca que existe dentro do nome.
+    // 1. Fabricante conhecido escrito no corpo do nome. É o caso do filamento
+    //    Bambu Lab vendido pela 3D Prime, que ficou com a marca da loja porque
+    //    a loja se anuncia como marca no JSON-LD. O sufixo do título fica de
+    //    fora: lá mora o carimbo da loja, não o fabricante.
+    let target = brandFromKnown(bodyOfName(p.name), known);
+
+    // 2. A própria marca-loja contém uma marca conhecida ("eSUN Brasil" →
+    //    "eSun"). Ela sai dos candidatos: estando cadastrada, casaria consigo
+    //    mesma por ser o nome mais longo e esconderia a marca de dentro.
+    if (!target) {
       const outros = known.filter(
         (b) => b.trim().toLowerCase() !== current.trim().toLowerCase(),
       );
