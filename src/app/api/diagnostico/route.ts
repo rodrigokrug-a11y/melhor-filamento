@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse, type NextRequest } from "next/server";
 
+import { recordAiUsage, requireUserForAi } from "@/lib/ai-usage";
 import { clientIp } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
@@ -37,6 +38,16 @@ export async function POST(req: NextRequest) {
   if (!key) {
     return NextResponse.json({ error: "Diagnóstico indisponível." }, { status: 503 });
   }
+  // Analisar imagem é a chamada mais cara do site: sem conta, o custo fica
+  // aberto a qualquer visitante e não há a quem atribuir o uso.
+  const userId = await requireUserForAi();
+  if (!userId) {
+    return NextResponse.json(
+      { error: "Entre na sua conta para usar o diagnóstico por foto." },
+      { status: 401 },
+    );
+  }
+
   const ip = clientIp(req);
   if (rateLimited(ip)) {
     return NextResponse.json(
@@ -67,6 +78,7 @@ export async function POST(req: NextRequest) {
   }
 
   const anthropic = new Anthropic({ apiKey: key });
+  const startedAt = Date.now();
   try {
     const resp = await anthropic.messages.create({
       model: MODEL,
@@ -97,10 +109,24 @@ export async function POST(req: NextRequest) {
       .map((b) => b.text)
       .join("\n")
       .trim();
+    await recordAiUsage({
+      tool: "DIAGNOSTICO",
+      userId,
+      ok: true,
+      inputTokens: resp.usage?.input_tokens,
+      outputTokens: resp.usage?.output_tokens,
+      latencyMs: Date.now() - startedAt,
+    });
     return NextResponse.json({
       diagnosis: diagnosis || "Não consegui analisar a imagem.",
     });
   } catch {
+    await recordAiUsage({
+      tool: "DIAGNOSTICO",
+      userId,
+      ok: false,
+      latencyMs: Date.now() - startedAt,
+    });
     return NextResponse.json(
       { error: "Não foi possível analisar agora. Tente de novo." },
       { status: 502 },

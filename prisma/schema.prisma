@@ -77,9 +77,9 @@ enum Role {
 // ───────────── Catálogo ─────────────
 
 model Brand {
-  id            String    @id @default(cuid())
+  id            String         @id @default(cuid())
   name          String
-  slug          String    @unique
+  slug          String         @unique
   logoUrl       String?
   // Perfil da empresa (mesmos campos p/ todas) — preenchidos via importação.
   website       String? // site oficial
@@ -89,36 +89,36 @@ model Brand {
   sells         String? // o que a empresa vende
   about         String? // o que a empresa faz (descrição)
   foundedYear   Int? // ano de fundação
-  isPromoted    Boolean   @default(false) // marca patrocinada (destaque pago)
+  isPromoted    Boolean        @default(false) // marca patrocinada (destaque pago)
   promotedUntil DateTime?
-  sortOrder     Int       @default(0) // ordem manual do admin (maior = primeiro)
+  sortOrder     Int            @default(0) // ordem manual do admin (maior = primeiro)
   products      Product[]
   reviews       Review[]
   offerRequests OfferRequest[]
-  createdAt     DateTime  @default(now())
+  createdAt     DateTime       @default(now())
 }
 
 model Product {
-  id         String      @id @default(cuid())
-  slug       String      @unique
-  name       String
-  kind       ProductKind
-  material   Material
-  diameterMm Float? // 1.75 | 2.85 — null p/ resina; valores validados por Zod
-  netWeightG Int
-  color      String
-  brandId    String
-  brand      Brand       @relation(fields: [brandId], references: [id])
-  specs      Json?
-  imageUrl   String?
-  sortOrder  Int         @default(0) // ordem manual do admin (maior = primeiro)
-  gtin       String? // EAN/GTIN p/ casamento na ingestão
-  offers     Offer[]
-  reviews    Review[]
-  tips       Tip[]
+  id          String       @id @default(cuid())
+  slug        String       @unique
+  name        String
+  kind        ProductKind
+  material    Material
+  diameterMm  Float? // 1.75 | 2.85 — null p/ resina; valores validados por Zod
+  netWeightG  Int
+  color       String
+  brandId     String
+  brand       Brand        @relation(fields: [brandId], references: [id])
+  specs       Json?
+  imageUrl    String?
+  sortOrder   Int          @default(0) // ordem manual do admin (maior = primeiro)
+  gtin        String? // EAN/GTIN p/ casamento na ingestão
+  offers      Offer[]
+  reviews     Review[]
+  tips        Tip[]
   priceAlerts PriceAlert[]
-  banners    Banner[]
-  createdAt  DateTime    @default(now())
+  banners     Banner[]
+  createdAt   DateTime     @default(now())
 
   @@index([kind])
   @@index([material])
@@ -129,68 +129,68 @@ model Product {
 // ───────────── Vendedores ─────────────
 
 model Seller {
-  id            String         @id @default(cuid())
-  name          String
-  slug          String         @unique
-  type          SellerType
-  website       String?
-  logoUrl       String?
-  isVerified    Boolean        @default(false)
-  city          String?
-  uf            String? // sigla de 2 letras
-  latitude      Float?
-  longitude     Float?
-  offersPickup  Boolean        @default(false) // permite retirada na loja física
+  id                String         @id @default(cuid())
+  name              String
+  slug              String         @unique
+  type              SellerType
+  website           String?
+  logoUrl           String?
+  isVerified        Boolean        @default(false)
+  city              String?
+  uf                String? // sigla de 2 letras
+  latitude          Float?
+  longitude         Float?
+  offersPickup      Boolean        @default(false) // permite retirada na loja física
   // Monetização por afiliado (aplicado no /go ao link de saída):
   // - affiliateParams: query a anexar, ex. "ref=melhorfilamento" ou "aff=ABC123"
   // - affiliateTemplate: URL de rede de afiliado com {target} no lugar do link
   //   (ex. Awin/Lomadee). Se preenchido, embrulha o link final.
   affiliateParams   String?
   affiliateTemplate String?
-  ownerUserId   String?        @unique
-  owner         User?          @relation("SellerOwner", fields: [ownerUserId], references: [id])
-  members       User[]         @relation("SellerMembers")
-  offers        Offer[]
-  shippingRules ShippingRule[]
-  sources       Source[]
-  boosts        Boost[]
-  banners       Banner[]
-  coupons       Coupon[]
-  reviewReplies ReviewReply[]
-  createdAt     DateTime       @default(now())
+  ownerUserId       String?        @unique
+  owner             User?          @relation("SellerOwner", fields: [ownerUserId], references: [id])
+  members           User[]         @relation("SellerMembers")
+  offers            Offer[]
+  shippingRules     ShippingRule[]
+  sources           Source[]
+  boosts            Boost[]
+  banners           Banner[]
+  coupons           Coupon[]
+  reviewReplies     ReviewReply[]
+  createdAt         DateTime       @default(now())
 }
 
 // ───────────── Ofertas ─────────────
 
 model Offer {
-  id             String       @id @default(cuid())
-  productId      String
-  product        Product      @relation(fields: [productId], references: [id])
-  sellerId       String
-  seller         Seller       @relation(fields: [sellerId], references: [id])
-  price          Decimal      @db.Decimal(10, 2)
-  url            String // link de saída/afiliado
-  imageUrl       String? // foto da oferta (a loja pode trocar; sobrepõe a do produto)
-  couponCode     String?
-  couponDiscount Decimal?     @db.Decimal(10, 2)
-  couponType     CouponType?
-  stockStatus    StockStatus  @default(UNKNOWN)
-  isSponsored    Boolean      @default(false)
-  sponsoredUntil DateTime?
-  status         OfferStatus  @default(PENDING)
+  id                String          @id @default(cuid())
+  productId         String
+  product           Product         @relation(fields: [productId], references: [id])
+  sellerId          String
+  seller            Seller          @relation(fields: [sellerId], references: [id])
+  price             Decimal         @db.Decimal(10, 2)
+  url               String // link de saída/afiliado
+  imageUrl          String? // foto da oferta (a loja pode trocar; sobrepõe a do produto)
+  couponCode        String?
+  couponDiscount    Decimal?        @db.Decimal(10, 2)
+  couponType        CouponType?
+  stockStatus       StockStatus     @default(UNKNOWN)
+  isSponsored       Boolean         @default(false)
+  sponsoredUntil    DateTime?
+  status            OfferStatus     @default(PENDING)
   submittedByName   String? // quem cadastrou a oferta (atribuição "cadastrado por")
   submittedByEmail  String?
   submittedByUserId String?
-  sourceId       String?
-  source         Source?         @relation(fields: [sourceId], references: [id])
+  sourceId          String?
+  source            Source?         @relation(fields: [sourceId], references: [id])
   // Última vez que a ingestão encontrou esta oferta na loja. Null em oferta
   // cadastrada à mão, que nunca é revisitada e por isso não expira.
-  lastSeenAt     DateTime?
-  clicks         ClickEvent[]
-  snapshots      PriceSnapshot[]
-  leads          Lead[]
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  lastSeenAt        DateTime?
+  clicks            ClickEvent[]
+  snapshots         PriceSnapshot[]
+  leads             Lead[]
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 
   @@index([productId, status])
   @@index([sellerId])
@@ -239,21 +239,22 @@ model ClickEvent {
 // ───────────── Usuários / Auth (NextAuth — Etapa 5) ─────────────
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
+  id            String        @id @default(cuid())
+  email         String        @unique
   name          String?
   emailVerified DateTime?
   image         String?
   passwordHash  String? // login por e-mail/senha (bcrypt); null = só magic link
-  role          Role      @default(CLIENTE)
+  role          Role          @default(CLIENTE)
   sellerId      String?
-  seller        Seller?   @relation("SellerMembers", fields: [sellerId], references: [id])
-  ownedSeller   Seller?   @relation("SellerOwner")
+  seller        Seller?       @relation("SellerMembers", fields: [sellerId], references: [id])
+  ownedSeller   Seller?       @relation("SellerOwner")
   accounts      Account[]
   sessions      Session[]
-  coupons       Coupon[]  @relation("UserCoupons")
+  coupons       Coupon[]      @relation("UserCoupons")
   reviewReplies ReviewReply[] @relation("UserReplies")
-  createdAt     DateTime  @default(now())
+  aiUsage       AiUsage[]
+  createdAt     DateTime      @default(now())
 }
 
 model Account {
@@ -569,7 +570,7 @@ model Banner {
   imageUrl   String?
   linkUrl    String
   ctaLabel   String? // texto do botão (ex.: "Saiba mais"); null = padrão
-  bidAmount  Decimal           @db.Decimal(10, 2) @default(0)
+  bidAmount  Decimal           @default(0) @db.Decimal(10, 2)
   status     AdStatus          @default(PENDING)
   startsAt   DateTime?
   endsAt     DateTime?
@@ -577,4 +578,33 @@ model Banner {
   updatedAt  DateTime          @updatedAt
 
   @@index([sellerId])
+}
+
+// ───────────── Uso das ferramentas de IA ─────────────
+
+enum AiTool {
+  ASSISTENTE
+  DIAGNOSTICO
+}
+
+/**
+ * Uma linha por chamada às ferramentas de IA.
+ * Guarda só metadados — nunca a pergunta nem a resposta. O suficiente para
+ * medir volume, adoção e custo, sem transformar o log num arquivo do que os
+ * usuários perguntam.
+ */
+model AiUsage {
+  id           String   @id @default(cuid())
+  tool         AiTool
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  ok           Boolean  @default(true) // false quando a chamada falhou
+  inputTokens  Int      @default(0)
+  outputTokens Int      @default(0)
+  latencyMs    Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([tool, createdAt])
+  @@index([userId])
 }

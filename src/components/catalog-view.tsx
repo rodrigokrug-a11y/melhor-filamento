@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Check, SlidersHorizontal } from "lucide-react";
+import { Check, ChevronDown, SlidersHorizontal } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { CatalogGrid } from "@/components/catalog-grid";
@@ -92,7 +92,10 @@ export function CatalogView({
 
       <div className="grid gap-7 lg:grid-cols-[248px_1fr]">
         <aside className="hidden lg:block">
-          <div className="sticky top-20">
+          {/* A barra é sticky, então não acompanha a rolagem da página: sem
+              altura máxima e rolagem própria, tudo que passa da altura da
+              janela fica inalcançável. O header ocupa 4rem — daí o desconto. */}
+          <div className="sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto overscroll-contain pr-1">
             <FiltersPanel
               basePath={basePath}
               result={result}
@@ -244,6 +247,13 @@ function FiltersPanel({
   );
 }
 
+/**
+ * Grupo de filtros recolhível. Usa <details> em vez de estado em React: a
+ * barra é renderizada no servidor e o recolhimento não precisa de JavaScript
+ * — mesmo padrão do bloco de filtros no mobile.
+ *
+ * Abre por padrão, para não esconder opções de quem chega pela primeira vez.
+ */
 function FilterGroup({
   title,
   scroll,
@@ -254,8 +264,11 @@ function FilterGroup({
   children: React.ReactNode;
 }) {
   return (
-    <div className="border-t py-3">
-      <h3 className="mb-1.5 font-display text-sm font-semibold">{title}</h3>
+    <details open className="group/fg border-t py-3">
+      <summary className="mb-1.5 flex cursor-pointer list-none items-center justify-between gap-2">
+        <h3 className="font-display text-sm font-semibold">{title}</h3>
+        <ChevronDown className="size-4 shrink-0 text-muted-foreground transition-transform group-open/fg:rotate-180" />
+      </summary>
       <div
         className={cn(
           "space-y-0.5",
@@ -264,7 +277,7 @@ function FilterGroup({
       >
         {children}
       </div>
-    </div>
+    </details>
   );
 }
 
